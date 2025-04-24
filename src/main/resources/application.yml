@@ -1,0 +1,8 @@
+spring:
+  profiles:
+    active: local
+  messages:
+    basename: messages
+
+logging.level:
+  org.hibernate.SQL: debug
