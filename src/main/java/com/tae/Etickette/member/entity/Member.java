@@ -1,4 +1,4 @@
-package com.tae.Etickette.entity;
+package com.tae.Etickette.member.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
