@@ -37,6 +37,13 @@ public class Concert {
     @JoinColumn(name = "venue_id")
     private Venue venue;
 
+    public void updateTitle(String title) {
+        this.title = title;
+    }
+
+    public void updateDescription(String description) {
+        this.description = description;
+    }
 
     private Concert(String title, String description, LocalDate startAt, LocalDate endAt) {
         this.title = title;

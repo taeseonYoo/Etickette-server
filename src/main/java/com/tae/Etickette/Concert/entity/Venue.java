@@ -18,6 +18,17 @@ public class Venue {
     @Embedded
     private Address address;
 
+    public void updateCapacity(Integer capacity) {
+        if (capacity < 0) {
+            throw new IllegalArgumentException("총 좌석 수는 0보다 작을 수 없습니다.");
+        }
+        this.capacity = capacity;
+    }
+
+    public void updateAddress(Address address) {
+        this.address = address;
+    }
+
     private Venue(String place, Integer capacity,Address address) {
         this.place = place;
         this.capacity = capacity;
