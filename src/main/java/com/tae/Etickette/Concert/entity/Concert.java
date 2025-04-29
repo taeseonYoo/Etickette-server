@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -21,13 +22,13 @@ public class Concert {
     @Column
     private String description;
     @Column(nullable = false)
-    private LocalDateTime startAt;
+    private LocalDate startAt;
     @Column(nullable = false)
-    private LocalDateTime endAt;
+    private LocalDate endAt;
     @Column
     private ConcertStatus status;
-//    @Column
-//    private String ImgURL
+    @Column
+    private String ImgURL;
 
     /**
      * 연관관계
@@ -36,7 +37,8 @@ public class Concert {
     @JoinColumn(name = "venue_id")
     private Venue venue;
 
-    private Concert(String title, String description, LocalDateTime startAt, LocalDateTime endAt) {
+
+    private Concert(String title, String description, LocalDate startAt, LocalDate endAt) {
         this.title = title;
         this.description = description;
         this.startAt = startAt;
@@ -45,7 +47,7 @@ public class Concert {
     }
 
     public static Concert create(String title, String description
-            , LocalDateTime startAt, LocalDateTime endAt) {
+            , LocalDate startAt, LocalDate endAt) {
         return new Concert(title, description, startAt, endAt);
     }
 
