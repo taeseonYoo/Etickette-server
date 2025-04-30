@@ -1,4 +1,4 @@
-package com.tae.Etickette.Concert.entity;
+package com.tae.Etickette.concert.entity;
 
 import jakarta.persistence.*;
 

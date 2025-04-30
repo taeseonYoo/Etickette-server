@@ -1,6 +1,6 @@
-package com.tae.Etickette.Concert.repository;
+package com.tae.Etickette.concert.repository;
 
-import com.tae.Etickette.Concert.entity.Concert;
+import com.tae.Etickette.concert.entity.Concert;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
