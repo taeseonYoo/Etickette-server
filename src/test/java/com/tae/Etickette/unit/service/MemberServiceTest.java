@@ -12,6 +12,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
 import org.mockito.Mockito;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
@@ -24,10 +26,11 @@ public class MemberServiceTest {
 
     private MemberService memberService;
     private final MemberRepository mockMemberRepo = Mockito.mock(MemberRepository.class);
+    private final PasswordEncoder passwordEncoder = Mockito.mock(BCryptPasswordEncoder.class);
 
     @BeforeEach
     public void setUp() {
-        memberService = new MemberService(mockMemberRepo);
+        memberService = new MemberService(mockMemberRepo, passwordEncoder);
     }
 
     @Test
@@ -38,7 +41,8 @@ public class MemberServiceTest {
                 .name("tester")
                 .email("test@spring.io")
                 .password("12345678").build();
-        Member member = requestDto.toEntity();
+        String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
+        Member member = requestDto.toEntity(encodedPassword);
         ReflectionTestUtils.setField(member, "id",1L);
 
         BDDMockito.given(mockMemberRepo.findByEmail(any()))
@@ -61,7 +65,8 @@ public class MemberServiceTest {
                 .name("tester")
                 .email("test@spring.io")
                 .password("12345678").build();
-        Member member = requestDto.toEntity();
+        String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
+        Member member = requestDto.toEntity(encodedPassword);
         ReflectionTestUtils.setField(member, "id",1L);
 
         BDDMockito.given(mockMemberRepo.findByEmail(any()))

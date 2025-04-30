@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Getter
 public class MemberJoinRequestDto {
@@ -19,7 +20,6 @@ public class MemberJoinRequestDto {
     @NotBlank
     private final String password;
 
-
     @Builder
     public MemberJoinRequestDto(String name, String email, String password) {
         this.name=name;
@@ -27,7 +27,7 @@ public class MemberJoinRequestDto {
         this.password = password;
     }
 
-    public Member toEntity() {
-        return Member.create(name, email, password);
+    public Member toEntity(String encodedPassword) {
+        return Member.create(name, email, encodedPassword);
     }
 }

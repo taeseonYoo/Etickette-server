@@ -5,6 +5,8 @@ import com.tae.Etickette.member.entity.Member;
 import com.tae.Etickette.member.dto.MemberJoinRequestDto;
 import com.tae.Etickette.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public MemberJoinResponseDto join(MemberJoinRequestDto memberJoinRequestDto) {
@@ -21,7 +24,10 @@ public class MemberService {
         if (duplicated) {
             throw new DuplicateEmailException("이미 사용 중인 이메일입니다.");
         }
-        Member member = memberJoinRequestDto.toEntity();
+
+        //비밀번호를 암호화 한다.
+        String encodedPassword = passwordEncoder.encode(memberJoinRequestDto.getPassword());
+        Member member = memberJoinRequestDto.toEntity(encodedPassword);
 
         Member savedMember = memberRepository.save(member);
         return MemberJoinResponseDto.builder()
