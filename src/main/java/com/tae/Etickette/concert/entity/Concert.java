@@ -19,7 +19,7 @@ public class Concert {
     @Column(nullable = false)
     private String title;
     @Column
-    private String description;
+    private String overview;
     @Column(nullable = false)
     private LocalDate startAt;
     @Column(nullable = false)
@@ -40,21 +40,21 @@ public class Concert {
         this.title = title;
     }
 
-    public void updateDescription(String description) {
-        this.description = description;
+    public void updateOverview(String overview) {
+        this.overview = overview;
     }
 
-    private Concert(String title, String description, LocalDate startAt, LocalDate endAt) {
+    private Concert(String title, String overview, LocalDate startAt, LocalDate endAt) {
         this.title = title;
-        this.description = description;
+        this.overview = overview;
         this.startAt = startAt;
         this.endAt = endAt;
         this.status = ConcertStatus.PENDING;
     }
 
-    public static Concert create(String title, String description
+    public static Concert create(String title, String overview
             , LocalDate startAt, LocalDate endAt) {
-        return new Concert(title, description, startAt, endAt);
+        return new Concert(title, overview, startAt, endAt);
     }
 
 }
