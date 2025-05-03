@@ -1,12 +1,12 @@
 package com.tae.Etickette.member.dto;
 
 import com.tae.Etickette.member.entity.Member;
+import com.tae.Etickette.member.entity.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Getter
 public class MemberJoinRequestDto {
@@ -28,6 +28,7 @@ public class MemberJoinRequestDto {
     }
 
     public Member toEntity(String encodedPassword) {
-        return Member.create(name, email, encodedPassword);
+        return Member.create(name, email, encodedPassword, Role.USER);
     }
+
 }

@@ -2,6 +2,7 @@ package com.tae.Etickette.jwt;
 
 import com.tae.Etickette.config.CustomUserDetails;
 import com.tae.Etickette.member.entity.Member;
+import com.tae.Etickette.member.entity.Role;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,7 +28,7 @@ public class JWTFilter extends OncePerRequestFilter {
         //request에서 Authorization 헤더를 찾는다.
         String authorization= request.getHeader("Authorization");
 
-        //Authorization 헤더 검증
+        //Authorization 헤더를 검증한다.
         if (authorization == null || !authorization.startsWith("Bearer ")) {
             System.out.println("token null");
             filterChain.doFilter(request, response);
@@ -45,17 +46,15 @@ public class JWTFilter extends OncePerRequestFilter {
             System.out.println("token expired");
             filterChain.doFilter(request, response);
 
-            //조건이 해당되면 메소드 종료 (필수)
             return;
         }
 
 
         //토큰에서 email role 획득
         String email = jwtUtil.getEmail(token);
-        String role = jwtUtil.getRole(token);
+        Role role = Role.valueOf(jwtUtil.getRole(token));
 
-        //TODO 회원 역할을 입력할 지 결정해야한다.
-        Member member = Member.create("gd", email, "temppassword");
+        Member member = Member.create("tempuser", email, "temppassword", role);
 
         //UserDetails에 회원 정보 객체 담기
         CustomUserDetails customUserDetails = new CustomUserDetails(member);

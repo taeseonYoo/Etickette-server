@@ -3,6 +3,7 @@ package com.tae.Etickette.config;
 import com.tae.Etickette.jwt.JWTFilter;
 import com.tae.Etickette.jwt.JWTUtil;
 import com.tae.Etickette.jwt.LoginFilter;
+import com.tae.Etickette.member.entity.Role;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -76,9 +77,15 @@ public class SecurityConfig {
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/login", "/", "/register").permitAll()
-//                        .requestMatchers("/admin").hasRole("ADMIN")
+                        .requestMatchers("/", "/login", "/register").permitAll()
+                        .requestMatchers("/admin").hasRole(Role.ADMIN.value())
                         .anyRequest().authenticated());
+        //로그 아웃 설정.
+        http
+                .logout(logout->logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/")
+                        .invalidateHttpSession(true));
 
         http
                 .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);

@@ -36,13 +36,13 @@ public class Member {
     }
 
 
-    private Member(String name,String email, String password) {
+    private Member(String name, String email, String password, Role role) {
         this.name=name;
         this.email = email;
         this.password=password;
-        this.role = Role.ROLE_USER;
+        this.role = role;
     }
-    public static Member create(String name,String email, String password) {
-        return new Member(name, email, password);
+    public static Member create(String name, String email, String password, Role role) {
+        return new Member(name, email, password, role);
     }
 }

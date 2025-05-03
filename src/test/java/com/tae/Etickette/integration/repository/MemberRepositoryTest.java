@@ -1,6 +1,7 @@
 package com.tae.Etickette.integration.repository;
 
 import com.tae.Etickette.member.entity.Member;
+import com.tae.Etickette.member.entity.Role;
 import com.tae.Etickette.member.repository.MemberRepository;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
@@ -27,7 +28,7 @@ class MemberRepositoryTest {
     @DisplayName("회원 저장 - 회원 저장에 성공한다.")
     public void 회원_저장_성공() {
         //given
-        Member member = Member.create("회원", "user@spring.com", "12345678");
+        Member member = Member.create("회원", "user@spring.com", "12345678", Role.USER);
 
         //when
         Member savedMember = memberRepository.save(member);
@@ -43,8 +44,8 @@ class MemberRepositoryTest {
     @DisplayName("회원 저장 - 이메일이 중복 될 수 없다.")
     public void 회원_저장_이메일_중복() {
         //given
-        Member member1 = Member.create("회원1", "user@spring.com", "12345678");
-        Member member2 = Member.create("회원2", "user@spring.com", "12345678");
+        Member member1 = Member.create("회원1", "user@spring.com", "12345678",Role.USER);
+        Member member2 = Member.create("회원2", "user@spring.com", "12345678", Role.USER);
 
         //when ,then
         memberRepository.save(member1);
@@ -56,7 +57,7 @@ class MemberRepositoryTest {
     @DisplayName("회원 수정 - 회원 수정에 성공한다.")
     public void 회원_수정_성공() {
         //given
-        Member member = Member.create("회원", "user@spring.com", "12345678");
+        Member member = Member.create("회원", "user@spring.com", "12345678", Role.USER);
         Member savedMember = memberRepository.save(member);
 
         //when
@@ -77,7 +78,7 @@ class MemberRepositoryTest {
     @DisplayName("회원 삭제 - 회원 삭제에 성공한다.")
     public void 회원_삭제_성공() {
         //given
-        Member member = Member.create("회원", "user@spring.com", "12345678");
+        Member member = Member.create("회원", "user@spring.com", "12345678",Role.USER);
         memberRepository.save(member);
         Long memberId = member.getId();
 
