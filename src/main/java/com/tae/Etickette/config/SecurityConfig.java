@@ -3,11 +3,15 @@ package com.tae.Etickette.config;
 import com.tae.Etickette.jwt.JWTFilter;
 import com.tae.Etickette.jwt.JWTUtil;
 import com.tae.Etickette.jwt.LoginFilter;
+import com.tae.Etickette.jwt.OAuthFilter;
 import com.tae.Etickette.member.entity.Role;
+import com.tae.Etickette.oauth.CustomOAuth2UserService;
+import com.tae.Etickette.oauth.CustomSuccessHandler;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -20,14 +24,22 @@ import org.springframework.web.cors.CorsConfigurationSource;
 
 import java.util.Collections;
 
+/**
+ * Security 인증 관련 설정을 담당한다.
+ * @EnableWebSecurity : 이 클래스가 SpringSecurity에게 관리가 된다.
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private CustomSuccessHandler customSuccessHandler;
+    private final CustomOAuth2UserService customOAuth2UserService;
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JWTUtil jwtUtil;
 
-    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration,JWTUtil jwtUtil) {
+    public SecurityConfig(CustomSuccessHandler customSuccessHandler, CustomOAuth2UserService customOAuth2UserService, AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil) {
+        this.customSuccessHandler = customSuccessHandler;
+        this.customOAuth2UserService = customOAuth2UserService;
         this.authenticationConfiguration = authenticationConfiguration;
         this.jwtUtil = jwtUtil;
     }
@@ -41,6 +53,11 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * @param http HttpSecurity 객체
+     * @return SecurityFilterChain 객체
+     * @throws Exception 예외 발생 시 처리
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http)throws Exception {
 
@@ -62,7 +79,7 @@ public class SecurityConfig {
                                 return configuration;
                             }
                         }));
-        //csrf disable
+        //jwt를 통한 STATELESS 방식을 사용하므로, csrf 설정은 비활성화 한다.
         http
                 .csrf((auth) -> auth.disable());
 
@@ -74,19 +91,28 @@ public class SecurityConfig {
         http
                 .httpBasic((auth) -> auth.disable());
 
+        //oAuth2 설정
+        http
+                .oauth2Login((oauth2) -> oauth2
+                        .userInfoEndpoint((userInfoEndpointConfig -> userInfoEndpointConfig
+                                .userService(customOAuth2UserService)))
+                        .successHandler(customSuccessHandler));
+
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/", "/login", "/register").permitAll()
                         .requestMatchers("/admin").hasRole(Role.ADMIN.value())
-                        .anyRequest().authenticated());
+                        .anyRequest().authenticated()
+                );
         //로그 아웃 설정.
         http
                 .logout(logout->logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/")
                         .invalidateHttpSession(true));
-
+        http
+                .addFilterBefore(new OAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
         http
                 .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
         //커스텀 로그인 필터 등록
