@@ -3,7 +3,6 @@ package com.tae.Etickette.config;
 import com.tae.Etickette.jwt.JWTFilter;
 import com.tae.Etickette.jwt.JWTUtil;
 import com.tae.Etickette.jwt.LoginFilter;
-import com.tae.Etickette.jwt.OAuthFilter;
 import com.tae.Etickette.member.entity.Role;
 import com.tae.Etickette.oauth.CustomOAuth2UserService;
 import com.tae.Etickette.oauth.CustomSuccessHandler;
@@ -11,7 +10,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -75,6 +73,7 @@ public class SecurityConfig {
                                 configuration.setAllowedHeaders(Collections.singletonList("*"));
                                 configuration.setMaxAge(3600L);
 
+                                configuration.setExposedHeaders(Collections.singletonList("Set-Cookie"));
                                 configuration.setExposedHeaders(Collections.singletonList("Authorization"));
                                 return configuration;
                             }
@@ -101,7 +100,7 @@ public class SecurityConfig {
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/", "/login", "/register").permitAll()
+                        .requestMatchers("/", "/login", "/register","/oauth2-jwt-header").permitAll()
                         .requestMatchers("/admin").hasRole(Role.ADMIN.value())
                         .anyRequest().authenticated()
                 );
@@ -112,9 +111,9 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/")
                         .invalidateHttpSession(true));
         http
-                .addFilterBefore(new OAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
-        http
-                .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
+                .addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+//        http
+//                .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
         //커스텀 로그인 필터 등록
         http
                 .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration),jwtUtil), UsernamePasswordAuthenticationFilter.class);

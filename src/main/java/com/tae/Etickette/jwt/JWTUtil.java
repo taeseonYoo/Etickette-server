@@ -17,6 +17,11 @@ public class JWTUtil {
         this.secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
     }
 
+    public String getLoginType(String token) {
+        return Jwts.parser().verifyWith(secretKey).build()
+                .parseSignedClaims(token).getPayload().get("loginType", String.class);
+    }
+
     //암호화 된 데이터를 verifyWith로 검증
     public String getEmail(String token) {
         return Jwts.parser().verifyWith(secretKey).build()
@@ -33,10 +38,11 @@ public class JWTUtil {
                 .parseSignedClaims(token).getPayload().getExpiration().before(new Date());
     }
     //토큰 생성
-    public String createJwt(String email, String role, Long expiredMs) {
+    public String createJwt(String email, String role,String loginType, Long expiredMs) {
         return Jwts.builder()
                 .claim("email", email)
                 .claim("role", role)
+                .claim("loginType", loginType)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiredMs))
                 .signWith(secretKey)

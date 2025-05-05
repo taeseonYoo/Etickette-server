@@ -65,7 +65,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         String role = auth.getAuthority();
 
-        String token = jwtUtil.createJwt(email, role, 60 * 60 * 10L);
+        //TODO loginType 없애도 된다.
+        String token = jwtUtil.createJwt(email, role, "NORMAL",60 * 60 * 10L);
 
         //HTTP 인증 방식은 RFC 7235 정의에 따라 아래 인증 헤더 형태를 가져야 한다.
         response.addHeader("Authorization","Bearer " + token);

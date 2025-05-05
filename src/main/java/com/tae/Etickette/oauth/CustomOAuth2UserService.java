@@ -3,6 +3,7 @@ package com.tae.Etickette.oauth;
 import com.tae.Etickette.member.entity.Member;
 import com.tae.Etickette.member.entity.Role;
 import com.tae.Etickette.member.repository.MemberRepository;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -18,7 +19,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
 
-    public CustomOAuth2UserService(MemberRepository memberRepository,PasswordEncoder passwordEncoder) {
+    public CustomOAuth2UserService(MemberRepository memberRepository,@Lazy PasswordEncoder passwordEncoder) {
         this.memberRepository = memberRepository;
         this.passwordEncoder = passwordEncoder;
     }

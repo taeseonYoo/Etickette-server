@@ -3,6 +3,7 @@ package com.tae.Etickette.jwt;
 import com.tae.Etickette.config.CustomUserDetails;
 import com.tae.Etickette.member.entity.Member;
 import com.tae.Etickette.member.entity.Role;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,27 +26,19 @@ public class JWTFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        //request에서 Authorization 헤더를 찾는다.
-        String authorization= request.getHeader("Authorization");
+        String token = null;
+        token = request.getHeader("Authorization");
 
-        //Authorization 헤더를 검증한다.
-        if (authorization == null || !authorization.startsWith("Bearer ")) {
-            System.out.println("token null");
+        // token null
+        if (token == null) {
             filterChain.doFilter(request, response);
-            //조건이 해당되면 메소드 종료 (필수)
             return;
         }
-
-        System.out.println("authorization now");
-        //Bearer 부분 제거 후 순수 토큰만 획득
-        String token = authorization.split(" ")[1];
-
-        //토큰 소멸 시간 검증
-        if (jwtUtil.isExpired(token)) {
-
-            System.out.println("token expired");
-            filterChain.doFilter(request, response);
-
+        // access token expired
+        try{
+            jwtUtil.isExpired(token);
+        } catch (ExpiredJwtException e){
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
@@ -53,17 +46,21 @@ public class JWTFilter extends OncePerRequestFilter {
         //토큰에서 email role 획득
         String email = jwtUtil.getEmail(token);
         Role role = Role.valueOf(jwtUtil.getRole(token));
+        String loginType = jwtUtil.getLoginType(token);
+
+        Authentication auth = null;
+
 
         Member member = Member.create("tempuser", email, "temppassword", role);
-
-        //UserDetails에 회원 정보 객체 담기
         CustomUserDetails customUserDetails = new CustomUserDetails(member);
+        auth = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
 
-        //스프링 시큐리티 인증 토큰 생성
-        Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
-        //세션에 사용자 등록
-        SecurityContextHolder.getContext().setAuthentication(authToken);
+
+
+        SecurityContextHolder.getContext().setAuthentication(auth);
 
         filterChain.doFilter(request, response);
+
+
     }
 }
