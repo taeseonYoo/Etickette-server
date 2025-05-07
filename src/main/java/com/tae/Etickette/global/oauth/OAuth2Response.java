@@ -1,4 +1,4 @@
-package com.tae.Etickette.oauth;
+package com.tae.Etickette.global.oauth;
 
 public interface OAuth2Response {
     //제공자 (Ex. google, github)

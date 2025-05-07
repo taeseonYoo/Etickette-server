@@ -1,6 +1,6 @@
-package com.tae.Etickette.jwt;
+package com.tae.Etickette.global.jwt;
 
-import com.tae.Etickette.config.CustomUserDetails;
+import com.tae.Etickette.global.auth.CustomUserDetails;
 import com.tae.Etickette.member.entity.Member;
 import com.tae.Etickette.member.entity.Role;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -46,7 +46,6 @@ public class JWTFilter extends OncePerRequestFilter {
         //토큰에서 email role 획득
         String email = jwtUtil.getEmail(token);
         Role role = Role.valueOf(jwtUtil.getRole(token));
-        String loginType = jwtUtil.getLoginType(token);
 
         Authentication auth = null;
 
@@ -54,7 +53,6 @@ public class JWTFilter extends OncePerRequestFilter {
         Member member = Member.create("tempuser", email, "temppassword", role);
         CustomUserDetails customUserDetails = new CustomUserDetails(member);
         auth = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
-
 
 
         SecurityContextHolder.getContext().setAuthentication(auth);

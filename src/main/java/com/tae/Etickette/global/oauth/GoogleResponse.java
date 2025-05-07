@@ -1,4 +1,4 @@
-package com.tae.Etickette.oauth;
+package com.tae.Etickette.global.oauth;
 
 import java.util.Map;
 

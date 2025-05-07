@@ -1,4 +1,4 @@
-package com.tae.Etickette.oauth;
+package com.tae.Etickette.global.oauth;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -8,10 +8,10 @@ import java.util.Collection;
 import java.util.Map;
 
 public class CustomOAuth2User implements OAuth2User {
-    private final UserDto userDto;
+    private final Oauth2UserDto oauth2UserDto;
 
-    public CustomOAuth2User(UserDto userDto) {
-        this.userDto = userDto;
+    public CustomOAuth2User(Oauth2UserDto oauth2UserDto) {
+        this.oauth2UserDto = oauth2UserDto;
     }
 
     @Override
@@ -27,7 +27,7 @@ public class CustomOAuth2User implements OAuth2User {
         collection.add(new GrantedAuthority() {
             @Override
             public String getAuthority() {
-                return userDto.getRole().toString();
+                return oauth2UserDto.getRole().toString();
             }
         });
         return collection;
@@ -35,10 +35,10 @@ public class CustomOAuth2User implements OAuth2User {
 
     @Override
     public String getName() {
-        return userDto.getName();
+        return oauth2UserDto.getName();
     }
 
     public String getEmail() {
-        return userDto.getEmail();
+        return oauth2UserDto.getEmail();
     }
 }

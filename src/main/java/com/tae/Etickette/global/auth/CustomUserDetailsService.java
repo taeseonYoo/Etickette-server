@@ -1,4 +1,4 @@
-package com.tae.Etickette.config;
+package com.tae.Etickette.global.auth;
 
 import com.tae.Etickette.member.entity.Member;
 import com.tae.Etickette.member.repository.MemberRepository;
@@ -6,8 +6,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {

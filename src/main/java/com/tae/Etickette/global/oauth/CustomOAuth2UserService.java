@@ -1,4 +1,4 @@
-package com.tae.Etickette.oauth;
+package com.tae.Etickette.global.oauth;
 
 import com.tae.Etickette.member.entity.Member;
 import com.tae.Etickette.member.entity.Role;
@@ -54,22 +54,22 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             Member member = Member.create(oAuth2Response.getName(), email, password, Role.USER);
             memberRepository.save(member);
 
-            UserDto userDto = new UserDto();
-            userDto.setEmail(email);
-            userDto.setName(oAuth2Response.getName());
-            userDto.setRole(Role.USER);
+            Oauth2UserDto oauth2UserDto = new Oauth2UserDto();
+            oauth2UserDto.setEmail(email);
+            oauth2UserDto.setName(oAuth2Response.getName());
+            oauth2UserDto.setRole(Role.USER);
 
-            return new CustomOAuth2User(userDto);
+            return new CustomOAuth2User(oauth2UserDto);
         }else {
             Member member = findMember.get();
             member.updateName(oAuth2Response.getName());
 
-            UserDto userDto = new UserDto();
-            userDto.setEmail(email);
-            userDto.setName(oAuth2Response.getName());
-            userDto.setRole(member.getRole());
+            Oauth2UserDto oauth2UserDto = new Oauth2UserDto();
+            oauth2UserDto.setEmail(email);
+            oauth2UserDto.setName(oAuth2Response.getName());
+            oauth2UserDto.setRole(member.getRole());
 
-            return new CustomOAuth2User(userDto);
+            return new CustomOAuth2User(oauth2UserDto);
         }
 
 

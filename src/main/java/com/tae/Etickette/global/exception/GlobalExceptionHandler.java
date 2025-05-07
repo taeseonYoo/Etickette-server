@@ -1,4 +1,4 @@
-package com.tae.Etickette;
+package com.tae.Etickette.global.exception;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

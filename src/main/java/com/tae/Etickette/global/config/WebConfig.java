@@ -1,4 +1,4 @@
-package com.tae.Etickette;
+package com.tae.Etickette.global.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

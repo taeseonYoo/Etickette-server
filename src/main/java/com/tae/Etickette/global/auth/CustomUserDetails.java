@@ -1,4 +1,4 @@
-package com.tae.Etickette.config;
+package com.tae.Etickette.global.auth;
 
 import com.tae.Etickette.member.entity.Member;
 import org.springframework.security.core.GrantedAuthority;

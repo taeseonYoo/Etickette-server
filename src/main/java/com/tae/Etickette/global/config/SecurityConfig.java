@@ -1,11 +1,11 @@
-package com.tae.Etickette.config;
+package com.tae.Etickette.global.config;
 
-import com.tae.Etickette.jwt.JWTFilter;
-import com.tae.Etickette.jwt.JWTUtil;
-import com.tae.Etickette.jwt.LoginFilter;
+import com.tae.Etickette.global.jwt.JWTFilter;
+import com.tae.Etickette.global.jwt.JWTUtil;
+import com.tae.Etickette.global.jwt.LoginFilter;
 import com.tae.Etickette.member.entity.Role;
-import com.tae.Etickette.oauth.CustomOAuth2UserService;
-import com.tae.Etickette.oauth.CustomSuccessHandler;
+import com.tae.Etickette.global.oauth.CustomOAuth2UserService;
+import com.tae.Etickette.global.oauth.CustomSuccessHandler;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -112,8 +112,6 @@ public class SecurityConfig {
                         .invalidateHttpSession(true));
         http
                 .addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
-//        http
-//                .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
         //커스텀 로그인 필터 등록
         http
                 .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration),jwtUtil), UsernamePasswordAuthenticationFilter.class);

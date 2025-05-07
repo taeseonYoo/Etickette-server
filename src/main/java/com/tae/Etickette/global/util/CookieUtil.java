@@ -1,4 +1,4 @@
-package com.tae.Etickette;
+package com.tae.Etickette.global.util;
 
 import jakarta.servlet.http.Cookie;
 

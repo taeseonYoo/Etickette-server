@@ -1,8 +1,8 @@
-package com.tae.Etickette.oauth;
+package com.tae.Etickette.global.oauth;
 
-import com.tae.Etickette.jwt.JWTUtil;
+import com.tae.Etickette.global.util.CookieUtil;
+import com.tae.Etickette.global.jwt.JWTUtil;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;
@@ -34,18 +34,10 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority();
 
-        String token = jwtUtil.createJwt(email, role, "SOCIAL",60*60*60L);
+        String token = jwtUtil.createJwt(email, role,60*60*60L);
 
-        response.addCookie(createCookie("Authorization", token));
+        response.addCookie(CookieUtil.createCookie("Authorization", token, 60 * 60 * 60));
         response.sendRedirect("http://localhost:3000/oauth2-jwt-header");
     }
 
-    private Cookie createCookie(String key, String value) {
-        Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(60 * 60 * 60);
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-
-        return cookie;
-    }
 }
