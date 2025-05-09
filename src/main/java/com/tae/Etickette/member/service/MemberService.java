@@ -1,10 +1,13 @@
 package com.tae.Etickette.member.service;
 
+import com.tae.Etickette.global.auth.CustomUserDetails;
 import com.tae.Etickette.member.dto.MemberJoinResponseDto;
+import com.tae.Etickette.member.dto.PasswordUpdateRequestDto;
 import com.tae.Etickette.member.entity.Member;
 import com.tae.Etickette.member.dto.MemberJoinRequestDto;
 import com.tae.Etickette.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -37,8 +40,18 @@ public class MemberService {
                 .build();
     }
 
+    @Transactional
+    public void updatePassword(PasswordUpdateRequestDto requestDto, String email) {
+        //TODO OAUTH는 비밀번호를 수정할 수 없다.
+        //TODO 수정에 성공하면 JWT를 재발급해야한다.
+
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberNotFoundException("회원 정보를 찾을 수 없습니다."));
+
+        member.changePassword(passwordEncoder,requestDto);
+    }
+
     public Member findById(Long memberId) {
-        return memberRepository.findById(memberId).orElseThrow(() -> new RuntimeException("사용자가 없음"));
+        return memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException("회원 정보를 찾을 수 없습니다."));
     }
 
 

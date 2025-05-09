@@ -1,9 +1,12 @@
 package com.tae.Etickette.member.entity;
 
+import com.tae.Etickette.member.dto.PasswordUpdateRequestDto;
+import com.tae.Etickette.member.service.BadPasswordException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 
 @Entity
@@ -44,5 +47,12 @@ public class Member {
     }
     public static Member create(String name, String email, String password, Role role) {
         return new Member(name, email, password, role);
+    }
+
+    public void changePassword(PasswordEncoder passwordEncoder, PasswordUpdateRequestDto requestDto) {
+        if (!passwordEncoder.matches(requestDto.getOldPassword(), this.password)) {
+            throw new BadPasswordException("비밀번호가 일치하지 않습니다.");
+        }
+        this.password = passwordEncoder.encode(requestDto.getNewPassword());
     }
 }

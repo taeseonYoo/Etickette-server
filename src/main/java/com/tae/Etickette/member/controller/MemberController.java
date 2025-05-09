@@ -2,14 +2,17 @@ package com.tae.Etickette.member.controller;
 
 import com.tae.Etickette.member.dto.MemberJoinRequestDto;
 import com.tae.Etickette.member.dto.MemberJoinResponseDto;
+import com.tae.Etickette.member.dto.PasswordUpdateRequestDto;
 import com.tae.Etickette.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,6 +29,14 @@ public class MemberController {
          */
         MemberJoinResponseDto responseDto = memberService.join(request);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<?> update(PasswordUpdateRequestDto passwordUpdateRequestDto, Authentication authentication) {
+
+        memberService.updatePassword(passwordUpdateRequestDto, authentication.getName());
+
+        return null;
     }
 
 }

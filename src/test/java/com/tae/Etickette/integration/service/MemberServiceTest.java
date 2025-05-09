@@ -2,7 +2,10 @@ package com.tae.Etickette.integration.service;
 
 import com.tae.Etickette.member.dto.MemberJoinRequestDto;
 import com.tae.Etickette.member.dto.MemberJoinResponseDto;
+import com.tae.Etickette.member.dto.PasswordUpdateRequestDto;
 import com.tae.Etickette.member.entity.Member;
+import com.tae.Etickette.member.entity.Role;
+import com.tae.Etickette.member.repository.MemberRepository;
 import com.tae.Etickette.member.service.DuplicateEmailException;
 import com.tae.Etickette.member.service.MemberService;
 import org.assertj.core.api.Assertions;
@@ -10,6 +13,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,6 +27,8 @@ public class MemberServiceTest {
 
     @Autowired
     private MemberService memberService;
+    @Autowired
+    private MemberRepository memberRepository;
 
     @Test
     @DisplayName("회원 가입 - 회원 가입에 성공한다.")
@@ -56,6 +64,27 @@ public class MemberServiceTest {
         //then
         assertThrows(DuplicateEmailException.class,
                 () -> memberService.join(member2));
+    }
+
+    @Test
+    public void 회원_정보_변경() {
+        //given
+        MemberJoinRequestDto member = MemberJoinRequestDto.builder()
+                .name("tester1")
+                .email("test@spring.io").password("12345678")
+                .build();
+        memberService.join(member);
+        PasswordUpdateRequestDto requestDto = PasswordUpdateRequestDto.builder()
+                .oldPassword("12345678").newPassword("@Change123").build();
+
+
+        //when
+        memberService.updatePassword(requestDto, "test@spring.io");
+
+        //then
+        Member findMember = memberRepository.findByEmail("test@spring.io").get();
+        Assertions.assertThat(findMember.getPassword()).isEqualTo("@Change123");
+
     }
 
 }
