@@ -32,7 +32,7 @@ public class MemberServiceTest {
     private EncryptionService encryptionService;
 
     @Test
-    @DisplayName("회원 가입 - 회원 가입에 성공한다.")
+    @DisplayName("join - 회원 가입에 성공한다.")
     public void 회원가입_성공() {
         //given
         MemberJoinRequestDto member = MemberJoinRequestDto.builder()
@@ -49,7 +49,7 @@ public class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("회원 가입 - 중복된 이메일이 있으면, 회원 가입에 실패한다.")
+    @DisplayName("join - 중복된 이메일이 있으면, 회원 가입에 실패한다.")
     public void 회원가입_실패_중복이메일() {
         //given
         MemberJoinRequestDto member = MemberJoinRequestDto.builder()
@@ -68,8 +68,8 @@ public class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("회원 정보 변경 - 비밀번호 변경에 성공한다.")
-    public void 회원정보변경_성공() {
+    @DisplayName("changePassword - 비밀번호 변경에 성공한다.")
+    public void 비밀번호변경_성공() {
         //given
         MemberJoinRequestDto member = MemberJoinRequestDto.builder()
                 .name("USER")
@@ -86,13 +86,12 @@ public class MemberServiceTest {
 
         //then
         Member findMember = memberRepository.findByEmail("USER@spring").get();
-
         Assertions.assertThat(encryptionService.matches("@Change123",findMember.getPassword())).isTrue();
     }
 
     @Test
-    @DisplayName("회원 정보 변경 - 기존 비밀번호가 일치하지 않으면 ,비밀번호 변경에 실패한다.")
-    public void 회원정보변경_실패_비밀번호_불일치() {
+    @DisplayName("changePassword - 기존 비밀번호가 일치하지 않으면 ,비밀번호 변경에 실패한다.")
+    public void 비밀번호변경_실패_비밀번호불일치() {
         //given
         MemberJoinRequestDto member = MemberJoinRequestDto.builder()
                 .name("USER")

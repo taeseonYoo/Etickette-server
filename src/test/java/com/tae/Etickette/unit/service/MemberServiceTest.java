@@ -39,8 +39,8 @@ public class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("회원 가입 - 회원 가입에 성공한다.")
-    public void 회원_가입() {
+    @DisplayName("join - 회원 가입에 성공한다.")
+    public void 회원가입() {
         //given
         MemberJoinRequestDto requestDto = MemberJoinRequestDto.builder()
                 .name("사용자")
@@ -63,8 +63,8 @@ public class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("회원 가입 - 중복된 이메일이 있으면, 회원 가입에 실패한다.")
-    public void 회원_가입_실패() {
+    @DisplayName("join - 중복된 이메일이 있으면, 회원 가입에 실패한다.")
+    public void 회원가입_실패_중복이메일() {
         //given
         MemberJoinRequestDto requestDto = MemberJoinRequestDto.builder()
                 .name("사용자")
@@ -82,8 +82,8 @@ public class MemberServiceTest {
                 () -> memberService.join(requestDto));
     }
     @Test
-    @DisplayName("회원 가입 - 비밀번호가 누락되면, 회원 가입에 실패한다.")
-    public void 회원_가입_실패_비밀번호_누락() {
+    @DisplayName("join - 비밀번호가 누락되면, 회원 가입에 실패한다.")
+    public void 회원가입_실패_비밀번호누락() {
         //given
         MemberJoinRequestDto requestDto = MemberJoinRequestDto.builder()
                 .name("사용자")
@@ -104,8 +104,52 @@ public class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("회원 정보 변경 - 비밀번호 변경에 성공한다.")
-    public void 회원_정보_변경_성공() {
+    @DisplayName("join - 이메일이 누락되면, 회원 가입에 실패한다.")
+    public void 회원가입_실패_이메일누락() {
+        //given
+        MemberJoinRequestDto requestDto = MemberJoinRequestDto.builder()
+                .name("사용자")
+                .password("@Abc1234")
+                .build();
+
+        Member member = requestDto.toEntity(encryptionService,requestDto.getPassword());
+        ReflectionTestUtils.setField(member, "id", 1L);
+
+        BDDMockito.given(mockMemberRepo.findByEmail(any()))
+                .willReturn(Optional.empty());
+
+        BDDMockito.given(mockMemberRepo.save(any())).willThrow(IllegalArgumentException.class);
+
+        //when
+        assertThrows(IllegalArgumentException.class,
+                () -> memberService.join(requestDto));
+    }
+
+    @Test
+    @DisplayName("join - 이름이 누락되면, 회원 가입에 실패한다.")
+    public void 회원가입_실패_이름누락() {
+        //given
+        MemberJoinRequestDto requestDto = MemberJoinRequestDto.builder()
+                .email("USER@spring")
+                .password("@Abc1234")
+                .build();
+
+        Member member = requestDto.toEntity(encryptionService,requestDto.getPassword());
+        ReflectionTestUtils.setField(member, "id", 1L);
+
+        BDDMockito.given(mockMemberRepo.findByEmail(any()))
+                .willReturn(Optional.empty());
+
+        BDDMockito.given(mockMemberRepo.save(any())).willThrow(IllegalArgumentException.class);
+
+        //when
+        assertThrows(IllegalArgumentException.class,
+                () -> memberService.join(requestDto));
+    }
+
+    @Test
+    @DisplayName("changePassword - 비밀번호 변경에 성공한다.")
+    public void 비밀번호변경_성공() {
         //given
         Member member = Member.create("사용자", "USER@spring", "@Abc1234", Role.USER);
         PasswordChangeRequestDto requestDto = PasswordChangeRequestDto.builder()
@@ -124,8 +168,8 @@ public class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("회원 정보 변경 - 기존 비밀번호가 일치하지 않으면 ,비밀번호 변경에 실패한다.")
-    public void 회원_정보_변경_실패_비밀번호_불일치() {
+    @DisplayName("changePassword - 기존 비밀번호가 일치하지 않으면 ,비밀번호 변경에 실패한다.")
+    public void 비밀번호변경_실패_비밀번호불일치() {
         //given
         Member member = Member.create("USER", "USER@spring", "@Abc1234", Role.USER);
         PasswordChangeRequestDto requestDto = PasswordChangeRequestDto.builder().build();
@@ -144,7 +188,7 @@ public class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("회원 정보 변경 - 회원이 존재하지 않으면 ,비밀번호 변경에 실패한다.")
+    @DisplayName("changePassword - 회원이 존재하지 않으면 ,비밀번호 변경에 실패한다.")
     public void 회원정보변경_실패_회원없음() {
         //given
         Member member = Member.create("USER", "USER@spring", "@Abc1234", Role.USER);
