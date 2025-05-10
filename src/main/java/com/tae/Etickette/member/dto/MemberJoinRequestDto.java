@@ -1,5 +1,6 @@
 package com.tae.Etickette.member.dto;
 
+import com.tae.Etickette.EncryptionService;
 import com.tae.Etickette.member.entity.Member;
 import com.tae.Etickette.member.entity.Role;
 import jakarta.validation.constraints.Email;
@@ -30,8 +31,8 @@ public class MemberJoinRequestDto {
         this.password = password;
     }
 
-    public Member toEntity(String encodedPassword) {
-        return Member.create(name, email, encodedPassword, Role.USER);
+    public Member toEntity(EncryptionService encryptionService, String rawPassword) {
+        return Member.create(name, email, encryptionService.encode(rawPassword), Role.USER);
     }
 
 }

@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class PasswordUpdateRequestDto {
+public class PasswordChangeRequestDto {
     @NotBlank
     String oldPassword;
     @Size(min = 8,max = 20)
@@ -18,7 +18,7 @@ public class PasswordUpdateRequestDto {
     String email;
 
     @Builder
-    public PasswordUpdateRequestDto(String oldPassword, String newPassword,String email) {
+    public PasswordChangeRequestDto(String oldPassword, String newPassword, String email) {
         this.oldPassword = oldPassword;
         this.newPassword = newPassword;
         this.email = email;

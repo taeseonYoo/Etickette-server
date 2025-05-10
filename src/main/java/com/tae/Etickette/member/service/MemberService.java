@@ -1,15 +1,12 @@
 package com.tae.Etickette.member.service;
 
-import com.tae.Etickette.global.auth.CustomUserDetails;
+import com.tae.Etickette.EncryptionService;
 import com.tae.Etickette.member.dto.MemberJoinResponseDto;
-import com.tae.Etickette.member.dto.PasswordUpdateRequestDto;
+import com.tae.Etickette.member.dto.PasswordChangeRequestDto;
 import com.tae.Etickette.member.entity.Member;
 import com.tae.Etickette.member.dto.MemberJoinRequestDto;
 import com.tae.Etickette.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final EncryptionService encryptionService;
 
     @Transactional
     public MemberJoinResponseDto join(MemberJoinRequestDto memberJoinRequestDto) {
@@ -28,9 +25,7 @@ public class MemberService {
             throw new DuplicateEmailException("이미 사용 중인 이메일입니다.");
         }
 
-        //비밀번호를 암호화 한다.
-        String encodedPassword = passwordEncoder.encode(memberJoinRequestDto.getPassword());
-        Member member = memberJoinRequestDto.toEntity(encodedPassword);
+        Member member = memberJoinRequestDto.toEntity(encryptionService, memberJoinRequestDto.getPassword());
 
         Member savedMember = memberRepository.save(member);
         return MemberJoinResponseDto.builder()
@@ -41,13 +36,13 @@ public class MemberService {
     }
 
     @Transactional
-    public void updatePassword(PasswordUpdateRequestDto requestDto, String email) {
+    public void changePassword(PasswordChangeRequestDto requestDto, String email) {
         //TODO OAUTH는 비밀번호를 수정할 수 없다.
         //TODO 수정에 성공하면 JWT를 재발급해야한다.
 
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberNotFoundException("회원 정보를 찾을 수 없습니다."));
 
-        member.changePassword(passwordEncoder,requestDto);
+        member.changePassword(encryptionService,requestDto);
     }
 
     public Member findById(Long memberId) {
