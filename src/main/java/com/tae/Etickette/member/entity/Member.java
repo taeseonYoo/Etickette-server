@@ -27,6 +27,8 @@ public class Member {
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private Role role;
+    @Enumerated(value = EnumType.STRING)
+    private MemberStatus memberStatus;
 
     public void updateName(String name) {
         this.name = name;
@@ -41,15 +43,22 @@ public class Member {
         this.email = email;
         this.password=password;
         this.role = role;
+        this.memberStatus = MemberStatus.ACTIVE;
     }
     public static Member create(String name, String email, String password, Role role) {
         return new Member(name, email, password, role);
     }
 
+    public boolean matchPassword(EncryptionService encryptionService, String password) {
+        return encryptionService.matches(password, this.password);
+    }
     public void changePassword(EncryptionService encryptionService, PasswordChangeRequestDto requestDto) {
-        if (!encryptionService.matches(requestDto.getOldPassword(), this.password)) {
+        if (!matchPassword(encryptionService, requestDto.getOldPassword())) {
             throw new BadPasswordException("비밀번호가 일치하지 않습니다.");
         }
         this.password = encryptionService.encode(requestDto.getNewPassword());
+    }
+    public void deleteMember() {
+        this.memberStatus = MemberStatus.DELETE;
     }
 }

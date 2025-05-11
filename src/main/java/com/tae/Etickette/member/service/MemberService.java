@@ -7,6 +7,7 @@ import com.tae.Etickette.member.entity.Member;
 import com.tae.Etickette.member.dto.MemberJoinRequestDto;
 import com.tae.Etickette.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,14 +19,14 @@ public class MemberService {
     private final EncryptionService encryptionService;
 
     @Transactional
-    public MemberJoinResponseDto join(MemberJoinRequestDto memberJoinRequestDto) {
+    public MemberJoinResponseDto join(MemberJoinRequestDto requestDto) {
 
-        boolean duplicated = memberRepository.findByEmail(memberJoinRequestDto.getEmail()).isPresent();
+        boolean duplicated = memberRepository.findByEmail(requestDto.getEmail()).isPresent();
         if (duplicated) {
             throw new DuplicateEmailException("이미 사용 중인 이메일입니다.");
         }
 
-        Member member = memberJoinRequestDto.toEntity(encryptionService, memberJoinRequestDto.getPassword());
+        Member member = requestDto.toEntity(encryptionService, requestDto.getPassword());
 
         Member savedMember = memberRepository.save(member);
         return MemberJoinResponseDto.builder()
@@ -45,8 +46,27 @@ public class MemberService {
         member.changePassword(encryptionService, requestDto);
     }
 
+    @Transactional
+    public void deleteMember(MemberDeleteRequestDto requestDto,String email) {
+
+        Member member = findByEmail(email);
+        //TODO 비밀번호로 회원 검증
+        boolean match = member.matchPassword(encryptionService, requestDto.getPassword());
+        if (!match) {
+            //TODO Exception 변경 예정
+            throw new RuntimeException("");
+        }
+        //TODO 토큰 삭제 -> Refresh 도입 고민
+
+        member.deleteMember();
+    }
+
     public Member findById(Long memberId) {
         return memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException("회원 정보를 찾을 수 없습니다."));
+    }
+
+    public Member findByEmail(String email) {
+        return memberRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("회원 정보를 찾을 수 없습니다."));
     }
 
 

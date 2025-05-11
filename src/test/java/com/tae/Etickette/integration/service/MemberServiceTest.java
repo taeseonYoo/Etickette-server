@@ -5,12 +5,13 @@ import com.tae.Etickette.member.dto.MemberJoinRequestDto;
 import com.tae.Etickette.member.dto.MemberJoinResponseDto;
 import com.tae.Etickette.member.dto.PasswordChangeRequestDto;
 import com.tae.Etickette.member.entity.Member;
+import com.tae.Etickette.member.entity.MemberStatus;
 import com.tae.Etickette.member.repository.MemberRepository;
 import com.tae.Etickette.member.service.BadPasswordException;
 import com.tae.Etickette.member.service.DuplicateEmailException;
+import com.tae.Etickette.member.service.MemberDeleteRequestDto;
 import com.tae.Etickette.member.service.MemberService;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,7 +87,7 @@ public class MemberServiceTest {
 
         //then
         Member findMember = memberRepository.findByEmail("USER@spring").get();
-        Assertions.assertThat(encryptionService.matches("@Change123",findMember.getPassword())).isTrue();
+        Assertions.assertThat(encryptionService.matches("@Change123", findMember.getPassword())).isTrue();
     }
 
     @Test
@@ -105,8 +106,43 @@ public class MemberServiceTest {
 
         //when
         assertThrows(BadPasswordException.class,
-                ()-> memberService.changePassword(requestDto, "USER@spring"));
+                () -> memberService.changePassword(requestDto, "USER@spring"));
 
     }
 
+    @Test
+    @DisplayName("deleteMember - 회원 삭제에 성공한다.")
+    public void 회원삭제_성공() {
+        //given
+        MemberJoinRequestDto member = MemberJoinRequestDto.builder()
+                .name("USER")
+                .email("USER@spring").password("@Abc1234")
+                .build();
+        memberService.join(member);
+
+        MemberDeleteRequestDto requestDto = MemberDeleteRequestDto.builder()
+                .password("@Abc1234").build();
+        //when
+        memberService.deleteMember(requestDto, "USER@spring");
+
+        //then
+        Member findMember = memberService.findByEmail("USER@spring");
+        Assertions.assertThat(findMember.getMemberStatus()).isEqualTo(MemberStatus.DELETE);
+    }
+
+    @Test
+    @DisplayName("deleteMember - 기존 비밀번호가 일치하지 않으면, 회원 삭제에 실패한다.")
+    public void 회원삭제_실패_비밀번호불일치() {
+        //given
+        MemberJoinRequestDto member = MemberJoinRequestDto.builder()
+                .name("USER")
+                .email("USER@spring").password("@Abc1234")
+                .build();
+        memberService.join(member);
+        MemberDeleteRequestDto requestDto = MemberDeleteRequestDto.builder()
+                .password("@Fake1234").build();
+        //when & then
+        assertThrows(RuntimeException.class,
+                () -> memberService.deleteMember(requestDto, "USER@spring"));
+    }
 }

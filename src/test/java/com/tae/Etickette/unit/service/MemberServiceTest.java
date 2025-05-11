@@ -6,12 +6,10 @@ import com.tae.Etickette.member.dto.MemberJoinRequestDto;
 import com.tae.Etickette.member.dto.MemberJoinResponseDto;
 import com.tae.Etickette.member.dto.PasswordChangeRequestDto;
 import com.tae.Etickette.member.entity.Member;
+import com.tae.Etickette.member.entity.MemberStatus;
 import com.tae.Etickette.member.entity.Role;
 import com.tae.Etickette.member.repository.MemberRepository;
-import com.tae.Etickette.member.service.BadPasswordException;
-import com.tae.Etickette.member.service.DuplicateEmailException;
-import com.tae.Etickette.member.service.MemberNotFoundException;
-import com.tae.Etickette.member.service.MemberService;
+import com.tae.Etickette.member.service.*;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -200,5 +198,60 @@ public class MemberServiceTest {
         assertThrows(MemberNotFoundException.class,
                 () -> memberService.changePassword(requestDto, "USER@spring")
         );
+    }
+
+    @Test
+    @DisplayName("deleteMember - 회원 삭제에 성공한다.")
+    public void 회원삭제_성공() {
+        //given
+        Member member = Member.create("USER", "USER@spring", "@Abc1234", Role.USER);
+
+        BDDMockito.given(mockMemberRepo.findByEmail(any())).willReturn(Optional.of(member));
+        BDDMockito.given(encryptionService.matches(any(), any())).willReturn(true);
+
+        MemberDeleteRequestDto requestDto = MemberDeleteRequestDto.builder()
+                .password("@Abc1234").build();
+        //when
+        memberService.deleteMember(requestDto, "USER@spring");
+
+        //then
+        Member findMember = memberService.findByEmail("USER@spring");
+        Assertions.assertThat(findMember.getMemberStatus()).isEqualTo(MemberStatus.DELETE);
+    }
+
+    @Test
+    @DisplayName("deleteMember - 기존 비밀번호가 일치하지 않으면, 회원 삭제에 실패한다.")
+    public void 회원삭제_실패_비밀번호불일치() {
+        //given
+        Member member = Member.create("USER", "USER@spring", "@Abc1234", Role.USER);
+
+        BDDMockito.given(mockMemberRepo.findByEmail(any())).willReturn(Optional.of(member));
+        BDDMockito.given(encryptionService.matches(any(), any())).willReturn(false);
+
+        MemberDeleteRequestDto requestDto = MemberDeleteRequestDto.builder()
+                .password("@Fake1234").build();
+        //when & then
+        assertThrows(RuntimeException.class,
+                () -> memberService.deleteMember(requestDto, "USER@spring"));
+    }
+    @Test
+    @DisplayName("deleteMember - 회원 삭제에 실패하면, 회원의 Status는 ACTIVE")
+    public void 회원삭제_실패_상태변경X() {
+        //given
+        Member member = Member.create("USER", "USER@spring", "@Abc1234", Role.USER);
+
+        BDDMockito.given(mockMemberRepo.findByEmail(any())).willReturn(Optional.of(member));
+        BDDMockito.given(encryptionService.matches(any(), any())).willReturn(false);
+
+        MemberDeleteRequestDto requestDto = MemberDeleteRequestDto.builder()
+                .password("@Abc1234").build();
+        //when & then
+        assertThrows(RuntimeException.class,
+                () -> memberService.deleteMember(requestDto, "USER@spring"));
+
+        //then
+        Member findMember = memberService.findByEmail("USER@spring");
+        Assertions.assertThat(findMember.getMemberStatus()).isEqualTo(MemberStatus.ACTIVE);
+
     }
 }
