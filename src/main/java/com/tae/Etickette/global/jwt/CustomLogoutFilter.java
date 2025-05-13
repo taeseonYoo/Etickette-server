@@ -1,6 +1,7 @@
 package com.tae.Etickette.global.jwt;
 
 import com.tae.Etickette.RefreshRepository;
+import com.tae.Etickette.global.util.CookieUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -92,9 +93,7 @@ public class CustomLogoutFilter extends GenericFilterBean {
         refreshRepository.deleteByRefresh(refresh);
 
         //Refresh 토큰 Cookie 값 0
-        Cookie cookie = new Cookie("refresh", null);
-        cookie.setMaxAge(0);
-        cookie.setPath("/");
+        Cookie cookie = CookieUtil.createCookie("refresh", null, 0);
 
         response.addCookie(cookie);
         response.setStatus(HttpServletResponse.SC_OK);

@@ -3,6 +3,7 @@ package com.tae.Etickette.global.jwt;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tae.Etickette.Refresh;
 import com.tae.Etickette.RefreshRepository;
+import com.tae.Etickette.RefreshTokenService;
 import com.tae.Etickette.global.auth.CustomUserDetails;
 import com.tae.Etickette.global.util.CookieUtil;
 import com.tae.Etickette.member.dto.LoginRequestDto;
@@ -34,13 +35,12 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
     private final JWTUtil jwtUtil;
+    private final RefreshTokenService refreshTokenService;
 
-    private final RefreshRepository refreshRepository;
-
-    public LoginFilter(AuthenticationManager authenticationManager,JWTUtil jwtUtil,RefreshRepository refreshRepository) {
+    public LoginFilter(AuthenticationManager authenticationManager,JWTUtil jwtUtil,RefreshTokenService refreshTokenService) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
-        this.refreshRepository = refreshRepository;
+        this.refreshTokenService = refreshTokenService;
     }
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -81,7 +81,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String access = jwtUtil.createJwt("access", email, role, 1000L * 60 * 10);
         String refresh = jwtUtil.createJwt("refresh", email, role, 1000L * 60 * 60 * 24);
 
-        addRefreshEntity(email, refresh, 1000L * 60 * 60 * 24);
+        refreshTokenService.saveRefresh(email, refresh, 60 * 60 * 24);
         //HTTP 인증 방식은 RFC 7235 정의에 따라 아래 인증 헤더 형태를 가져야 한다.
         response.addHeader("Authorization","Bearer " + access);
         response.addCookie(CookieUtil.createCookie("refresh",refresh,60 * 60 * 24));
@@ -94,13 +94,4 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         response.setStatus(401);
     }
 
-    private void addRefreshEntity(String username, String refresh, Long expiredMs) {
-
-        Date date = new Date(System.currentTimeMillis() + expiredMs);
-
-        Refresh refreshEntity = Refresh.create(username, refresh, date.toString());
-
-
-        refreshRepository.save(refreshEntity);
-    }
 }

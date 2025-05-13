@@ -1,6 +1,7 @@
 package com.tae.Etickette.global.config;
 
 import com.tae.Etickette.RefreshRepository;
+import com.tae.Etickette.RefreshTokenService;
 import com.tae.Etickette.global.jwt.CustomLogoutFilter;
 import com.tae.Etickette.global.jwt.JWTFilter;
 import com.tae.Etickette.global.jwt.JWTUtil;
@@ -38,13 +39,15 @@ public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final RefreshRepository refreshRepository;
     private final JWTUtil jwtUtil;
+    private final RefreshTokenService refreshTokenService;
 
-    public SecurityConfig(CustomSuccessHandler customSuccessHandler, CustomOAuth2UserService customOAuth2UserService, AuthenticationConfiguration authenticationConfiguration,RefreshRepository refreshRepository, JWTUtil jwtUtil) {
+    public SecurityConfig(CustomSuccessHandler customSuccessHandler, CustomOAuth2UserService customOAuth2UserService, AuthenticationConfiguration authenticationConfiguration, RefreshRepository refreshRepository, JWTUtil jwtUtil, RefreshTokenService refreshTokenService) {
         this.customSuccessHandler = customSuccessHandler;
         this.customOAuth2UserService = customOAuth2UserService;
         this.authenticationConfiguration = authenticationConfiguration;
         this.refreshRepository = refreshRepository;
         this.jwtUtil = jwtUtil;
+        this.refreshTokenService = refreshTokenService;
     }
 
     @Bean
@@ -116,7 +119,7 @@ public class SecurityConfig {
                 .addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
         //커스텀 로그인 필터 등록
         http
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration),jwtUtil,refreshRepository), UsernamePasswordAuthenticationFilter.class);
+                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration),jwtUtil,refreshTokenService), UsernamePasswordAuthenticationFilter.class);
         //세션 설정
         http
                 .sessionManagement((session) -> session

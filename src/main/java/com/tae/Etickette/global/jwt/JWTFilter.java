@@ -14,8 +14,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
-//요청에 대해 한 번만 동작하는 OncePerRequestFilter
+/**
+ * 권한이 필요한 요청에 대하여, Access토큰을 요청 헤더에 첨부한다.
+ * JWTFilter에서 Access토큰을 검증한다.
+ */
 public class JWTFilter extends OncePerRequestFilter {
     private final JWTUtil jwtUtil;
 
@@ -26,39 +30,35 @@ public class JWTFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        String token = null;
-        token = request.getHeader("Authorization");
-
-        // token null
-        if (token == null) {
+        //액세스 코인인 Authrorization에 담긴 토큰을 꺼냄
+        String access = request.getHeader("Authorization");
+        if (access == null) {
             filterChain.doFilter(request, response);
             return;
         }
-        // access token expired
-        try{
-            jwtUtil.isExpired(token);
-        } catch (ExpiredJwtException e){
+        try {
+            jwtUtil.isExpired(access);
+        } catch (ExpiredJwtException e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
+        String category = jwtUtil.getCategory(access);
 
-        //토큰에서 email role 획득
-        String email = jwtUtil.getEmail(token);
-        Role role = Role.valueOf(jwtUtil.getRole(token));
+        if (!category.equals("access")) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
 
-        Authentication auth = null;
-
+        String email = jwtUtil.getEmail(access);
+        Role role = Role.valueOf(jwtUtil.getRole(access));
 
         Member member = Member.create("tempuser", email, "temppassword", role);
         CustomUserDetails customUserDetails = new CustomUserDetails(member);
-        auth = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
 
-
-        SecurityContextHolder.getContext().setAuthentication(auth);
+        Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authToken);
 
         filterChain.doFilter(request, response);
-
-
     }
 }
