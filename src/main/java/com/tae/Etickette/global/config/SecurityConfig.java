@@ -1,5 +1,7 @@
 package com.tae.Etickette.global.config;
 
+import com.tae.Etickette.RefreshRepository;
+import com.tae.Etickette.global.jwt.CustomLogoutFilter;
 import com.tae.Etickette.global.jwt.JWTFilter;
 import com.tae.Etickette.global.jwt.JWTUtil;
 import com.tae.Etickette.global.jwt.LoginFilter;
@@ -17,6 +19,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
@@ -33,12 +36,14 @@ public class SecurityConfig {
     private CustomSuccessHandler customSuccessHandler;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final RefreshRepository refreshRepository;
     private final JWTUtil jwtUtil;
 
-    public SecurityConfig(CustomSuccessHandler customSuccessHandler, CustomOAuth2UserService customOAuth2UserService, AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil) {
+    public SecurityConfig(CustomSuccessHandler customSuccessHandler, CustomOAuth2UserService customOAuth2UserService, AuthenticationConfiguration authenticationConfiguration,RefreshRepository refreshRepository, JWTUtil jwtUtil) {
         this.customSuccessHandler = customSuccessHandler;
         this.customOAuth2UserService = customOAuth2UserService;
         this.authenticationConfiguration = authenticationConfiguration;
+        this.refreshRepository = refreshRepository;
         this.jwtUtil = jwtUtil;
     }
 
@@ -104,17 +109,14 @@ public class SecurityConfig {
                         .requestMatchers("/admin").hasRole(Role.ADMIN.value())
                         .anyRequest().authenticated()
                 );
-        //로그 아웃 설정.
+        //custom logout filter 등록
         http
-                .logout(logout->logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/")
-                        .invalidateHttpSession(true));
+                .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshRepository), LogoutFilter.class);
         http
                 .addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
         //커스텀 로그인 필터 등록
         http
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration),jwtUtil), UsernamePasswordAuthenticationFilter.class);
+                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration),jwtUtil,refreshRepository), UsernamePasswordAuthenticationFilter.class);
         //세션 설정
         http
                 .sessionManagement((session) -> session

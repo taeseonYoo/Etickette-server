@@ -1,5 +1,6 @@
 package com.tae.Etickette.global.jwt;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -17,24 +18,29 @@ public class JWTUtil {
         this.secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
     }
 
+    public Claims getPayload(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload();
+    }
     //암호화 된 데이터를 verifyWith로 검증
     public String getEmail(String token) {
-        return Jwts.parser().verifyWith(secretKey).build()
-                .parseSignedClaims(token).getPayload().get("email", String.class);
+        return getPayload(token).get("email", String.class);
     }
 
     public String getRole(String token) {
-        return Jwts.parser().verifyWith(secretKey).build()
-                .parseSignedClaims(token).getPayload().get("role", String.class);
+        return getPayload(token).get("role", String.class);
+    }
+
+    public String getCategory(String token) {
+        return getPayload(token).get("category", String.class);
     }
     //현재 시간 값과 비교하여, 만료되었는 지 확인한다.
     public Boolean isExpired(String token) {
-        return Jwts.parser().verifyWith(secretKey).build()
-                .parseSignedClaims(token).getPayload().getExpiration().before(new Date());
+        return getPayload(token).getExpiration().before(new Date());
     }
     //토큰 생성
-    public String createJwt(String email, String role,Long expiredMs) {
+    public String createJwt(String category,String email, String role,Long expiredMs) {
         return Jwts.builder()
+                .claim("category",category)
                 .claim("email", email)
                 .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis()))
