@@ -54,7 +54,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             Member member = Member.create(oAuth2Response.getName(), email, password, Role.USER);
             memberRepository.save(member);
 
-            Oauth2UserDto oauth2UserDto = new Oauth2UserDto();
+            OAuth2UserDto oauth2UserDto = new OAuth2UserDto();
             oauth2UserDto.setEmail(email);
             oauth2UserDto.setName(oAuth2Response.getName());
             oauth2UserDto.setRole(Role.USER);
@@ -64,7 +64,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             Member member = findMember.get();
             member.updateName(oAuth2Response.getName());
 
-            Oauth2UserDto oauth2UserDto = new Oauth2UserDto();
+            OAuth2UserDto oauth2UserDto = new OAuth2UserDto();
             oauth2UserDto.setEmail(email);
             oauth2UserDto.setName(oAuth2Response.getName());
             oauth2UserDto.setRole(member.getRole());

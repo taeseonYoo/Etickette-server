@@ -14,7 +14,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 /**
  * 권한이 필요한 요청에 대하여, Access토큰을 요청 헤더에 첨부한다.

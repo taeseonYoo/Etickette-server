@@ -1,6 +1,6 @@
 package com.tae.Etickette.global.oauth;
 
-import com.tae.Etickette.global.refresh.RefreshTokenService;
+import com.tae.Etickette.refresh.application.RefreshTokenService;
 import com.tae.Etickette.global.util.CookieUtil;
 import com.tae.Etickette.global.jwt.JWTUtil;
 import jakarta.servlet.ServletException;

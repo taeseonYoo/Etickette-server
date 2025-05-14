@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Oauth2UserDto {
+public class OAuth2UserDto {
     private String name;
     private String email;
     private Role role;

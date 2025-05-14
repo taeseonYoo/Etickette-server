@@ -1,4 +1,4 @@
-package com.tae.Etickette.global.refresh;
+package com.tae.Etickette.refresh.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

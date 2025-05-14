@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-public class Oauth2JwtHeaderController {
-    private final Oauth2JwtHeaderService oauth2JwtHeaderService;
+public class OAuth2JwtHeaderController {
+    private final OAuth2JwtHeaderService oauth2JwtHeaderService;
 
     @PostMapping("/oauth2-jwt-header")
     public void oauth2JwtHeader(HttpServletRequest request, HttpServletResponse response) {

@@ -1,5 +1,6 @@
-package com.tae.Etickette.global.refresh;
+package com.tae.Etickette.refresh.presentation;
 
+import com.tae.Etickette.refresh.application.ReissueService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;

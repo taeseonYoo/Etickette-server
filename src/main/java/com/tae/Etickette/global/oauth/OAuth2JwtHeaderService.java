@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Service;
 
 @Service
-public class Oauth2JwtHeaderService {
+public class OAuth2JwtHeaderService {
     public void oauth2JwtHeaderSet(HttpServletRequest request, HttpServletResponse response) {
         Cookie[] cookies = request.getCookies();
         String authorization = null;

@@ -1,7 +1,7 @@
 package com.tae.Etickette.global.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tae.Etickette.global.refresh.RefreshTokenService;
+import com.tae.Etickette.refresh.application.RefreshTokenService;
 import com.tae.Etickette.global.auth.CustomUserDetails;
 import com.tae.Etickette.global.util.CookieUtil;
 import com.tae.Etickette.member.dto.LoginRequestDto;

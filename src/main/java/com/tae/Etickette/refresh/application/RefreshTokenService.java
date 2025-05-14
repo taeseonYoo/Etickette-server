@@ -1,5 +1,7 @@
-package com.tae.Etickette.global.refresh;
+package com.tae.Etickette.refresh.application;
 
+import com.tae.Etickette.refresh.domain.Refresh;
+import com.tae.Etickette.refresh.infra.RefreshRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

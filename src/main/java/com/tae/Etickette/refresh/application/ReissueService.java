@@ -1,9 +1,9 @@
-package com.tae.Etickette.global.refresh;
+package com.tae.Etickette.refresh.application;
 
 import com.tae.Etickette.global.jwt.JWTUtil;
-import com.tae.Etickette.global.refresh.RefreshRepository;
-import com.tae.Etickette.global.refresh.RefreshTokenService;
 import com.tae.Etickette.global.util.CookieUtil;
+import com.tae.Etickette.refresh.application.RefreshTokenService;
+import com.tae.Etickette.refresh.infra.RefreshRepository;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

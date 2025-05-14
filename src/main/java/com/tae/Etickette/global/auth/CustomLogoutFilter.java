@@ -1,6 +1,7 @@
-package com.tae.Etickette.global.jwt;
+package com.tae.Etickette.global.auth;
 
-import com.tae.Etickette.global.refresh.RefreshRepository;
+import com.tae.Etickette.global.jwt.JWTUtil;
+import com.tae.Etickette.refresh.infra.RefreshRepository;
 import com.tae.Etickette.global.util.CookieUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
