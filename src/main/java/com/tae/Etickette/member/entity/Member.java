@@ -1,6 +1,6 @@
 package com.tae.Etickette.member.entity;
 
-import com.tae.Etickette.EncryptionService;
+import com.tae.Etickette.global.auth.EncryptionService;
 import com.tae.Etickette.member.dto.PasswordChangeRequestDto;
 import com.tae.Etickette.member.service.BadPasswordException;
 import jakarta.persistence.*;

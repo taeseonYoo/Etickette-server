@@ -1,7 +1,7 @@
 package com.tae.Etickette.unit.service;
 
-import com.tae.Etickette.EncryptionService;
-import com.tae.Etickette.EncryptionServiceImpl;
+import com.tae.Etickette.global.auth.EncryptionService;
+import com.tae.Etickette.global.auth.EncryptionServiceImpl;
 import com.tae.Etickette.member.dto.MemberJoinRequestDto;
 import com.tae.Etickette.member.dto.MemberJoinResponseDto;
 import com.tae.Etickette.member.dto.PasswordChangeRequestDto;
@@ -16,7 +16,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
 import org.mockito.Mockito;
-import org.springframework.security.core.Authentication;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;

@@ -1,6 +1,6 @@
 package com.tae.Etickette.integration.service;
 
-import com.tae.Etickette.EncryptionService;
+import com.tae.Etickette.global.auth.EncryptionService;
 import com.tae.Etickette.member.dto.MemberJoinRequestDto;
 import com.tae.Etickette.member.dto.MemberJoinResponseDto;
 import com.tae.Etickette.member.dto.PasswordChangeRequestDto;

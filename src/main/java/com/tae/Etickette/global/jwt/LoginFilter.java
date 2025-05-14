@@ -1,9 +1,7 @@
 package com.tae.Etickette.global.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tae.Etickette.Refresh;
-import com.tae.Etickette.RefreshRepository;
-import com.tae.Etickette.RefreshTokenService;
+import com.tae.Etickette.global.refresh.RefreshTokenService;
 import com.tae.Etickette.global.auth.CustomUserDetails;
 import com.tae.Etickette.global.util.CookieUtil;
 import com.tae.Etickette.member.dto.LoginRequestDto;
@@ -23,7 +21,6 @@ import org.springframework.util.StreamUtils;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Iterator;
 
 /**

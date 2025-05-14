@@ -1,8 +1,8 @@
 package com.tae.Etickette.unit.service;
 
 
-import com.tae.Etickette.EncryptionService;
-import com.tae.Etickette.EncryptionServiceImpl;
+import com.tae.Etickette.global.auth.EncryptionService;
+import com.tae.Etickette.global.auth.EncryptionServiceImpl;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

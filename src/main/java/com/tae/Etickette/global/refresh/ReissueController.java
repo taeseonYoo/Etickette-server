@@ -1,4 +1,4 @@
-package com.tae.Etickette;
+package com.tae.Etickette.global.refresh;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

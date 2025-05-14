@@ -1,4 +1,4 @@
-package com.tae.Etickette;
+package com.tae.Etickette.global.refresh;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
