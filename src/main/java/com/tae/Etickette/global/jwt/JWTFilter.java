@@ -35,6 +35,15 @@ public class JWTFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
+
+        // [Bearer + jwt] 에서 jwt 토큰을 분리한다.
+        access = access.split(" ")[1];
+
+        if (access.isBlank()) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         try {
             jwtUtil.isExpired(access);
         } catch (ExpiredJwtException e) {

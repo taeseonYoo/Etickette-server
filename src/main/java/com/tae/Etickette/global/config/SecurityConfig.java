@@ -10,6 +10,7 @@ import com.tae.Etickette.member.entity.Role;
 import com.tae.Etickette.global.oauth.CustomOAuth2UserService;
 import com.tae.Etickette.global.oauth.CustomSuccessHandler;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -34,7 +35,7 @@ import java.util.Collections;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private CustomSuccessHandler customSuccessHandler;
+    private final CustomSuccessHandler customSuccessHandler;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final AuthenticationConfiguration authenticationConfiguration;
     private final RefreshRepository refreshRepository;
@@ -86,6 +87,8 @@ public class SecurityConfig {
                                 return configuration;
                             }
                         }));
+        http
+                .logout((auth) -> auth.logoutSuccessUrl("/").permitAll());
         //jwt를 통한 STATELESS 방식을 사용하므로, csrf 설정은 비활성화 한다.
         http
                 .csrf((auth) -> auth.disable());
@@ -108,10 +111,15 @@ public class SecurityConfig {
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/", "/login", "/register","/oauth2-jwt-header").permitAll()
+                        .requestMatchers("/", "/login","/logout", "/register","/oauth2-jwt-header","/reissue").permitAll()
                         .requestMatchers("/admin").hasRole(Role.ADMIN.value())
                         .anyRequest().authenticated()
                 );
+        //인가되지 않은 사용자에 대한 exception -> 프론트엔드 응답
+        http.exceptionHandling((exception) ->
+                exception.authenticationEntryPoint(((request, response, authException) -> {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                })));
         //custom logout filter 등록
         http
                 .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshRepository), LogoutFilter.class);

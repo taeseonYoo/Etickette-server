@@ -10,24 +10,24 @@ import org.springframework.stereotype.Service;
 public class OAuth2JwtHeaderService {
     public void oauth2JwtHeaderSet(HttpServletRequest request, HttpServletResponse response) {
         Cookie[] cookies = request.getCookies();
-        String authorization = null;
+        String access = null;
 
         if(cookies != null){
             for (Cookie cookie : cookies) {
                 if(cookie.getName().equals("Authorization")){
-                    authorization = cookie.getValue();
+                    access = cookie.getValue();
                 }
             }
         }
 
-        if(authorization == null){
+        if(access == null){
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
-        // 클라이언트의 authorization 토큰 쿠키를 만료한다.
+        // 클라이언트의 access 토큰 쿠키를 만료한다.
         response.addCookie(CookieUtil.createCookie("Authorization", null, 0));
-        response.addHeader("Authorization", "Bearer " + authorization);
+        response.addHeader("Authorization", "Bearer " + access);
         response.setStatus(HttpServletResponse.SC_OK);
     }
 }
