@@ -1,7 +1,8 @@
 package com.tae.Etickette.global.auth;
 
 import com.tae.Etickette.global.jwt.JWTUtil;
-import com.tae.Etickette.refresh.infra.RefreshRepository;
+import com.tae.Etickette.refresh.application.RefreshTokenService;
+import com.tae.Etickette.refresh.infra.RefreshTokenRepository;
 import com.tae.Etickette.global.util.CookieUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
@@ -17,11 +18,11 @@ import java.io.IOException;
 
 public class CustomLogoutFilter extends GenericFilterBean {
     private final JWTUtil jwtUtil;
-    private final RefreshRepository refreshRepository;
+    private final RefreshTokenService refreshTokenService;
 
-    public CustomLogoutFilter(JWTUtil jwtUtil, RefreshRepository refreshRepository) {
+    public CustomLogoutFilter(JWTUtil jwtUtil, RefreshTokenService refreshTokenService) {
         this.jwtUtil = jwtUtil;
-        this.refreshRepository = refreshRepository;
+        this.refreshTokenService = refreshTokenService;
     }
 
     @Override
@@ -46,13 +47,8 @@ public class CustomLogoutFilter extends GenericFilterBean {
         }
 
         //get refresh token
-        String refresh = null;
-        Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("refresh")) {
-                refresh = cookie.getValue();
-            }
-        }
+        String refresh = CookieUtil
+                .getCookieValue(request.getCookies(), "refresh");
 
         //refresh null check
         if (refresh == null) {
@@ -61,12 +57,12 @@ public class CustomLogoutFilter extends GenericFilterBean {
             return;
         }
 
-        //expired check
+        //expired 체크
         try {
             jwtUtil.isExpired(refresh);
         } catch (ExpiredJwtException e) {
 
-            //response status code
+            //TODO 예외 핸들러 학습 후, 예외를 던지는 방식으로 변경
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
@@ -75,23 +71,24 @@ public class CustomLogoutFilter extends GenericFilterBean {
         String category = jwtUtil.getCategory(refresh);
         if (!category.equals("refresh")) {
 
-            //response status code
+            //TODO 예외 핸들러 학습 후, 예외를 던지는 방식으로 변경
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
         //DB에 저장되어 있는지 확인
-        Boolean isExist = refreshRepository.existsByRefresh(refresh);
+        Boolean isExist = refreshTokenService.existsByRefresh(refresh);
         if (!isExist) {
 
-            //response status code
+            //TODO 예외 핸들러 학습 후, 예외를 던지는 방식으로 변경
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
-        //로그아웃 진행
-        //Refresh 토큰 DB에서 제거
-        refreshRepository.deleteByRefresh(refresh);
+        //로그아웃을 진행한다.
+
+        // 1. Refresh 토큰을 DB에서 제거
+        refreshTokenService.deleteByRefresh(refresh);
 
         //Refresh 토큰 Cookie 값 0
         Cookie cookie = CookieUtil.createCookie("refresh", null, 0);

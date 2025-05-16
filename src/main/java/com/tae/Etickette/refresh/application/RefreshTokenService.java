@@ -1,24 +1,36 @@
 package com.tae.Etickette.refresh.application;
 
-import com.tae.Etickette.refresh.domain.Refresh;
-import com.tae.Etickette.refresh.infra.RefreshRepository;
+import com.tae.Etickette.refresh.domain.RefreshToken;
+import com.tae.Etickette.refresh.infra.RefreshTokenRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
 @Service
+@Transactional(readOnly = true)
 public class RefreshTokenService {
-    private final RefreshRepository refreshRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
-    public RefreshTokenService(RefreshRepository refreshRepository) {
-        this.refreshRepository = refreshRepository;
+    public RefreshTokenService(RefreshTokenRepository refreshTokenRepository) {
+        this.refreshTokenRepository = refreshTokenRepository;
     }
 
     @Transactional
     public void saveRefresh(String email, String refresh, Integer expiredMs) {
-        Refresh refreshEntity = Refresh.create(email, refresh, new Date(System.currentTimeMillis() + expiredMs * 1000L).toString());
+        RefreshToken refreshToken = RefreshToken.create(email, refresh,
+                new Date(System.currentTimeMillis() + expiredMs * 1000L).toString());
 
-        refreshRepository.save(refreshEntity);
+        refreshTokenRepository.save(refreshToken);
     }
+
+    @Transactional
+    public void deleteByRefresh(String refresh) {
+        refreshTokenRepository.deleteByRefresh(refresh);
+    }
+
+    public Boolean existsByRefresh(String refresh){
+        return refreshTokenRepository.existsByRefresh(refresh);
+    }
+
 }

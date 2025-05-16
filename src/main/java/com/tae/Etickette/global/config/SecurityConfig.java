@@ -1,6 +1,6 @@
 package com.tae.Etickette.global.config;
 
-import com.tae.Etickette.refresh.infra.RefreshRepository;
+import com.tae.Etickette.refresh.infra.RefreshTokenRepository;
 import com.tae.Etickette.refresh.application.RefreshTokenService;
 import com.tae.Etickette.global.auth.CustomLogoutFilter;
 import com.tae.Etickette.global.jwt.JWTFilter;
@@ -11,6 +11,7 @@ import com.tae.Etickette.global.oauth.CustomOAuth2UserService;
 import com.tae.Etickette.global.oauth.CustomSuccessHandler;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,23 +34,15 @@ import java.util.Collections;
  */
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final CustomSuccessHandler customSuccessHandler;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final AuthenticationConfiguration authenticationConfiguration;
-    private final RefreshRepository refreshRepository;
     private final JWTUtil jwtUtil;
     private final RefreshTokenService refreshTokenService;
 
-    public SecurityConfig(CustomSuccessHandler customSuccessHandler, CustomOAuth2UserService customOAuth2UserService, AuthenticationConfiguration authenticationConfiguration, RefreshRepository refreshRepository, JWTUtil jwtUtil, RefreshTokenService refreshTokenService) {
-        this.customSuccessHandler = customSuccessHandler;
-        this.customOAuth2UserService = customOAuth2UserService;
-        this.authenticationConfiguration = authenticationConfiguration;
-        this.refreshRepository = refreshRepository;
-        this.jwtUtil = jwtUtil;
-        this.refreshTokenService = refreshTokenService;
-    }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -81,7 +74,6 @@ public class SecurityConfig {
                                 configuration.setAllowCredentials(true);
                                 configuration.setAllowedHeaders(Collections.singletonList("*"));
                                 configuration.setMaxAge(3600L);
-
                                 configuration.setExposedHeaders(Collections.singletonList("Set-Cookie"));
                                 configuration.setExposedHeaders(Collections.singletonList("Authorization"));
                                 return configuration;
@@ -122,7 +114,7 @@ public class SecurityConfig {
                 })));
         //custom logout filter 등록
         http
-                .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshRepository), LogoutFilter.class);
+                .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshTokenService), LogoutFilter.class);
         http
                 .addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
         //커스텀 로그인 필터 등록

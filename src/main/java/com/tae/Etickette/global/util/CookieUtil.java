@@ -10,4 +10,13 @@ public class CookieUtil {
         cookie.setMaxAge(expired);
         return cookie;
     }
+
+    public static String getCookieValue(Cookie[] cookies, String name) {
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals(name)) {
+                return cookie.getValue();
+            }
+        }
+        return null;
+    }
 }

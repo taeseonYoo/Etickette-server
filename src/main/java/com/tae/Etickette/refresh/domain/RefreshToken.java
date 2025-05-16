@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Refresh {
+public class RefreshToken {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,13 +19,13 @@ public class Refresh {
     private String refresh;
     private String expiration;
 
-    public Refresh(String email, String refresh, String expiration) {
+    public RefreshToken(String email, String refresh, String expiration) {
         this.email = email;
         this.refresh = refresh;
         this.expiration = expiration;
     }
 
-    public static Refresh create(String email, String refresh, String expiration) {
-        return new Refresh(email, refresh, expiration);
+    public static RefreshToken create(String email, String refresh, String expiration) {
+        return new RefreshToken(email, refresh, expiration);
     }
 }

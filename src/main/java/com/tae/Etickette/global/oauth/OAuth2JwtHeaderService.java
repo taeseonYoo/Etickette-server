@@ -13,11 +13,7 @@ public class OAuth2JwtHeaderService {
         String access = null;
 
         if(cookies != null){
-            for (Cookie cookie : cookies) {
-                if(cookie.getName().equals("Authorization")){
-                    access = cookie.getValue();
-                }
-            }
+            access = CookieUtil.getCookieValue(cookies, "Authorization");
         }
 
         if(access == null){

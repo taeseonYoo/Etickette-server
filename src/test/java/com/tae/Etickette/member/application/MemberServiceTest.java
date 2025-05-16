@@ -1,4 +1,4 @@
-package com.tae.Etickette.unit.service;
+package com.tae.Etickette.member.application;
 
 import com.tae.Etickette.global.auth.EncryptionService;
 import com.tae.Etickette.global.auth.EncryptionServiceImpl;

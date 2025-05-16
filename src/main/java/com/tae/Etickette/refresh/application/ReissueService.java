@@ -2,8 +2,7 @@ package com.tae.Etickette.refresh.application;
 
 import com.tae.Etickette.global.jwt.JWTUtil;
 import com.tae.Etickette.global.util.CookieUtil;
-import com.tae.Etickette.refresh.application.RefreshTokenService;
-import com.tae.Etickette.refresh.infra.RefreshRepository;
+import com.tae.Etickette.refresh.infra.RefreshTokenRepository;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,12 +14,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class ReissueService {
     private final JWTUtil jwtUtil;
-    private final RefreshRepository refreshRepository;
     private final RefreshTokenService refreshTokenService;
 
-    public ReissueService(JWTUtil jwtUtil, RefreshRepository refreshRepository, RefreshTokenService refreshTokenService) {
+    public ReissueService(JWTUtil jwtUtil, RefreshTokenService refreshTokenService) {
         this.jwtUtil = jwtUtil;
-        this.refreshRepository = refreshRepository;
         this.refreshTokenService = refreshTokenService;
     }
 
@@ -55,7 +52,7 @@ public class ReissueService {
         }
 
         // refresh DB조회
-        Boolean isExist = refreshRepository.existsByRefresh(refresh);
+        Boolean isExist = refreshTokenService.existsByRefresh(refresh);
 
         // DB에 없거나, 블랙리스트 처리된 리프레시 토큰
         if (!isExist) {
@@ -70,7 +67,7 @@ public class ReissueService {
         String newRefresh = jwtUtil.createJwt("refresh", email, role, 1000L * 60 * 60 * 24);
 
         //Refresh 토큰 저장 DB에 기존의 Refresh 토큰 삭제 후 새 Refresh 토큰 저장
-        refreshRepository.deleteByRefresh(refresh);
+        refreshTokenService.deleteByRefresh(refresh);
         refreshTokenService.saveRefresh(email, newRefresh, 60 * 60 * 24);
 
         //response
