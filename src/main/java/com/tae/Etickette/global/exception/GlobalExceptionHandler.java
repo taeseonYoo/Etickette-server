@@ -16,6 +16,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<String> handle(RuntimeException e) {
+        log.error("RuntimeException : {}", e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<String> handle(MethodArgumentNotValidException e) {
         log.error("MethodArgumentNotValidException : {}", e.getMessage());

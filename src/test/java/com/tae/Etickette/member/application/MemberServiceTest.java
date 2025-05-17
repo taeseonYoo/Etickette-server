@@ -16,6 +16,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
 import org.mockito.Mockito;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
@@ -75,7 +76,7 @@ public class MemberServiceTest {
                 .willReturn(Optional.of(member));
 
         //when
-        assertThrows(DuplicateEmailException.class,
+        assertThrows(DuplicateKeyException.class,
                 () -> memberService.join(requestDto));
     }
     @Test

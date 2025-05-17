@@ -64,6 +64,7 @@ public class JWTFilter extends OncePerRequestFilter {
         Member member = Member.create("tempuser", email, "temppassword", role);
         CustomUserDetails customUserDetails = new CustomUserDetails(member);
 
+        //인증 정보를 담는다. email과 role이 담겨있다.
         Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authToken);
 

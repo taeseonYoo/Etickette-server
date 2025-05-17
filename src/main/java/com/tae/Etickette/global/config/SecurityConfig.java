@@ -1,6 +1,5 @@
 package com.tae.Etickette.global.config;
 
-import com.tae.Etickette.refresh.infra.RefreshTokenRepository;
 import com.tae.Etickette.refresh.application.RefreshTokenService;
 import com.tae.Etickette.global.auth.CustomLogoutFilter;
 import com.tae.Etickette.global.jwt.JWTFilter;
@@ -103,7 +102,7 @@ public class SecurityConfig {
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/", "/login","/logout", "/register","/oauth2-jwt-header","/reissue").permitAll()
+                        .requestMatchers("/", "/login","/logout", "/members/join","/oauth2-jwt-header","/reissue").permitAll()
                         .requestMatchers("/admin").hasRole(Role.ADMIN.value())
                         .anyRequest().authenticated()
                 );
@@ -119,7 +118,7 @@ public class SecurityConfig {
                 .addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
         //커스텀 로그인 필터 등록
         http
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration),jwtUtil,refreshTokenService), UsernamePasswordAuthenticationFilter.class);
+                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshTokenService), UsernamePasswordAuthenticationFilter.class);
         //세션 설정
         http
                 .sessionManagement((session) -> session

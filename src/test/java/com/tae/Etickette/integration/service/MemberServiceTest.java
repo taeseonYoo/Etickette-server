@@ -8,7 +8,6 @@ import com.tae.Etickette.member.entity.Member;
 import com.tae.Etickette.member.entity.MemberStatus;
 import com.tae.Etickette.member.repository.MemberRepository;
 import com.tae.Etickette.member.service.BadPasswordException;
-import com.tae.Etickette.member.service.DuplicateEmailException;
 import com.tae.Etickette.member.service.MemberDeleteRequestDto;
 import com.tae.Etickette.member.service.MemberService;
 import org.assertj.core.api.Assertions;
@@ -16,6 +15,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -64,7 +64,7 @@ public class MemberServiceTest {
                 .build();
 
         //then
-        assertThrows(DuplicateEmailException.class,
+        assertThrows(DuplicateKeyException.class,
                 () -> memberService.join(member2));
     }
 

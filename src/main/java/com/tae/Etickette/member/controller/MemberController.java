@@ -3,38 +3,48 @@ package com.tae.Etickette.member.controller;
 import com.tae.Etickette.member.dto.MemberJoinRequestDto;
 import com.tae.Etickette.member.dto.MemberJoinResponseDto;
 import com.tae.Etickette.member.dto.PasswordChangeRequestDto;
+import com.tae.Etickette.member.dto.ProfileResponseDto;
+import com.tae.Etickette.member.service.MemberDeleteRequestDto;
 import com.tae.Etickette.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/members")
 public class MemberController {
 
     private final MemberService memberService;
 
-    @PostMapping("/register")
-    public ResponseEntity<?> join(@Valid @RequestBody MemberJoinRequestDto request) {
-        /**
-         * TODO GLOBAL EXCEPTION HANDLER
-         */
-        MemberJoinResponseDto responseDto = memberService.join(request);
+    @GetMapping("")
+    public ResponseEntity<ProfileResponseDto> profile(Authentication authentication) {
+        return new ResponseEntity<>(memberService.getProfile(authentication.getName()), HttpStatus.OK);
+    }
+
+    @PostMapping("/join")
+    public ResponseEntity<?> join(@Valid @RequestBody MemberJoinRequestDto requestDto) {
+
+        MemberJoinResponseDto responseDto = memberService.join(requestDto);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<?> update(PasswordChangeRequestDto passwordChangeRequestDto, Authentication authentication) {
+    @PutMapping("")
+    public ResponseEntity<Void> update(@Valid @RequestBody PasswordChangeRequestDto requestDto,
+                                       Authentication authentication) {
 
-        memberService.changePassword(passwordChangeRequestDto, authentication.getName());
-
-        return null;
+        memberService.changePassword(requestDto, authentication.getName());
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @DeleteMapping("")
+    public ResponseEntity<Void> delete(@Valid @RequestBody MemberDeleteRequestDto memberDeleteRequestDto, Authentication authentication) {
+
+        memberService.deleteMember(memberDeleteRequestDto, authentication.getName());
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

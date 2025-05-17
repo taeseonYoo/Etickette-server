@@ -3,10 +3,12 @@ package com.tae.Etickette.member.service;
 import com.tae.Etickette.global.auth.EncryptionService;
 import com.tae.Etickette.member.dto.MemberJoinResponseDto;
 import com.tae.Etickette.member.dto.PasswordChangeRequestDto;
+import com.tae.Etickette.member.dto.ProfileResponseDto;
 import com.tae.Etickette.member.entity.Member;
 import com.tae.Etickette.member.dto.MemberJoinRequestDto;
 import com.tae.Etickette.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +25,7 @@ public class MemberService {
 
         boolean duplicated = memberRepository.findByEmail(requestDto.getEmail()).isPresent();
         if (duplicated) {
-            throw new DuplicateEmailException("이미 사용 중인 이메일입니다.");
+            throw new DuplicateKeyException("이미 사용 중인 이메일입니다.");
         }
 
         Member member = requestDto.toEntity(encryptionService, requestDto.getPassword());
@@ -59,6 +61,11 @@ public class MemberService {
         //TODO 토큰 삭제 -> Refresh 도입 고민
 
         member.deleteMember();
+    }
+
+    public ProfileResponseDto getProfile(String email) {
+        Member member = findByEmail(email);
+        return ProfileResponseDto.builder().name(member.getName()).email(member.getEmail()).build();
     }
 
     public Member findById(Long memberId) {
