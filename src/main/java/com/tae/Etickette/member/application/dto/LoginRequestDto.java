@@ -1,4 +1,4 @@
-package com.tae.Etickette.member.dto;
+package com.tae.Etickette.member.application.dto;
 
 import lombok.Getter;
 import lombok.Setter;

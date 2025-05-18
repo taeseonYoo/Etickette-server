@@ -1,4 +1,4 @@
-package com.tae.Etickette.member.service;
+package com.tae.Etickette.member;
 
 public class MemberNotFoundException extends RuntimeException {
     public MemberNotFoundException() {

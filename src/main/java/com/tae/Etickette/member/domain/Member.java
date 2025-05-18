@@ -1,8 +1,7 @@
-package com.tae.Etickette.member.entity;
+package com.tae.Etickette.member.domain;
 
-import com.tae.Etickette.global.auth.EncryptionService;
-import com.tae.Etickette.member.dto.PasswordChangeRequestDto;
-import com.tae.Etickette.member.service.BadPasswordException;
+import com.tae.Etickette.member.application.dto.PasswordChangeRequestDto;
+import com.tae.Etickette.member.BadPasswordException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

@@ -1,8 +1,8 @@
 package com.tae.Etickette.integration.repository;
 
-import com.tae.Etickette.member.entity.Member;
-import com.tae.Etickette.member.entity.Role;
-import com.tae.Etickette.member.repository.MemberRepository;
+import com.tae.Etickette.member.domain.Member;
+import com.tae.Etickette.member.domain.Role;
+import com.tae.Etickette.member.infra.MemberRepository;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

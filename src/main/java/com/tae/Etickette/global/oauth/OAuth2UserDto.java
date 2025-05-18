@@ -1,6 +1,6 @@
 package com.tae.Etickette.global.oauth;
 
-import com.tae.Etickette.member.entity.Role;
+import com.tae.Etickette.member.domain.Role;
 import lombok.Getter;
 import lombok.Setter;
 

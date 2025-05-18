@@ -1,6 +1,5 @@
 package com.tae.Etickette.global.jwt;
 
-import com.tae.Etickette.member.entity.Role;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,15 +1,17 @@
 package com.tae.Etickette.member.application;
 
-import com.tae.Etickette.global.auth.EncryptionService;
-import com.tae.Etickette.global.auth.EncryptionServiceImpl;
-import com.tae.Etickette.member.dto.MemberJoinRequestDto;
-import com.tae.Etickette.member.dto.MemberJoinResponseDto;
-import com.tae.Etickette.member.dto.PasswordChangeRequestDto;
-import com.tae.Etickette.member.entity.Member;
-import com.tae.Etickette.member.entity.MemberStatus;
-import com.tae.Etickette.member.entity.Role;
-import com.tae.Etickette.member.repository.MemberRepository;
-import com.tae.Etickette.member.service.*;
+import com.tae.Etickette.member.domain.EncryptionService;
+import com.tae.Etickette.member.infra.EncryptionServiceImpl;
+import com.tae.Etickette.member.BadPasswordException;
+import com.tae.Etickette.member.MemberNotFoundException;
+import com.tae.Etickette.member.application.dto.MemberDeleteRequestDto;
+import com.tae.Etickette.member.application.dto.MemberJoinRequestDto;
+import com.tae.Etickette.member.application.dto.MemberJoinResponseDto;
+import com.tae.Etickette.member.application.dto.PasswordChangeRequestDto;
+import com.tae.Etickette.member.domain.Member;
+import com.tae.Etickette.member.domain.MemberStatus;
+import com.tae.Etickette.member.domain.Role;
+import com.tae.Etickette.member.infra.MemberRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

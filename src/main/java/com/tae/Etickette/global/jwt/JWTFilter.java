@@ -1,8 +1,8 @@
 package com.tae.Etickette.global.jwt;
 
 import com.tae.Etickette.global.auth.CustomUserDetails;
-import com.tae.Etickette.member.entity.Member;
-import com.tae.Etickette.member.entity.Role;
+import com.tae.Etickette.member.domain.Member;
+import com.tae.Etickette.member.domain.Role;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

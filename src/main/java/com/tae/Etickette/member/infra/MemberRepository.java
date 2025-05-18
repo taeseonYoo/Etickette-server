@@ -1,6 +1,6 @@
-package com.tae.Etickette.member.repository;
+package com.tae.Etickette.member.infra;
 
-import com.tae.Etickette.member.entity.Member;
+import com.tae.Etickette.member.domain.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

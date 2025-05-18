@@ -1,8 +1,8 @@
 package com.tae.Etickette.global.oauth;
 
-import com.tae.Etickette.member.entity.Member;
-import com.tae.Etickette.member.entity.Role;
-import com.tae.Etickette.member.repository.MemberRepository;
+import com.tae.Etickette.member.domain.Member;
+import com.tae.Etickette.member.domain.Role;
+import com.tae.Etickette.member.infra.MemberRepository;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;

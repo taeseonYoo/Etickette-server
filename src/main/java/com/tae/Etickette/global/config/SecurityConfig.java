@@ -5,7 +5,7 @@ import com.tae.Etickette.global.auth.CustomLogoutFilter;
 import com.tae.Etickette.global.jwt.JWTFilter;
 import com.tae.Etickette.global.jwt.JWTUtil;
 import com.tae.Etickette.global.jwt.LoginFilter;
-import com.tae.Etickette.member.entity.Role;
+import com.tae.Etickette.member.domain.Role;
 import com.tae.Etickette.global.oauth.CustomOAuth2UserService;
 import com.tae.Etickette.global.oauth.CustomSuccessHandler;
 import jakarta.servlet.http.HttpServletRequest;

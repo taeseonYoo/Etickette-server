@@ -1,4 +1,4 @@
-package com.tae.Etickette.global.auth;
+package com.tae.Etickette.member.domain;
 
 public interface EncryptionService {
     String encode(CharSequence rawPassword);

@@ -1,14 +1,11 @@
 package com.tae.Etickette.member.dto;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tae.Etickette.member.application.dto.MemberJoinRequestDto;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
-import org.apache.naming.factory.SendMailFactory;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
 
 
 import java.util.Set;

@@ -1,7 +1,7 @@
 package com.tae.Etickette.global.auth;
 
-import com.tae.Etickette.member.entity.Member;
-import com.tae.Etickette.member.repository.MemberRepository;
+import com.tae.Etickette.member.domain.Member;
+import com.tae.Etickette.member.infra.MemberRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

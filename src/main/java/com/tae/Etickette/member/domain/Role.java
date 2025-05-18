@@ -1,4 +1,4 @@
-package com.tae.Etickette.member.entity;
+package com.tae.Etickette.member.domain;
 
 public enum Role {
     USER("USER"),

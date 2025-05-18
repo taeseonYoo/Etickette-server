@@ -1,4 +1,4 @@
-package com.tae.Etickette.member.service;
+package com.tae.Etickette.member.application.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;

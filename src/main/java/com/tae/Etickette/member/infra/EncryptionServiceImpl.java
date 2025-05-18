@@ -1,5 +1,6 @@
-package com.tae.Etickette.global.auth;
+package com.tae.Etickette.member.infra;
 
+import com.tae.Etickette.member.domain.EncryptionService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

@@ -1,12 +1,10 @@
-package com.tae.Etickette.member.service;
+package com.tae.Etickette.member.application;
 
-import com.tae.Etickette.global.auth.EncryptionService;
-import com.tae.Etickette.member.dto.MemberJoinResponseDto;
-import com.tae.Etickette.member.dto.PasswordChangeRequestDto;
-import com.tae.Etickette.member.dto.ProfileResponseDto;
-import com.tae.Etickette.member.entity.Member;
-import com.tae.Etickette.member.dto.MemberJoinRequestDto;
-import com.tae.Etickette.member.repository.MemberRepository;
+import com.tae.Etickette.member.domain.EncryptionService;
+import com.tae.Etickette.member.application.dto.*;
+import com.tae.Etickette.member.domain.Member;
+import com.tae.Etickette.member.infra.MemberRepository;
+import com.tae.Etickette.member.MemberNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -49,7 +47,7 @@ public class MemberService {
     }
 
     @Transactional
-    public void deleteMember(MemberDeleteRequestDto requestDto,String email) {
+    public void deleteMember(MemberDeleteRequestDto requestDto, String email) {
 
         Member member = findByEmail(email);
         //TODO 비밀번호로 회원 검증

@@ -1,8 +1,8 @@
-package com.tae.Etickette.member.dto;
+package com.tae.Etickette.member.application.dto;
 
-import com.tae.Etickette.global.auth.EncryptionService;
-import com.tae.Etickette.member.entity.Member;
-import com.tae.Etickette.member.entity.Role;
+import com.tae.Etickette.member.domain.EncryptionService;
+import com.tae.Etickette.member.domain.Member;
+import com.tae.Etickette.member.domain.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

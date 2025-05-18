@@ -1,11 +1,11 @@
-package com.tae.Etickette.member.controller;
+package com.tae.Etickette.member.presentation;
 
-import com.tae.Etickette.member.dto.MemberJoinRequestDto;
-import com.tae.Etickette.member.dto.MemberJoinResponseDto;
-import com.tae.Etickette.member.dto.PasswordChangeRequestDto;
-import com.tae.Etickette.member.dto.ProfileResponseDto;
-import com.tae.Etickette.member.service.MemberDeleteRequestDto;
-import com.tae.Etickette.member.service.MemberService;
+import com.tae.Etickette.member.application.dto.MemberJoinRequestDto;
+import com.tae.Etickette.member.application.dto.MemberJoinResponseDto;
+import com.tae.Etickette.member.application.dto.PasswordChangeRequestDto;
+import com.tae.Etickette.member.application.dto.ProfileResponseDto;
+import com.tae.Etickette.member.application.dto.MemberDeleteRequestDto;
+import com.tae.Etickette.member.application.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

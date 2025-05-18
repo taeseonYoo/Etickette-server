@@ -1,4 +1,4 @@
-package com.tae.Etickette.member.service;
+package com.tae.Etickette.member;
 
 public class BadPasswordException  extends RuntimeException{
     public BadPasswordException() {
