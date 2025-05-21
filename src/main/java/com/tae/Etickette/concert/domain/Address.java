@@ -1,4 +1,4 @@
-package com.tae.Etickette.concert.entity;
+package com.tae.Etickette.concert.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

@@ -1,8 +1,8 @@
 package com.tae.Etickette.integration.repository;
 
-import com.tae.Etickette.concert.entity.Address;
-import com.tae.Etickette.concert.entity.Venue;
-import com.tae.Etickette.concert.repository.VenueRepository;
+import com.tae.Etickette.concert.domain.Address;
+import com.tae.Etickette.concert.domain.Venue;
+import com.tae.Etickette.concert.infra.VenueRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.assertj.core.api.Assertions;

@@ -1,7 +1,10 @@
-package com.tae.Etickette.concert.entity;
+package com.tae.Etickette.concert.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -17,7 +20,15 @@ public class Venue {
     private Integer capacity;
     @Embedded
     private Address address;
+    @Enumerated(value = EnumType.STRING)
+    private VenueStatus status;
 
+    @OneToMany(mappedBy = "venue", cascade = CascadeType.ALL)
+    private List<Section> sections = new ArrayList<>();
+
+    public void deleteVenue() {
+        this.status = VenueStatus.DELETE;
+    }
     public void updateCapacity(Integer capacity) {
         if (capacity < 0) {
             throw new IllegalArgumentException("총 좌석 수는 0보다 작을 수 없습니다.");
@@ -36,5 +47,10 @@ public class Venue {
     }
     public static Venue create(String place, Integer capacity,Address address) {
         return new Venue(place, capacity,address);
+    }
+
+    public void addSection(Section section) {
+        section.initVenue(this);
+        this.sections.add(section);
     }
 }

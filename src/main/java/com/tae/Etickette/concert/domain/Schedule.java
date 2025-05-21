@@ -1,24 +1,22 @@
-package com.tae.Etickette.concert.entity;
+package com.tae.Etickette.concert.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Section {
-
+public class Schedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "section_id")
+    @Column(name = "schedule_id")
     private Long id;
-    private String grade;
-    private Integer price;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "concert_id")
-    private Concert concert;
-
+    private LocalTime concertTime;
+    private LocalDate concertDate;
 }

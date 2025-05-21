@@ -1,11 +1,10 @@
-package com.tae.Etickette.member.domain;
+package com.tae.Etickette.concert.domain;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public enum MemberStatus {
+public enum VenueStatus {
     ACTIVE("ACTIVE"),
     DELETE("DELETE");
-    final String status;
-
+    private final String value;
 }
