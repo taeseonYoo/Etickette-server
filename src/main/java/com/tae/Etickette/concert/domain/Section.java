@@ -17,14 +17,6 @@ public class Section {
     private String grade;
     private Integer price;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "venue_id")
-    private Venue venue;
-
-    //연관관계 메서드
-    void initVenue(Venue venue) {
-        this.venue = venue;
-    }
 
     private Section(String grade, Integer price) {
         this.grade = grade;

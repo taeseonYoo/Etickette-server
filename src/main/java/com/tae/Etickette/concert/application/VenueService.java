@@ -2,9 +2,7 @@ package com.tae.Etickette.concert.application;
 
 import com.tae.Etickette.concert.application.Dto.VenueCreateRequestDto;
 import com.tae.Etickette.concert.application.Dto.VenueCreateResponseDto;
-import com.tae.Etickette.concert.domain.Section;
 import com.tae.Etickette.concert.domain.Venue;
-import com.tae.Etickette.concert.infra.SectionRepository;
 import com.tae.Etickette.concert.infra.VenueRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
@@ -17,9 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class VenueService {
     private final VenueRepository venueRepository;
-    private final SectionRepository sectionRepository;
 
-    public Venue findVenue(Long venueId) {
+    public Venue findById(Long venueId) {
         return venueRepository.findById(venueId).orElse(null);
     }
 

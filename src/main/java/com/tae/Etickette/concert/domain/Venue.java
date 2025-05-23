@@ -24,7 +24,7 @@ public class Venue {
     private VenueStatus status;
 
     @OneToMany(mappedBy = "venue", cascade = CascadeType.ALL)
-    private List<Section> sections = new ArrayList<>();
+    private List<Concert> concerts = new ArrayList<>();
 
     public void deleteVenue() {
         this.status = VenueStatus.DELETE;
@@ -49,8 +49,4 @@ public class Venue {
         return new Venue(place, capacity,address);
     }
 
-    public void addSection(Section section) {
-        section.initVenue(this);
-        this.sections.add(section);
-    }
 }

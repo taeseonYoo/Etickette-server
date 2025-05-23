@@ -36,6 +36,12 @@ public class Concert {
     @JoinColumn(name = "venue_id")
     private Venue venue;
 
+    //공연장 - 콘서트 연관관계 편의 메서드
+    public void addVenue(Venue venue) {
+        this.venue = venue;
+        venue.getConcerts().add(this);
+    }
+
     public void updateTitle(String title) {
         this.title = title;
     }

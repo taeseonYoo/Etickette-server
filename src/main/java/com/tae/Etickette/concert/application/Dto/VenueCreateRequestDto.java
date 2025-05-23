@@ -19,35 +19,16 @@ public class VenueCreateRequestDto {
     @NotBlank
     private final Address address;
 
-    private final List<SectionRequestDto> sections;
 
     @Builder
-    public VenueCreateRequestDto(String place, Integer capacity, Address address, List<SectionRequestDto> sections) {
+    public VenueCreateRequestDto(String place, Integer capacity, Address address) {
         this.place = place;
         this.capacity = capacity;
         this.address = address;
-        this.sections = sections;
     }
 
     public Venue toEntity() {
-        Venue venue = Venue.create(place, capacity, address);
-
-        for (SectionRequestDto section : sections) {
-            Section entity = Section.create(section.grade, section.price);
-            venue.addSection(entity);
-        }
-
-        return venue;
+        return Venue.create(place, capacity, address);
     }
 
-    @Getter
-    public static class SectionRequestDto{
-        private String grade;
-        private Integer price;
-        @Builder
-        public SectionRequestDto(String grade, Integer price) {
-            this.grade = grade;
-            this.price = price;
-        }
-    }
 }
