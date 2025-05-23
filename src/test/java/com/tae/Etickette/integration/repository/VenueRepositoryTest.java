@@ -68,7 +68,7 @@ class VenueRepositoryTest {
         Venue findVenue = venueRepository.findById(savedVenue.getId())
                 .orElseThrow(() -> new RuntimeException("저장 된 공연장이 없습니다."));
         Address address = new Address("서울시", "송파구 방이동 88", "22222");
-        findVenue.updateAddress(address);
+        findVenue.changeAddress(address);
         em.flush();
 
         //then

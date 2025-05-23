@@ -22,10 +22,17 @@ public class Venue {
     private Address address;
     @Enumerated(value = EnumType.STRING)
     private VenueStatus status;
-
-    @OneToMany(mappedBy = "venue", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "venue")
     private List<Concert> concerts = new ArrayList<>();
 
+    private Venue(String place, Integer capacity,Address address) {
+        this.place = place;
+        this.capacity = capacity;
+        this.address = address;
+    }
+    public static Venue create(String place, Integer capacity,Address address) {
+        return new Venue(place, capacity,address);
+    }
     public void deleteVenue() {
         this.status = VenueStatus.DELETE;
     }
@@ -36,17 +43,22 @@ public class Venue {
         this.capacity = capacity;
     }
 
-    public void updateAddress(Address address) {
-        this.address = address;
+    public void changeAddress(Address newAddress) {
+        verifyNotDelete();
+        setAddress(newAddress);
+    }
+    private void setAddress(Address newAddress) {
+        if (newAddress == null) {
+            throw new IllegalArgumentException("no address");
+        }
+        this.address = newAddress;
+    }
+    private void verifyNotDelete() {
+        if (status == VenueStatus.DELETE) {
+            throw new VenueAlreadyDeletedException("삭제된 공연장의 주소는 수정할 수 없습니다.");
+        }
     }
 
-    private Venue(String place, Integer capacity,Address address) {
-        this.place = place;
-        this.capacity = capacity;
-        this.address = address;
-    }
-    public static Venue create(String place, Integer capacity,Address address) {
-        return new Venue(place, capacity,address);
-    }
+
 
 }

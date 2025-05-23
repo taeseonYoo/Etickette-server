@@ -17,6 +17,10 @@ public class Section {
     private String grade;
     private Integer price;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "concert_id")
+    private Concert concert;
+
 
     private Section(String grade, Integer price) {
         this.grade = grade;
@@ -26,5 +30,7 @@ public class Section {
     public static Section create(String grade, Integer price) {
         return new Section(grade, price);
     }
-
+    public void setConcert(Concert concert) {
+        this.concert = concert;
+    }
 }

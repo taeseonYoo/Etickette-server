@@ -16,7 +16,23 @@ public class Schedule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "schedule_id")
     private Long id;
-
-    private LocalTime concertTime;
+    @Column
     private LocalDate concertDate;
+    @Column
+    private LocalTime concertTime;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "concert_id")
+    private Concert concert;
+    private Schedule(LocalDate concertDate, LocalTime concertTime) {
+        this.concertDate = concertDate;
+        this.concertTime = concertTime;
+    }
+
+    public static Schedule create(LocalDate concertDate, LocalTime concertTime) {
+        return new Schedule(concertDate, concertTime);
+    }
+
+    public void setConcert(Concert concert) {
+        this.concert = concert;
+    }
 }
