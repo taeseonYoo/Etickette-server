@@ -32,7 +32,7 @@ public class Schedule {
         return new Schedule(concertDate, concertTime);
     }
 
-    public void setConcert(Concert concert) {
+    public void addConcert(Concert concert) {
         this.concert = concert;
     }
 }

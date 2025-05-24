@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,23 +40,45 @@ public class Concert {
     @JoinColumn(name = "venue_id")
     private Venue venue;
 
-    @OneToMany(mappedBy = "concert")
+    @OneToMany(mappedBy = "concert", cascade = CascadeType.ALL)
     private List<Section> sections = new ArrayList<>();
-    @OneToMany(mappedBy = "concert")
+    @OneToMany(mappedBy = "concert", cascade = CascadeType.ALL)
     private List<Schedule> schedules = new ArrayList<>();
 
-    private Concert(String title, String overview, LocalDate startAt, LocalDate endAt,Integer runningTime) {
+
+    public Concert(String title, String overview, Integer runningTime, String imgURL, Venue venue, List<Section> sections, List<Schedule> schedules) {
         this.title = title;
         this.overview = overview;
-        this.startAt = startAt;
-        this.endAt = endAt;
         this.runningTime = runningTime;
+        this.ImgURL = imgURL;
         this.status = ConcertStatus.PENDING;
+
+        this.startAt = getMinLocalDate(schedules);
+        this.endAt = getMaxLocalDate(schedules);
+
+        //연관관계 설정
+        addVenue(venue);
+        schedules.forEach(this::addSchedule);
+        sections.forEach(this::addSection);
     }
 
-    public static Concert create(String title, String overview
-            , LocalDate startAt, LocalDate endAt,Integer runningTime) {
-        return new Concert(title, overview, startAt, endAt,runningTime);
+    public static Concert create(String title, String overview, Integer runningTime, String imgURL, Venue venue
+            , List<Section> sections, List<Schedule> schedules) {
+        return new Concert(title, overview, runningTime, imgURL, venue, sections, schedules);
+    }
+    //마지막 공연 일자
+    private LocalDate getMaxLocalDate(List<Schedule> schedules) {
+        return schedules.stream()
+                .map(Schedule::getConcertDate)
+                .max(LocalDate::compareTo)
+                .orElseThrow(() -> new IllegalArgumentException("스케줄 정보가 없습니다."));
+    }
+    //첫 공연 일자
+    private LocalDate getMinLocalDate(List<Schedule> schedules) {
+        return schedules.stream()
+                .map(Schedule::getConcertDate)
+                .min(LocalDate::compareTo)
+                .orElseThrow(() -> new IllegalArgumentException("스케줄 정보가 없습니다."));
     }
 
     //공연장 - 콘서트 연관관계 편의 메서드
@@ -67,12 +88,12 @@ public class Concert {
     }
 
     public void addSection(Section section) {
-        section.setConcert(this);
+        section.addConcert(this);
         this.sections.add(section);
     }
 
     public void addSchedule(Schedule schedule) {
-        schedule.setConcert(this);
+        schedule.addConcert(this);
         this.schedules.add(schedule);
     }
 

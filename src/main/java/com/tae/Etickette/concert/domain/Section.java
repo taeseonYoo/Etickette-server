@@ -30,7 +30,7 @@ public class Section {
     public static Section create(String grade, Integer price) {
         return new Section(grade, price);
     }
-    public void setConcert(Concert concert) {
+    public void addConcert(Concert concert) {
         this.concert = concert;
     }
 }
