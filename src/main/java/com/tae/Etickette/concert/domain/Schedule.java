@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -34,5 +35,18 @@ public class Schedule {
 
     public void addConcert(Concert concert) {
         this.concert = concert;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Schedule schedule = (Schedule) o;
+        return Objects.equals(concertDate, schedule.concertDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(concertDate);
     }
 }

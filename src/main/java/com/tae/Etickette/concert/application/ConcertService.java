@@ -1,15 +1,16 @@
 package com.tae.Etickette.concert.application;
 
-import com.tae.Etickette.concert.domain.Concert;
-import com.tae.Etickette.concert.domain.Schedule;
-import com.tae.Etickette.concert.domain.Section;
-import com.tae.Etickette.concert.domain.Venue;
+import com.tae.Etickette.concert.domain.*;
 import com.tae.Etickette.concert.infra.ConcertRepository;
 import com.tae.Etickette.concert.infra.VenueRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -25,6 +26,19 @@ public class ConcertService {
 
         List<Schedule> schedules = requestDto.toScheduleEntities();
         List<Section> sections = requestDto.toSectionEntities();
+
+        //TODO 스케쥴을 검증해야한다.
+        List<Concert> byVenueId = concertRepository.findByVenueIdAndStatusNot(venue.getId(), ConcertStatus.FINISHED);
+
+        List<Schedule> allSchedules = byVenueId.stream()
+                .flatMap(concert -> concert.getSchedules().stream())
+                .toList();
+
+        for (Schedule schedule : schedules) {
+            if (allSchedules.contains(schedule)) {
+                throw new RuntimeException();
+            }
+        }
 
         Concert concert = Concert.create(requestDto.getTitle(),
                 requestDto.getOverview(),

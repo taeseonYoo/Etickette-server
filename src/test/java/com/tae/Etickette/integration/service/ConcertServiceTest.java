@@ -4,9 +4,12 @@ import com.tae.Etickette.concert.application.ConcertCreateRequestDto;
 import com.tae.Etickette.concert.application.ConcertService;
 import com.tae.Etickette.concert.domain.Address;
 import com.tae.Etickette.concert.domain.Concert;
+import com.tae.Etickette.concert.domain.Schedule;
 import com.tae.Etickette.concert.domain.Venue;
 import com.tae.Etickette.concert.infra.ConcertRepository;
 import com.tae.Etickette.concert.infra.VenueRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,6 +22,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 
 @SpringBootTest
 @Transactional
@@ -30,7 +35,8 @@ public class ConcertServiceTest {
     private VenueRepository venueRepository;
     @Autowired
     private ConcertRepository concertRepository;
-
+    @PersistenceContext
+    EntityManager em;
 
     Venue venue;
     List<ConcertCreateRequestDto.ScheduleInfo> scheduleInfos;
@@ -86,6 +92,8 @@ public class ConcertServiceTest {
 
         //when
         Long savedId = concertService.createConcert(requestDto);
+        em.flush();
+        em.clear();
         Concert concert = concertRepository.findById(savedId).get();
 
         //then
@@ -93,6 +101,34 @@ public class ConcertServiceTest {
                 Assertions.assertThat(schedule.getConcert()).isEqualTo(concert));
         concert.getSections().forEach(section ->
                 Assertions.assertThat(section.getConcert()).isEqualTo(concert));
+    }
+
+    @Test
+    void 콘서트생성_실패() {
+        ConcertCreateRequestDto requestDto = ConcertCreateRequestDto.builder()
+                .venueId(venue.getId())
+                .title("첫번째 공연")
+                .overview("처음으로 하는 공연입니다.")
+                .runningTime(120)
+                .scheduleInfos(scheduleInfos)
+                .sectionInfos(sectionInfos)
+                .build();
+        Long savedId = concertService.createConcert(requestDto);
+        em.flush();
+        em.clear();
+
+        ConcertCreateRequestDto requestDto2 = ConcertCreateRequestDto.builder()
+                .venueId(venue.getId())
+                .title("두번째 공연")
+                .overview("두번째로 하는 공연입니다.")
+                .runningTime(120)
+                .scheduleInfos(scheduleInfos)
+                .sectionInfos(sectionInfos)
+                .build();
+        //when
+        assertThrows(RuntimeException.class,
+                () -> concertService.createConcert(requestDto2));
+
     }
 
 

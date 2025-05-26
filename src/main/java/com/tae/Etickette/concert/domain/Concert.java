@@ -51,7 +51,7 @@ public class Concert {
         this.overview = overview;
         this.runningTime = runningTime;
         this.ImgURL = imgURL;
-        this.status = ConcertStatus.PENDING;
+        this.status = ConcertStatus.BEFORE_OPENING;
 
         this.startAt = getMinLocalDate(schedules);
         this.endAt = getMaxLocalDate(schedules);
@@ -79,6 +79,16 @@ public class Concert {
                 .map(Schedule::getConcertDate)
                 .min(LocalDate::compareTo)
                 .orElseThrow(() -> new IllegalArgumentException("스케줄 정보가 없습니다."));
+    }
+
+    public void validateNoDuplicateSchedules() {
+    }
+
+    public Boolean verifyNotFinished() {
+        if (this.status == ConcertStatus.FINISHED) {
+            return false;
+        }
+        return true;
     }
 
     //공연장 - 콘서트 연관관계 편의 메서드

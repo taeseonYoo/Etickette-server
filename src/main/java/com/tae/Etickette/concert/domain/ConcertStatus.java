@@ -1,7 +1,7 @@
 package com.tae.Etickette.concert.domain;
 
 public enum ConcertStatus {
-    PENDING,
+    BEFORE_OPENING,
     IN_PROGRESS,
     FINISHED
 }
