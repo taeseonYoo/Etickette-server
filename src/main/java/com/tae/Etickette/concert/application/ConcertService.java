@@ -7,10 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -25,7 +22,7 @@ public class ConcertService {
                 .orElseThrow(() -> new VenueNotFoundException("공연장을 찾을 수 없습니다"));
 
         List<Schedule> schedules = requestDto.toScheduleEntities();
-        List<Section> sections = requestDto.toSectionEntities();
+        List<Grade> grades = requestDto.toSectionEntities();
 
         //TODO 스케쥴을 검증해야한다.
         List<Concert> byVenueId = concertRepository.findByVenueIdAndStatusNot(venue.getId(), ConcertStatus.FINISHED);
@@ -45,7 +42,7 @@ public class ConcertService {
                 requestDto.getRunningTime(),
                 requestDto.getImgUrl(),
                 venue,
-                sections,
+                grades,
                 schedules);
 
         Concert savedConcert = concertRepository.save(concert);

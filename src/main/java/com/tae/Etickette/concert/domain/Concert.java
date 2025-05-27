@@ -33,6 +33,11 @@ public class Concert {
     @Column
     private ConcertStatus status;
 
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name = "section",
+    joinColumns = @JoinColumn(name = "concert_number"))
+    private List<Grade> grades;
+
     /**
      * 연관관계
      */
@@ -40,13 +45,12 @@ public class Concert {
     @JoinColumn(name = "venue_id")
     private Venue venue;
 
-    @OneToMany(mappedBy = "concert", cascade = CascadeType.ALL)
-    private List<Section> sections = new ArrayList<>();
+
     @OneToMany(mappedBy = "concert", cascade = CascadeType.ALL)
     private List<Schedule> schedules = new ArrayList<>();
 
 
-    public Concert(String title, String overview, Integer runningTime, String imgURL, Venue venue, List<Section> sections, List<Schedule> schedules) {
+    public Concert(String title, String overview, Integer runningTime, String imgURL, Venue venue, List<Grade> grades, List<Schedule> schedules) {
         this.title = title;
         this.overview = overview;
         this.runningTime = runningTime;
@@ -55,16 +59,15 @@ public class Concert {
 
         this.startAt = getMinLocalDate(schedules);
         this.endAt = getMaxLocalDate(schedules);
-
+        this.grades = grades;
         //연관관계 설정
         addVenue(venue);
         schedules.forEach(this::addSchedule);
-        sections.forEach(this::addSection);
     }
 
     public static Concert create(String title, String overview, Integer runningTime, String imgURL, Venue venue
-            , List<Section> sections, List<Schedule> schedules) {
-        return new Concert(title, overview, runningTime, imgURL, venue, sections, schedules);
+            , List<Grade> grades, List<Schedule> schedules) {
+        return new Concert(title, overview, runningTime, imgURL, venue, grades, schedules);
     }
     //마지막 공연 일자
     private LocalDate getMaxLocalDate(List<Schedule> schedules) {
@@ -97,10 +100,6 @@ public class Concert {
         venue.getConcerts().add(this);
     }
 
-    public void addSection(Section section) {
-        section.addConcert(this);
-        this.sections.add(section);
-    }
 
     public void addSchedule(Schedule schedule) {
         schedule.addConcert(this);

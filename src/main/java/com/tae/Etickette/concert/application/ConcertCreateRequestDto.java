@@ -1,12 +1,11 @@
 package com.tae.Etickette.concert.application;
 
+import com.tae.Etickette.concert.domain.Grade;
 import com.tae.Etickette.concert.domain.Schedule;
-import com.tae.Etickette.concert.domain.Section;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -57,9 +56,9 @@ public class ConcertCreateRequestDto {
                 .toList();
     }
 
-    public List<Section> toSectionEntities() {
+    public List<Grade> toSectionEntities() {
         return sectionInfos.stream()
-                .map(info -> Section.create(info.getGrade(), info.getPrice()))
+                .map(info -> new Grade(info.getGrade(), info.getPrice()))
                 .toList();
     }
 }

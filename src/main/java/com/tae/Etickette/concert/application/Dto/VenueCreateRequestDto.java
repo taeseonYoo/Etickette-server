@@ -1,14 +1,11 @@
 package com.tae.Etickette.concert.application.Dto;
 
 import com.tae.Etickette.concert.domain.Address;
-import com.tae.Etickette.concert.domain.Section;
 import com.tae.Etickette.concert.domain.Venue;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
-
-import java.util.List;
 
 @Getter
 public class VenueCreateRequestDto {

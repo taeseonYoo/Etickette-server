@@ -4,7 +4,6 @@ import com.tae.Etickette.concert.application.Dto.VenueCreateRequestDto;
 import com.tae.Etickette.concert.application.Dto.VenueCreateResponseDto;
 import com.tae.Etickette.concert.domain.Address;
 import com.tae.Etickette.concert.domain.Venue;
-import com.tae.Etickette.concert.infra.SectionRepository;
 import com.tae.Etickette.concert.infra.VenueRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

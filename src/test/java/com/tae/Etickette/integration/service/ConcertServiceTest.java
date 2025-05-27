@@ -4,7 +4,6 @@ import com.tae.Etickette.concert.application.ConcertCreateRequestDto;
 import com.tae.Etickette.concert.application.ConcertService;
 import com.tae.Etickette.concert.domain.Address;
 import com.tae.Etickette.concert.domain.Concert;
-import com.tae.Etickette.concert.domain.Schedule;
 import com.tae.Etickette.concert.domain.Venue;
 import com.tae.Etickette.concert.infra.ConcertRepository;
 import com.tae.Etickette.concert.infra.VenueRepository;
@@ -99,8 +98,7 @@ public class ConcertServiceTest {
         //then
         concert.getSchedules().forEach(schedule->
                 Assertions.assertThat(schedule.getConcert()).isEqualTo(concert));
-        concert.getSections().forEach(section ->
-                Assertions.assertThat(section.getConcert()).isEqualTo(concert));
+
     }
 
     @Test

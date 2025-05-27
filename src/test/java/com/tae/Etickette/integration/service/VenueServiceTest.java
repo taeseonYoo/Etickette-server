@@ -4,18 +4,13 @@ import com.tae.Etickette.concert.application.Dto.VenueCreateRequestDto;
 import com.tae.Etickette.concert.application.Dto.VenueCreateResponseDto;
 import com.tae.Etickette.concert.application.VenueService;
 import com.tae.Etickette.concert.domain.Address;
-import com.tae.Etickette.concert.domain.Section;
 import com.tae.Etickette.concert.domain.Venue;
-import com.tae.Etickette.concert.infra.SectionRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.tae.Etickette.concert.application.Dto.VenueCreateRequestDto.builder;
 

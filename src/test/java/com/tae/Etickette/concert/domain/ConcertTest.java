@@ -3,13 +3,11 @@ package com.tae.Etickette.concert.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 class ConcertTest {
 
@@ -26,7 +24,7 @@ class ConcertTest {
                 120,
                 "img.png",
                 venue,
-                List.of(Section.create("VIP", 100000)),
+                List.of(new Grade("VIP", 100000)),
                 List.of(Schedule.create(LocalDate.of(2025, 6, 1), LocalTime.of(16, 0)),
                         Schedule.create(LocalDate.of(2025, 6, 2), LocalTime.of(16, 0)),
                         Schedule.create(LocalDate.of(2025, 6, 3), LocalTime.of(16, 0)))
@@ -48,7 +46,7 @@ class ConcertTest {
                 120,
                 "img.png",
                 venue,
-                List.of(Section.create("VIP", 100000)),
+                List.of(new Grade("VIP", 100000)),
                 List.of(Schedule.create(LocalDate.of(2025, 3, 1), LocalTime.of(16, 0)),
                         Schedule.create(LocalDate.of(2025, 2, 1), LocalTime.of(16, 0)),
                         Schedule.create(LocalDate.of(2025, 1, 1), LocalTime.of(16, 0)))
@@ -70,7 +68,7 @@ class ConcertTest {
                 120,
                 "img.png",
                 venue,
-                List.of(Section.create("VIP", 100000)),
+                List.of(new Grade("VIP", 100000)),
                 List.of(Schedule.create(LocalDate.of(2023, 6, 1), LocalTime.of(16, 0)),
                         Schedule.create(LocalDate.of(2024, 6, 1), LocalTime.of(16, 0)),
                         Schedule.create(LocalDate.of(2025, 6, 1), LocalTime.of(16, 0)))
@@ -93,7 +91,7 @@ class ConcertTest {
                 120,
                 "img.png",
                 venue,
-                List.of(Section.create("VIP", 100000)),
+                List.of(new Grade("VIP", 100000)),
                 List.of(Schedule.create(LocalDate.of(2025, 6, 1), LocalTime.of(16, 0)),
                         Schedule.create(LocalDate.of(2025, 6, 2), LocalTime.of(16, 0)),
                         Schedule.create(LocalDate.of(2025, 6, 3), LocalTime.of(16, 0)))
@@ -115,7 +113,7 @@ class ConcertTest {
                 120,
                 "img.png",
                 venue,
-                List.of(Section.create("VIP", 100000)),
+                List.of(new Grade("VIP", 100000)),
                 List.of(Schedule.create(LocalDate.of(2025, 3, 1), LocalTime.of(16, 0)),
                         Schedule.create(LocalDate.of(2025, 2, 1), LocalTime.of(16, 0)),
                         Schedule.create(LocalDate.of(2025, 1, 1), LocalTime.of(16, 0)))
@@ -137,7 +135,7 @@ class ConcertTest {
                 120,
                 "img.png",
                 venue,
-                List.of(Section.create("VIP", 100000)),
+                List.of(new Grade("VIP", 100000)),
                 List.of(Schedule.create(LocalDate.of(2023, 6, 1), LocalTime.of(16, 0)),
                         Schedule.create(LocalDate.of(2024, 6, 1), LocalTime.of(16, 0)),
                         Schedule.create(LocalDate.of(2025, 6, 1), LocalTime.of(16, 0)))
