@@ -48,6 +48,7 @@ public class Concert {
         this.runningTime = runningTime;
         this.ImgURL = imgURL;
         this.status = ConcertStatus.BEFORE;
+        this.venueId = venueId;
 
         this.grades = grades;
         //연관관계 설정
@@ -57,9 +58,6 @@ public class Concert {
             , List<Grade> grades) {
         return new Concert(title, overview, runningTime, imgURL, venueId, grades);
     }
-
-
-    
 
 
     public void updateTitle(String title) {

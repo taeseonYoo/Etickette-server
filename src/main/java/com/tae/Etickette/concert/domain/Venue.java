@@ -22,8 +22,6 @@ public class Venue {
     private Address address;
     @Enumerated(value = EnumType.STRING)
     private VenueStatus status;
-    @OneToMany(mappedBy = "venue")
-    private List<Concert> concerts = new ArrayList<>();
 
     private Venue(String place, Integer capacity,Address address) {
         this.place = place;

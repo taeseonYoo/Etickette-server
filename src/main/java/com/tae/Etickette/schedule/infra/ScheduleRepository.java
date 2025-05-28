@@ -12,18 +12,15 @@ import java.time.LocalTime;
 import java.util.List;
 
 public interface ScheduleRepository extends JpaRepository<Schedule,Long> {
+
     @Query("""
-        SELECT s FROM Schedule s
-        JOIN s.concert p
-        WHERE p.venue = :venue
-          AND s.concertDate = :date
-          AND s.startTime < :newEnd
-          AND s.endTime > :newStart
-    """)
-    List<Schedule> findConflictingSchedules(
-            @Param("venue") Venue venue,
+SELECT s FROM Schedule s
+JOIN Concert c ON s.concertId = c.id
+WHERE s.concertDate = :date
+AND c.venueId = :venueId
+""")
+    List<Schedule> findByConcertDateAndVenueId(
             @Param("date") LocalDate date,
-            @Param("newStart") LocalTime newStart,
-            @Param("newEnd") LocalTime newEnd
+            @Param("venueId") Long venueId
     );
 }

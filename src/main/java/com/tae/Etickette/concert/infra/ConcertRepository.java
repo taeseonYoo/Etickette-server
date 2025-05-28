@@ -9,5 +9,4 @@ import java.util.List;
 
 @Repository
 public interface ConcertRepository extends JpaRepository<Concert,Long> {
-    List<Concert> findByVenueIdAndStatusNot(Long venueId, ConcertStatus status);
 }

@@ -51,5 +51,12 @@ public class Schedule {
         this.endTime = startTime.plusMinutes(runningTime);
     }
 
+    public boolean isActive() {
+        return this.status == ScheduleStatus.BEFORE || this.status == ScheduleStatus.OPEN;
+    }
+
+    public void cancle() {
+        this.status = ScheduleStatus.CANCELED;
+    }
 
 }

@@ -1,7 +1,7 @@
 package com.tae.Etickette.integration.service;
 
 import com.tae.Etickette.concert.application.ConcertCreateRequestDto;
-import com.tae.Etickette.concert.application.ConcertService;
+import com.tae.Etickette.concert.application.RegisterService;
 import com.tae.Etickette.concert.domain.Address;
 import com.tae.Etickette.concert.domain.Concert;
 import com.tae.Etickette.concert.domain.Venue;
@@ -27,9 +27,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @Transactional
 @DisplayName("Integration - ConcertService")
-public class ConcertServiceTest {
+public class RegisterServiceTest {
     @Autowired
-    private ConcertService concertService;
+    private RegisterService registerService;
     @Autowired
     private VenueRepository venueRepository;
     @Autowired
@@ -71,7 +71,7 @@ public class ConcertServiceTest {
                 .build();
 
         //when
-        Long savedId = concertService.createConcert(requestDto);
+        Long savedId = registerService.createConcert(requestDto);
 
         //then
         Assertions.assertThat(concertRepository.findById(savedId)).isPresent();
@@ -90,7 +90,7 @@ public class ConcertServiceTest {
                 .build();
 
         //when
-        Long savedId = concertService.createConcert(requestDto);
+        Long savedId = registerService.createConcert(requestDto);
         em.flush();
         em.clear();
         Concert concert = concertRepository.findById(savedId).get();
@@ -111,7 +111,7 @@ public class ConcertServiceTest {
                 .scheduleInfos(scheduleInfos)
                 .sectionInfos(sectionInfos)
                 .build();
-        Long savedId = concertService.createConcert(requestDto);
+        Long savedId = registerService.createConcert(requestDto);
         em.flush();
         em.clear();
 
@@ -125,7 +125,7 @@ public class ConcertServiceTest {
                 .build();
         //when
         assertThrows(RuntimeException.class,
-                () -> concertService.createConcert(requestDto2));
+                () -> registerService.createConcert(requestDto2));
 
     }
 

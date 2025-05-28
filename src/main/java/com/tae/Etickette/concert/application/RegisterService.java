@@ -9,13 +9,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Duration;
 import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class ConcertService {
+public class RegisterService {
     private final ConcertRepository concertRepository;
     private final VenueRepository venueRepository;
     private final ScheduleRepository scheduleRepository;
@@ -28,25 +27,31 @@ public class ConcertService {
 
         List<Grade> grades = requestDto.toSectionEntities();
 
+        //콘서트 생성
         Concert concert = Concert.create(requestDto.getTitle(),
                 requestDto.getOverview(),
                 requestDto.getRunningTime(),
                 requestDto.getImgUrl(),
-                venue,
+                requestDto.getVenueId(),
                 grades);
 
-        Concert savedConcert = concertRepository.save(concert);
+        List<Schedule> schedules = requestDto.toScheduleEntities();
 
 
-        List<ConcertCreateRequestDto.ScheduleInfo> scheduleInfos = requestDto.getScheduleInfos();
-        for (ConcertCreateRequestDto.ScheduleInfo scheduleInfo : scheduleInfos) {
-            Schedule schedule = Schedule.create(scheduleInfo.getDate(), scheduleInfo.getTime(), concert.getRunningTime(), concert);
-            List<Schedule> conflictingSchedules = scheduleRepository.findConflictingSchedules(venue, schedule.getConcertDate(), schedule.getStartTime(), schedule.getEndTime());
-            if (!conflictingSchedules.isEmpty()) {
-                throw new RuntimeException();
+        //공연장 별 스케줄 일정 검증
+        for (Schedule schedule : schedules) {
+            List<Schedule> findSchedules = scheduleRepository
+                    .findByConcertDateAndVenueId(schedule.getConcertDate(),venue.getId())
+                    .stream().filter(Schedule::isActive).toList();
+
+            if (!findSchedules.isEmpty()) {
+                throw new ScheduleDuplicateException();
             }
             scheduleRepository.save(schedule);
         }
+
+        //콘서트 저장
+        Concert savedConcert = concertRepository.save(concert);
 
         return savedConcert.getId();
     }

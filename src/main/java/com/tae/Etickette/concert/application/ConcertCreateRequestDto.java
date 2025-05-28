@@ -52,7 +52,7 @@ public class ConcertCreateRequestDto {
 
     public List<Schedule> toScheduleEntities() {
         return scheduleInfos.stream()
-                .map(info -> Schedule.create(info.getDate(), info.getTime(),))
+                .map(info -> Schedule.create(info.getDate(), info.getTime(), runningTime, venueId))
                 .toList();
     }
 
