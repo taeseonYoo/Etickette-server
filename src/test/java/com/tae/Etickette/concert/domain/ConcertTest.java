@@ -1,5 +1,6 @@
 package com.tae.Etickette.concert.domain;
 
+import com.tae.Etickette.schedule.domain.Schedule;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

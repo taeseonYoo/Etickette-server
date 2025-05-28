@@ -1,12 +1,13 @@
-package com.tae.Etickette.concert.domain;
+package com.tae.Etickette.schedule.domain;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public enum ConcertStatus {
+public enum ScheduleStatus {
     BEFORE("BEFORE"),
     OPEN("OPEN"),
     COMPLETED("COMPLETED"),
     CANCELED("CANCELED");
+
     private final String value;
 }

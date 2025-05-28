@@ -3,10 +3,13 @@ package com.tae.Etickette.concert.application;
 import com.tae.Etickette.concert.domain.*;
 import com.tae.Etickette.concert.infra.ConcertRepository;
 import com.tae.Etickette.concert.infra.VenueRepository;
+import com.tae.Etickette.schedule.domain.Schedule;
+import com.tae.Etickette.schedule.infra.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.util.List;
 
 @Service
@@ -15,37 +18,36 @@ import java.util.List;
 public class ConcertService {
     private final ConcertRepository concertRepository;
     private final VenueRepository venueRepository;
+    private final ScheduleRepository scheduleRepository;
+
 
     @Transactional
     public Long createConcert(ConcertCreateRequestDto requestDto) {
         Venue venue = venueRepository.findById(requestDto.getVenueId())
                 .orElseThrow(() -> new VenueNotFoundException("공연장을 찾을 수 없습니다"));
 
-        List<Schedule> schedules = requestDto.toScheduleEntities();
         List<Grade> grades = requestDto.toSectionEntities();
-
-        //TODO 스케쥴을 검증해야한다.
-        List<Concert> byVenueId = concertRepository.findByVenueIdAndStatusNot(venue.getId(), ConcertStatus.FINISHED);
-
-        List<Schedule> allSchedules = byVenueId.stream()
-                .flatMap(concert -> concert.getSchedules().stream())
-                .toList();
-
-        for (Schedule schedule : schedules) {
-            if (allSchedules.contains(schedule)) {
-                throw new RuntimeException();
-            }
-        }
 
         Concert concert = Concert.create(requestDto.getTitle(),
                 requestDto.getOverview(),
                 requestDto.getRunningTime(),
                 requestDto.getImgUrl(),
                 venue,
-                grades,
-                schedules);
+                grades);
 
         Concert savedConcert = concertRepository.save(concert);
+
+
+        List<ConcertCreateRequestDto.ScheduleInfo> scheduleInfos = requestDto.getScheduleInfos();
+        for (ConcertCreateRequestDto.ScheduleInfo scheduleInfo : scheduleInfos) {
+            Schedule schedule = Schedule.create(scheduleInfo.getDate(), scheduleInfo.getTime(), concert.getRunningTime(), concert);
+            List<Schedule> conflictingSchedules = scheduleRepository.findConflictingSchedules(venue, schedule.getConcertDate(), schedule.getStartTime(), schedule.getEndTime());
+            if (!conflictingSchedules.isEmpty()) {
+                throw new RuntimeException();
+            }
+            scheduleRepository.save(schedule);
+        }
+
         return savedConcert.getId();
     }
 

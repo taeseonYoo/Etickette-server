@@ -1,7 +1,7 @@
 package com.tae.Etickette.concert.application;
 
 import com.tae.Etickette.concert.domain.Grade;
-import com.tae.Etickette.concert.domain.Schedule;
+import com.tae.Etickette.schedule.domain.Schedule;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -52,7 +52,7 @@ public class ConcertCreateRequestDto {
 
     public List<Schedule> toScheduleEntities() {
         return scheduleInfos.stream()
-                .map(info -> Schedule.create(info.getDate(), info.getTime()))
+                .map(info -> Schedule.create(info.getDate(), info.getTime(),))
                 .toList();
     }
 

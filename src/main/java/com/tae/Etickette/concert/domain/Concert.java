@@ -1,5 +1,6 @@
 package com.tae.Etickette.concert.domain;
 
+import com.tae.Etickette.schedule.domain.Schedule;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -22,10 +23,7 @@ public class Concert {
     private String title;
     @Column(nullable = false)
     private String overview;
-    @Column(nullable = false)
-    private LocalDate startAt;
-    @Column(nullable = false)
-    private LocalDate endAt;
+
     @Column(nullable = false)
     private Integer runningTime;
     @Column
@@ -34,77 +32,35 @@ public class Concert {
     private ConcertStatus status;
 
     @ElementCollection(fetch = FetchType.LAZY)
-    @CollectionTable(name = "section",
+    @CollectionTable(name = "grade",
     joinColumns = @JoinColumn(name = "concert_number"))
     private List<Grade> grades;
 
     /**
      * 연관관계
      */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "venue_id")
-    private Venue venue;
+    private Long venueId;
 
 
-    @OneToMany(mappedBy = "concert", cascade = CascadeType.ALL)
-    private List<Schedule> schedules = new ArrayList<>();
-
-
-    public Concert(String title, String overview, Integer runningTime, String imgURL, Venue venue, List<Grade> grades, List<Schedule> schedules) {
+    public Concert(String title, String overview, Integer runningTime, String imgURL, Long venueId, List<Grade> grades) {
         this.title = title;
         this.overview = overview;
         this.runningTime = runningTime;
         this.ImgURL = imgURL;
-        this.status = ConcertStatus.BEFORE_OPENING;
+        this.status = ConcertStatus.BEFORE;
 
-        this.startAt = getMinLocalDate(schedules);
-        this.endAt = getMaxLocalDate(schedules);
         this.grades = grades;
         //연관관계 설정
-        addVenue(venue);
-        schedules.forEach(this::addSchedule);
     }
 
-    public static Concert create(String title, String overview, Integer runningTime, String imgURL, Venue venue
-            , List<Grade> grades, List<Schedule> schedules) {
-        return new Concert(title, overview, runningTime, imgURL, venue, grades, schedules);
-    }
-    //마지막 공연 일자
-    private LocalDate getMaxLocalDate(List<Schedule> schedules) {
-        return schedules.stream()
-                .map(Schedule::getConcertDate)
-                .max(LocalDate::compareTo)
-                .orElseThrow(() -> new IllegalArgumentException("스케줄 정보가 없습니다."));
-    }
-    //첫 공연 일자
-    private LocalDate getMinLocalDate(List<Schedule> schedules) {
-        return schedules.stream()
-                .map(Schedule::getConcertDate)
-                .min(LocalDate::compareTo)
-                .orElseThrow(() -> new IllegalArgumentException("스케줄 정보가 없습니다."));
-    }
-
-    public void validateNoDuplicateSchedules() {
-    }
-
-    public Boolean verifyNotFinished() {
-        if (this.status == ConcertStatus.FINISHED) {
-            return false;
-        }
-        return true;
-    }
-
-    //공연장 - 콘서트 연관관계 편의 메서드
-    public void addVenue(Venue venue) {
-        this.venue = venue;
-        venue.getConcerts().add(this);
+    public static Concert create(String title, String overview, Integer runningTime, String imgURL, Long venueId
+            , List<Grade> grades) {
+        return new Concert(title, overview, runningTime, imgURL, venueId, grades);
     }
 
 
-    public void addSchedule(Schedule schedule) {
-        schedule.addConcert(this);
-        this.schedules.add(schedule);
-    }
+    
+
 
     public void updateTitle(String title) {
         this.title = title;
