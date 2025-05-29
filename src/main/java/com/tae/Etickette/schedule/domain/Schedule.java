@@ -1,13 +1,10 @@
 package com.tae.Etickette.schedule.domain;
 
-import com.tae.Etickette.concert.domain.Concert;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.web.bind.support.SessionStatus;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -55,7 +52,10 @@ public class Schedule {
         return this.status == ScheduleStatus.BEFORE || this.status == ScheduleStatus.OPEN;
     }
 
-    public void cancle() {
+    public void openSchedule() {
+        this.status = ScheduleStatus.OPEN;
+    }
+    public void cancel() {
         this.status = ScheduleStatus.CANCELED;
     }
 

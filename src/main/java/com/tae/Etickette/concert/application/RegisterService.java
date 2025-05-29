@@ -37,12 +37,13 @@ public class RegisterService {
 
         List<Schedule> schedules = requestDto.toScheduleEntities();
 
-
         //공연장 별 스케줄 일정 검증
         for (Schedule schedule : schedules) {
             List<Schedule> findSchedules = scheduleRepository
-                    .findByConcertDateAndVenueId(schedule.getConcertDate(),venue.getId())
-                    .stream().filter(Schedule::isActive).toList();
+                    .findByConcertDateAndVenueId(schedule.getConcertDate(), venue.getId())
+                    .stream()
+                    .filter(Schedule::isActive)
+                    .toList();
 
             if (!findSchedules.isEmpty()) {
                 throw new ScheduleDuplicateException();

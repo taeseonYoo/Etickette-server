@@ -95,16 +95,14 @@ class RegisterServiceTest {
     @DisplayName("createConcert - 같은 공연장에 공연 날짜가 같은 스케줄이 있다면, 콘서트 생성에 실패한다.")
     void 콘서트생성_실패_중복_날짜고정1() {
         //given
-        Venue venue = Venue.create("KSPO", 10000, new Address("서울", "강남", "11111"));
-        ReflectionTestUtils.setField(venue, "id", 1L);
-
         List<ScheduleInfo> scheduleInfos = List.of(new ScheduleInfo(LocalDate.of(2025, 6, 1),
                 LocalTime.of(19, 0)));
 
-        ConcertCreateRequestDto requestDto = create(venue.getId(), scheduleInfos);
+        ConcertCreateRequestDto requestDto = create(1L, scheduleInfos);
 
         List<Schedule> schedules = List.of(Schedule.create(LocalDate.of(2025, 6, 1)
                 , LocalTime.of(19, 1), 120, 1L));
+
         BDDMockito.given(mockScheduleRepo.findByConcertDateAndVenueId(any(), any()))
                 .willReturn(schedules);
         BDDMockito.given(mockVenueRepo.findById(any()))
@@ -119,13 +117,10 @@ class RegisterServiceTest {
     @DisplayName("createConcert - 같은 공연장에 공연 날짜가 같은 스케줄이 있다면, 콘서트 생성에 실패한다.")
     void 콘서트생성_실패_중복_날짜고정2() {
         //given
-        Venue venue = Venue.create("KSPO", 10000, new Address("서울", "강남", "11111"));
-        ReflectionTestUtils.setField(venue, "id", 1L);
-
         List<ScheduleInfo> scheduleInfos = List.of(new ScheduleInfo(LocalDate.of(2025, 6, 1),
                 LocalTime.of(19, 0)));
 
-        ConcertCreateRequestDto requestDto = create(venue.getId(), scheduleInfos);
+        ConcertCreateRequestDto requestDto = create(1L, scheduleInfos);
 
         List<Schedule> schedules = List.of(Schedule.create(LocalDate.of(2025, 6, 1)
                 , LocalTime.of(0, 0), 120, 1L));
@@ -143,13 +138,10 @@ class RegisterServiceTest {
     @DisplayName("createConcert - 같은 공연장에 공연 날짜가 같은 스케줄이 있다면, 콘서트 생성에 실패한다.")
     void 콘서트생성_실패_중복_날짜고정3() {
         //given
-        Venue venue = Venue.create("KSPO", 10000, new Address("서울", "강남", "11111"));
-        ReflectionTestUtils.setField(venue, "id", 1L);
-
         List<ScheduleInfo> scheduleInfos = List.of(new ScheduleInfo(LocalDate.of(2025, 6, 1),
                 LocalTime.of(19, 0)));
 
-        ConcertCreateRequestDto requestDto = create(venue.getId(), scheduleInfos);
+        ConcertCreateRequestDto requestDto = create(1L, scheduleInfos);
 
         List<Schedule> schedules = List.of(Schedule.create(LocalDate.of(2025, 6, 1)
                 , LocalTime.of(23, 59), 120, 1L));
@@ -166,13 +158,10 @@ class RegisterServiceTest {
     @DisplayName("createConcert - 같은 공연장에 공연 날짜가 같은 스케줄이 있다면, 콘서트 생성에 실패한다.")
     void 콘서트생성_실패_중복시간_시간고정1() {
         //given
-        Venue venue = Venue.create("KSPO", 10000, new Address("서울", "강남", "11111"));
-        ReflectionTestUtils.setField(venue, "id", 1L);
-
-        List<ScheduleInfo> scheduleInfos = List.of(new ScheduleInfo(LocalDate.of(2025, 6, 1),
+List<ScheduleInfo> scheduleInfos = List.of(new ScheduleInfo(LocalDate.of(2025, 6, 1),
                 LocalTime.of(19, 0)));
 
-        ConcertCreateRequestDto requestDto = create(venue.getId(), scheduleInfos);
+        ConcertCreateRequestDto requestDto = create(1L, scheduleInfos);
 
         List<Schedule> schedules = List.of(Schedule.create(LocalDate.of(2024, 6, 1)
                 , LocalTime.of(19, 0), 120, 1L));
@@ -190,13 +179,10 @@ class RegisterServiceTest {
     @DisplayName("createConcert - 같은 공연장에 공연 날짜가 같은 스케줄이 있다면, 콘서트 생성에 실패한다.")
     void 콘서트생성_실패_중복시간_시간고정2() {
         //given
-        Venue venue = Venue.create("KSPO", 10000, new Address("서울", "강남", "11111"));
-        ReflectionTestUtils.setField(venue, "id", 1L);
-
         List<ScheduleInfo> scheduleInfos = List.of(new ScheduleInfo(LocalDate.of(2025, 6, 1),
                 LocalTime.of(19, 0)));
 
-        ConcertCreateRequestDto requestDto = create(venue.getId(), scheduleInfos);
+        ConcertCreateRequestDto requestDto = create(1L, scheduleInfos);
 
         List<Schedule> schedules = List.of(Schedule.create(LocalDate.of(2025, 5, 1)
                 , LocalTime.of(19, 0), 120, 1L));
@@ -214,13 +200,10 @@ class RegisterServiceTest {
     @DisplayName("createConcert - 같은 공연장에 공연 날짜가 같은 스케줄이 있다면, 콘서트 생성에 실패한다.")
     void 콘서트생성_실패_중복시간_시간고정3() {
         //given
-        Venue venue = Venue.create("KSPO", 10000, new Address("서울", "강남", "11111"));
-        ReflectionTestUtils.setField(venue, "id", 1L);
-
         List<ScheduleInfo> scheduleInfos = List.of(new ScheduleInfo(LocalDate.of(2025, 6, 1),
                 LocalTime.of(19, 0)));
 
-        ConcertCreateRequestDto requestDto = create(venue.getId(), scheduleInfos);
+        ConcertCreateRequestDto requestDto = create(1L, scheduleInfos);
 
         List<Schedule> schedules = List.of(Schedule.create(LocalDate.of(2025, 6, 2)
                 , LocalTime.of(19, 0), 120, 1L));
@@ -233,6 +216,42 @@ class RegisterServiceTest {
         //when & then
         Assertions.assertThrows(ScheduleDuplicateException.class,
                 () -> registerService.createConcert(requestDto));
+    }
+
+    @Test
+    @DisplayName("createConcert - 같은 일정이 존재하지만, status = ScheduleStatus.CANCELED 면 제외되어 성공한다.")
+    void 콘서트생성_성공_CANCELED() {
+        //given
+        List<ScheduleInfo> scheduleInfos = List.of(
+                new ScheduleInfo(LocalDate.of(2025, 6, 1), LocalTime.of(19, 0)));
+        ConcertCreateRequestDto requestDto = create(1L, scheduleInfos);
+
+        Schedule canceledSchedule = Schedule.create(LocalDate.of(2025,6,1),
+                LocalTime.of(19,0), 120, 1L);
+        canceledSchedule.cancel();
+        List<Schedule> existingSchedules = List.of(canceledSchedule);
+
+        Concert concert = Concert.create(requestDto.getTitle(),
+                requestDto.getOverview(),
+                requestDto.getRunningTime(),
+                requestDto.getImgUrl(),
+                1L,
+                requestDto.toSectionEntities());
+        ReflectionTestUtils.setField(concert, "id", 1L);
+
+
+        BDDMockito.given(mockConcertRepo.save(any()))
+                .willReturn(concert);
+        BDDMockito.given(mockScheduleRepo.findByConcertDateAndVenueId(any(), any()))
+                .willReturn(existingSchedules);
+        BDDMockito.given(mockVenueRepo.findById(any()))
+                .willReturn(Optional.of(mock(Venue.class)));
+
+        //when
+        registerService.createConcert(requestDto);
+
+        //then
+        Assertions.assertDoesNotThrow(() -> registerService.createConcert(requestDto));
     }
 
     private ConcertCreateRequestDto create(Long venueId, List<ScheduleInfo> scheduleInfos) {
