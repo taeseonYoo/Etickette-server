@@ -25,7 +25,7 @@ public class RegisterService {
         Venue venue = venueRepository.findById(requestDto.getVenueId())
                 .orElseThrow(() -> new VenueNotFoundException("공연장을 찾을 수 없습니다"));
 
-        List<Grade> grades = requestDto.toSectionEntities();
+        List<GradePrice> gradePrices = requestDto.toSectionEntities();
 
         //콘서트 생성
         Concert concert = Concert.create(requestDto.getTitle(),
@@ -33,7 +33,7 @@ public class RegisterService {
                 requestDto.getRunningTime(),
                 requestDto.getImgUrl(),
                 requestDto.getVenueId(),
-                grades);
+                gradePrices);
 
         List<Schedule> schedules = requestDto.toScheduleEntities();
 

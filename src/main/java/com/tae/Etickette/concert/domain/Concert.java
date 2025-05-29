@@ -1,13 +1,10 @@
 package com.tae.Etickette.concert.domain;
 
-import com.tae.Etickette.schedule.domain.Schedule;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -34,7 +31,7 @@ public class Concert {
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "grade",
     joinColumns = @JoinColumn(name = "concert_number"))
-    private List<Grade> grades;
+    private List<GradePrice> gradePrices;
 
     /**
      * 연관관계
@@ -42,7 +39,7 @@ public class Concert {
     private Long venueId;
 
 
-    public Concert(String title, String overview, Integer runningTime, String imgURL, Long venueId, List<Grade> grades) {
+    public Concert(String title, String overview, Integer runningTime, String imgURL, Long venueId, List<GradePrice> gradePrices) {
         this.title = title;
         this.overview = overview;
         this.runningTime = runningTime;
@@ -50,13 +47,13 @@ public class Concert {
         this.status = ConcertStatus.BEFORE;
         this.venueId = venueId;
 
-        this.grades = grades;
+        this.gradePrices = gradePrices;
         //연관관계 설정
     }
 
     public static Concert create(String title, String overview, Integer runningTime, String imgURL, Long venueId
-            , List<Grade> grades) {
-        return new Concert(title, overview, runningTime, imgURL, venueId, grades);
+            , List<GradePrice> gradePrices) {
+        return new Concert(title, overview, runningTime, imgURL, venueId, gradePrices);
     }
 
 

@@ -1,5 +1,6 @@
 package com.tae.Etickette.concert.domain;
 
+import com.tae.Etickette.booking.Money;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -8,11 +9,11 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Grade {
+public class GradePrice {
     private String grade;
-    private Integer price;
+    private Money price;
 
-    public Grade(String grade, Integer price) {
+    public GradePrice(String grade, Money price) {
         this.grade = grade;
         this.price = price;
     }
