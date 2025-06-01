@@ -1,5 +1,6 @@
 package com.tae.Etickette.booking;
 
+import com.tae.Etickette.concert.domain.Seat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,9 +28,5 @@ public class BookingRequestDto {
         private String grade;
         private String row;
         private Integer column;
-
-        public Seat toSeat() {
-            return new Seat(this.row, this.column);
-        }
     }
 }

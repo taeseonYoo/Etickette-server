@@ -23,6 +23,13 @@ public class Venue {
     @Enumerated(value = EnumType.STRING)
     private VenueStatus status;
 
+    @OneToMany(mappedBy = "venue")
+    List<Seat> seats = new ArrayList<>();
+
+    public void addSeats(List<Seat> seats) {
+        this.seats = seats;
+    }
+
     private Venue(String place, Integer capacity,Address address) {
         this.place = place;
         this.capacity = capacity;

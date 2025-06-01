@@ -3,6 +3,7 @@ package com.tae.Etickette.concert.application;
 import com.tae.Etickette.concert.application.Dto.VenueCreateRequestDto;
 import com.tae.Etickette.concert.application.Dto.VenueCreateResponseDto;
 import com.tae.Etickette.concert.domain.Address;
+import com.tae.Etickette.concert.domain.Seat;
 import com.tae.Etickette.concert.domain.Venue;
 import com.tae.Etickette.concert.infra.VenueRepository;
 import org.junit.jupiter.api.Assertions;
@@ -12,6 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
 import org.mockito.Mockito;
 import org.springframework.dao.DuplicateKeyException;
+
+import java.util.List;
 import java.util.Optional;
 
 import static com.tae.Etickette.concert.application.Dto.VenueCreateRequestDto.*;

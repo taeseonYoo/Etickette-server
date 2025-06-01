@@ -1,5 +1,6 @@
 package com.tae.Etickette.integration.service;
 
+import com.tae.Etickette.TicketRepository;
 import com.tae.Etickette.concert.application.ConcertCreateRequestDto;
 import com.tae.Etickette.concert.application.RegisterService;
 import com.tae.Etickette.concert.domain.Address;
@@ -7,6 +8,7 @@ import com.tae.Etickette.concert.domain.Concert;
 import com.tae.Etickette.concert.domain.Venue;
 import com.tae.Etickette.concert.infra.ConcertRepository;
 import com.tae.Etickette.concert.infra.VenueRepository;
+import com.tae.Etickette.schedule.domain.Ticket;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.assertj.core.api.Assertions;
@@ -34,6 +36,8 @@ public class RegisterServiceTest {
     private VenueRepository venueRepository;
     @Autowired
     private ConcertRepository concertRepository;
+    @Autowired
+    private TicketRepository ticketRepository;
     @PersistenceContext
     EntityManager em;
 
@@ -72,6 +76,11 @@ public class RegisterServiceTest {
 
         //when
         Long savedId = registerService.createConcert(requestDto);
+
+        List<Ticket> byScheduleId = ticketRepository.findByScheduleId(savedId);
+        for (Ticket ticket : byScheduleId) {
+            System.out.println(ticket.getSeatId());
+        }
 
         //then
         Assertions.assertThat(concertRepository.findById(savedId)).isPresent();

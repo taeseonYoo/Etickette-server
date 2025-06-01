@@ -33,9 +33,7 @@ public class Schedule {
     private Schedule(LocalDate concertDate, LocalTime startTime, Integer runningTime, Long concertId) {
         this.concertDate = concertDate;
         this.startTime = startTime;
-
         calculateEndTime(startTime, runningTime);
-
         this.status = ScheduleStatus.BEFORE;
         this.concertId = concertId;
     }
@@ -44,6 +42,7 @@ public class Schedule {
         return new Schedule(concertDate, startTime, runningTime, concertId);
     }
 
+    //공연 종료시간을 계산한다.
     private void calculateEndTime(LocalTime startTime, Integer runningTime) {
         this.endTime = startTime.plusMinutes(runningTime);
     }
@@ -58,5 +57,6 @@ public class Schedule {
     public void cancel() {
         this.status = ScheduleStatus.CANCELED;
     }
+
 
 }

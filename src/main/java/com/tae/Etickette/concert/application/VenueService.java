@@ -2,6 +2,7 @@ package com.tae.Etickette.concert.application;
 
 import com.tae.Etickette.concert.application.Dto.VenueCreateRequestDto;
 import com.tae.Etickette.concert.application.Dto.VenueCreateResponseDto;
+import com.tae.Etickette.concert.domain.Seat;
 import com.tae.Etickette.concert.domain.Venue;
 import com.tae.Etickette.concert.domain.VenueStatus;
 import com.tae.Etickette.concert.infra.VenueRepository;
@@ -10,6 +11,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,6 +41,9 @@ public class VenueService {
 
         Venue savedVenue = venueRepository.save(venue);
 
+        List<Seat> seats = initSeat(venue);
+        savedVenue.addSeats(seats);
+
         return VenueCreateResponseDto.builder()
                 .id(savedVenue.getId())
                 .place(savedVenue.getPlace())
@@ -56,6 +61,30 @@ public class VenueService {
         Venue findVenue = findById(venueId);
 
         findVenue.deleteVenue();
+    }
+
+
+    private List<Seat> initSeat(Venue venue) {
+
+        List<Seat> init = new ArrayList<>();
+
+        int count = 0;
+        for (int i = 0; i < 5; i++) {
+            for (int j = 1; j <= 10; j++) {
+                init.add(Seat.create(String.valueOf((char)('A' + i)), j, "VIP", venue));
+            }
+        }
+        for (int i = 0; i < 5; i++) {
+            for (int j = 1; j <= 10; j++) {
+                init.add(Seat.create(String.valueOf((char)('F' + i)), j, "S", venue));
+            }
+        }
+        for (int i = 0; i < 5; i++) {
+            for (int j = 1; j <= 10; j++) {
+                init.add(Seat.create(String.valueOf((char)('K' + i)), j, "R", venue));
+            }
+        }
+        return init;
     }
 
 }
