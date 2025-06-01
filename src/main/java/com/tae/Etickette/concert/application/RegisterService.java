@@ -1,12 +1,12 @@
 package com.tae.Etickette.concert.application;
 
-import com.tae.Etickette.TicketRepository;
 import com.tae.Etickette.concert.domain.*;
 import com.tae.Etickette.concert.infra.ConcertRepository;
 import com.tae.Etickette.concert.infra.VenueRepository;
-import com.tae.Etickette.schedule.domain.Schedule;
-import com.tae.Etickette.schedule.domain.Ticket;
-import com.tae.Etickette.schedule.infra.ScheduleRepository;
+import com.tae.Etickette.session.domain.Session;
+import com.tae.Etickette.session.infra.SessionRepository;
+import com.tae.Etickette.venue.application.VenueNotFoundException;
+import com.tae.Etickette.venue.domain.Venue;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,8 +19,7 @@ import java.util.List;
 public class RegisterService {
     private final ConcertRepository concertRepository;
     private final VenueRepository venueRepository;
-    private final ScheduleRepository scheduleRepository;
-    private final TicketRepository ticketRepository;
+    private final SessionRepository sessionRepository;
 
 
     @Transactional
@@ -39,27 +38,11 @@ public class RegisterService {
                 requestDto.getVenueId(),
                 gradePrices);
 
-        List<Schedule> schedules = requestDto.toScheduleEntities();
-
-        //공연장 별 스케줄 일정 검증
-        for (Schedule schedule : schedules) {
-            List<Schedule> findSchedules = scheduleRepository
-                    .findByConcertDateAndVenueId(schedule.getConcertDate(), venue.getId())
-                    .stream()
-                    .filter(Schedule::isActive)
-                    .toList();
-
-            if (!findSchedules.isEmpty()) {
-                throw new ScheduleDuplicateException();
-            }
-            scheduleRepository.save(schedule);
+        List<Session> sessions = requestDto.toScheduleEntities();
 
 
-            for (Seat seat : seats) {
-                ticketRepository.save(new Ticket(schedule.getId(), seat.getId()));
-            }
 
-        }
+
 
         //콘서트 저장
         Concert savedConcert = concertRepository.save(concert);

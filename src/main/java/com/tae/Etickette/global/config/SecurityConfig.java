@@ -1,6 +1,6 @@
 package com.tae.Etickette.global.config;
 
-import com.tae.Etickette.refresh.application.RefreshTokenService;
+import com.tae.Etickette.global.refresh.application.RefreshTokenService;
 import com.tae.Etickette.global.auth.CustomLogoutFilter;
 import com.tae.Etickette.global.jwt.JWTFilter;
 import com.tae.Etickette.global.jwt.JWTUtil;

@@ -1,5 +1,6 @@
 package com.tae.Etickette.concert.domain;
 
+import com.tae.Etickette.venue.domain.Venue;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
