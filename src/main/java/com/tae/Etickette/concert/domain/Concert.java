@@ -16,16 +16,17 @@ public class Concert {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "concert_id")
     private Long id;
+
     @Column(nullable = false)
     private String title;
     @Column(nullable = false)
     private String overview;
-
     @Column(nullable = false)
     private Integer runningTime;
     @Column
     private String ImgURL;
-    @Column
+
+    @Enumerated(value = EnumType.STRING)
     private ConcertStatus status;
 
     @ElementCollection(fetch = FetchType.LAZY)
@@ -36,24 +37,20 @@ public class Concert {
     /**
      * 연관관계
      */
-    private Long venueId;
 
-
-    public Concert(String title, String overview, Integer runningTime, String imgURL, Long venueId, List<GradePrice> gradePrices) {
+    public Concert(String title, String overview, Integer runningTime, String imgURL,  List<GradePrice> gradePrices) {
         this.title = title;
         this.overview = overview;
         this.runningTime = runningTime;
         this.ImgURL = imgURL;
         this.status = ConcertStatus.BEFORE;
-        this.venueId = venueId;
 
         this.gradePrices = gradePrices;
         //연관관계 설정
     }
 
-    public static Concert create(String title, String overview, Integer runningTime, String imgURL, Long venueId
-            , List<GradePrice> gradePrices) {
-        return new Concert(title, overview, runningTime, imgURL, venueId, gradePrices);
+    public static Concert create(String title, String overview, Integer runningTime, String imgURL, List<GradePrice> gradePrices) {
+        return new Concert(title, overview, runningTime, imgURL, gradePrices);
     }
 
 

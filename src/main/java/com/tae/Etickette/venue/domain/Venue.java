@@ -1,12 +1,9 @@
 package com.tae.Etickette.venue.domain;
 
 import com.tae.Etickette.concert.domain.Address;
-import com.tae.Etickette.concert.domain.Seat;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -25,12 +22,7 @@ public class Venue {
     @Enumerated(value = EnumType.STRING)
     private VenueStatus status;
 
-    @OneToMany(mappedBy = "venue")
-    List<Seat> seats = new ArrayList<>();
 
-    public void addSeats(List<Seat> seats) {
-        this.seats = seats;
-    }
 
     private Venue(String place, Integer capacity,Address address) {
         this.place = place;

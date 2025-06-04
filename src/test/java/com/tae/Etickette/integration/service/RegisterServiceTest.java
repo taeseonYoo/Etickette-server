@@ -7,7 +7,7 @@ import com.tae.Etickette.concert.domain.Address;
 import com.tae.Etickette.concert.domain.Concert;
 import com.tae.Etickette.venue.domain.Venue;
 import com.tae.Etickette.concert.infra.ConcertRepository;
-import com.tae.Etickette.concert.infra.VenueRepository;
+import com.tae.Etickette.venue.infra.VenueRepository;
 import com.tae.Etickette.session.domain.Ticket;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;

@@ -5,7 +5,7 @@
 //import com.tae.Etickette.venue.application.VenueNotFoundException;
 //import com.tae.Etickette.venue.domain.Venue;
 //import com.tae.Etickette.concert.infra.ConcertRepository;
-//import com.tae.Etickette.concert.infra.VenueRepository;
+//import com.tae.Etickette.venue.infra.VenueRepository;
 //import com.tae.Etickette.session.domain.Session;
 //import com.tae.Etickette.session.infra.SessionRepository;
 //import org.junit.jupiter.api.Assertions;
