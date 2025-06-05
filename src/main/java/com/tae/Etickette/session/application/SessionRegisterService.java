@@ -1,7 +1,7 @@
 package com.tae.Etickette.session.application;
 
 import com.tae.Etickette.session.application.Dto.SessionRegisterReqDto;
-import com.tae.Etickette.session.domain.Seat;
+import com.tae.Etickette.common.model.Seat;
 import com.tae.Etickette.session.domain.Session;
 import com.tae.Etickette.session.infra.SessionRepository;
 import lombok.RequiredArgsConstructor;

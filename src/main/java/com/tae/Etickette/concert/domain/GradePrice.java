@@ -1,7 +1,7 @@
 package com.tae.Etickette.concert.domain;
 
-import com.tae.Etickette.Money;
-import com.tae.Etickette.MoneyConverter;
+import com.tae.Etickette.common.model.Money;
+import com.tae.Etickette.common.jpa.MoneyConverter;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

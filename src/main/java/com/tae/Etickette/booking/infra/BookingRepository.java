@@ -1,7 +1,7 @@
-package com.tae.Etickette.Booking;
+package com.tae.Etickette.booking.infra;
 
-import com.tae.Etickette.Booking.domain.Booking;
-import com.tae.Etickette.Booking.domain.BookingRef;
+import com.tae.Etickette.booking.domain.Booking;
+import com.tae.Etickette.booking.domain.BookingRef;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

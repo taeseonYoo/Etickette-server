@@ -1,5 +1,6 @@
 package com.tae.Etickette.session.domain;
 
+import com.tae.Etickette.common.model.Seat;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.tae.Etickette.Booking.domain;
+package com.tae.Etickette.booking.domain;
 
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;

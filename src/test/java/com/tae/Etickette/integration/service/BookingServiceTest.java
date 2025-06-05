@@ -1,12 +1,11 @@
 package com.tae.Etickette.integration.service;
 
-import com.tae.Etickette.session.application.BookingRequestDto;
-import com.tae.Etickette.session.application.BookingService;
+import com.tae.Etickette.booking.application.Dto.BookingRequestDto;
+import com.tae.Etickette.booking.application.BookingService;
 import com.tae.Etickette.session.application.Dto.SessionRegisterReqDto;
 import com.tae.Etickette.session.application.SessionRegisterService;
 import com.tae.Etickette.session.domain.Session;
 import com.tae.Etickette.session.infra.SessionRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Optional;
 
-import static com.tae.Etickette.session.application.BookingRequestDto.*;
+import static com.tae.Etickette.booking.application.Dto.BookingRequestDto.*;
 
 
 @SpringBootTest

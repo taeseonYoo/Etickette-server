@@ -1,6 +1,6 @@
 package com.tae.Etickette.concert;
 
-import com.tae.Etickette.Money;
+import com.tae.Etickette.common.model.Money;
 import com.tae.Etickette.concert.domain.Concert;
 import com.tae.Etickette.concert.domain.GradePrice;
 import com.tae.Etickette.concert.infra.ConcertRepository;

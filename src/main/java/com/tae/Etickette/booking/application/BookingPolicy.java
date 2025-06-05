@@ -1,13 +1,13 @@
-package com.tae.Etickette.Booking.domain;
+package com.tae.Etickette.booking.application;
 
-import com.tae.Etickette.session.domain.Seat;
+import com.tae.Etickette.common.model.Seat;
 import com.tae.Etickette.session.domain.Session;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
-public class DefaultBookingPolicy implements BookingPolicy{
+public class BookingPolicy implements BookingPolicy{
 
     @Override
     public void verifySeatsNotAlreadyBooked(Session session, List<Seat> bookedSeats, List<Seat> requestSeats) {
