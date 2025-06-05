@@ -35,16 +35,13 @@ public class Session {
     private Long concertId;
     @Column
     private Long venueId;
-    //예약 목록
-    @ElementCollection
-    @CollectionTable(name = "session_booking",joinColumns = @JoinColumn(name = "session_id"))
-    private List<Booking> bookings = new ArrayList<>();
+
     //좌석 정보
     @ElementCollection
     @CollectionTable(name = "session_seat", joinColumns = @JoinColumn(name = "session_id"))
     private List<Seat> seatingPlan = new ArrayList<>();
 
-    private Session(LocalDate concertDate, LocalTime startTime, Integer runningTime, Long concertId,Long venueId,List<Seat> seatingPlan) {
+    private Session(LocalDate concertDate, LocalTime startTime, Integer runningTime, Long concertId, Long venueId, List<Seat> seatingPlan) {
         this.concertDate = concertDate;
         this.startTime = startTime;
         calculateEndTime(startTime, runningTime);
@@ -64,31 +61,12 @@ public class Session {
         this.endTime = startTime.plusMinutes(runningTime);
     }
 
-    public void book(Long memberId, List<Seat> requestedSeats) {
-        //좌석이 예매 가능한 지 검사한다.
-        List<Seat> existSeats = verifySeatsExist(requestedSeats);
-        //좌석이 유효한 지 검사한다.
-        List<Seat> seats = verifySeatsAreFree(existSeats);
-
-        Booking booking = new Booking(BookingRef.generate(), memberId, seats);
-        bookings.add(booking);
-    }
-    private List<Seat> verifySeatsExist(List<Seat> requestedSeats) {
+    public void verifySeatsExist(List<Seat> requestedSeats) {
         if (!seatingPlan.containsAll(requestedSeats)) {
             throw new RuntimeException();
         }
-        return requestedSeats;
     }
-    private List<Seat> verifySeatsAreFree(List<Seat> requestedSeats) {
-        List<Seat> alreadyBooked = bookings.stream()
-                .flatMap(b -> b.getSeats().stream())
-                .filter(requestedSeats::contains)
-                .toList();
-        if (!alreadyBooked.isEmpty()) {
-            throw new RuntimeException();
-        }
-        return requestedSeats;
-    }
+
 
     public boolean isActive() {
         return this.status == SessionStatus.BEFORE || this.status == SessionStatus.OPEN;
