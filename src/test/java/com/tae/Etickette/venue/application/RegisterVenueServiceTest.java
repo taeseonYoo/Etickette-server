@@ -1,37 +1,41 @@
-package com.tae.Etickette.concert.application;
+package com.tae.Etickette.venue.application;
 
+import com.tae.Etickette.concert.domain.Address;
 import com.tae.Etickette.venue.application.Dto.VenueCreateRequestDto;
 import com.tae.Etickette.venue.application.Dto.VenueCreateResponseDto;
-import com.tae.Etickette.concert.domain.Address;
-import com.tae.Etickette.venue.application.VenueService;
 import com.tae.Etickette.venue.domain.Venue;
 import com.tae.Etickette.venue.infra.VenueRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
+import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DuplicateKeyException;
 
 import java.util.Optional;
 
-import static com.tae.Etickette.venue.application.Dto.VenueCreateRequestDto.*;
-import static org.assertj.core.api.Assertions.*;
+import static com.tae.Etickette.venue.application.Dto.VenueCreateRequestDto.builder;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 
-@DisplayName("Unit - VenueService")
-class VenueServiceTest {
-    private VenueService venueService;
+@ExtendWith(MockitoExtension.class)
+@DisplayName("Unit - RegisterVenueService")
+class RegisterVenueServiceTest {
+    @InjectMocks
+    private RegisterVenueService registerVenueService;
     private final VenueRepository mockVenueRepo = mock(VenueRepository.class);
 
     @BeforeEach
     public void setup() {
-        venueService = new VenueService(mockVenueRepo);
+        registerVenueService = new RegisterVenueService(mockVenueRepo);
     }
 
     @Test
-    @DisplayName("createVenue - 공연장 등록에 성공한다.")
+    @DisplayName("register - 공연장 등록에 성공한다.")
     public void 공연장등록_성공() {
         //given
         VenueCreateRequestDto requestDto = builder()
@@ -47,13 +51,13 @@ class VenueServiceTest {
                 .willReturn(venue);
 
         //when
-        VenueCreateResponseDto responseDto = venueService.createVenue(requestDto);
+        VenueCreateResponseDto responseDto = registerVenueService.register(requestDto);
 
         //then
         assertThat(responseDto.getPlace()).isEqualTo("KSPO DOME");
     }
     @Test
-    @DisplayName("createVenue - 주소가 존재하면, 공연장 등록에 실패한다.")
+    @DisplayName("register - 주소가 존재하면, 공연장 등록에 실패한다.")
     public void 공연장등록_실패_주소가존재함() {
         //given
         VenueCreateRequestDto requestDto = builder()
@@ -61,14 +65,13 @@ class VenueServiceTest {
                 .capacity(10000)
                 .address(new Address("서울시", "송파구 올림픽로 424", "11111"))
                 .build();
-        Venue venue = requestDto.toEntity();
 
         BDDMockito.given(mockVenueRepo.findVenueByAddress(any()))
                 .willReturn(Optional.of(mock(Venue.class)));
 
         //when & then
         Assertions.assertThrows(DuplicateKeyException.class,
-                () -> venueService.createVenue(requestDto));
+                () -> registerVenueService.register(requestDto));
     }
 
 }

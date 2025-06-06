@@ -22,8 +22,6 @@ public class Venue {
     @Enumerated(value = EnumType.STRING)
     private VenueStatus status;
 
-
-
     private Venue(String place, Integer capacity,Address address) {
         this.place = place;
         this.capacity = capacity;
@@ -32,18 +30,9 @@ public class Venue {
     public static Venue create(String place, Integer capacity,Address address) {
         return new Venue(place, capacity,address);
     }
-    public void deleteVenue() {
-        this.status = VenueStatus.DELETE;
-    }
-    public void updateCapacity(Integer capacity) {
-        if (capacity < 0) {
-            throw new IllegalArgumentException("총 좌석 수는 0보다 작을 수 없습니다.");
-        }
-        this.capacity = capacity;
-    }
 
     public void changeAddress(Address newAddress) {
-        verifyNotDelete();
+        verifyNotYetDelete();
         setAddress(newAddress);
     }
     private void setAddress(Address newAddress) {
@@ -52,12 +41,25 @@ public class Venue {
         }
         this.address = newAddress;
     }
-    private void verifyNotDelete() {
+    public void deleteVenue() {
+        verifyNotYetDelete();
+        this.status = VenueStatus.DELETE;
+    }
+    private void verifyNotYetDelete() {
         if (status == VenueStatus.DELETE) {
-            throw new VenueAlreadyDeletedException("삭제된 공연장의 주소는 수정할 수 없습니다.");
+            throw new VenueAlreadyDeletedException("이미 삭제된 공연장 입니다.");
         }
     }
 
 
+    public void changeCapacity(Integer capacity) {
+        verifyAtLeastOneCapacity();
+        this.capacity = capacity;
+    }
 
+    private void verifyAtLeastOneCapacity() {
+        if (capacity < 0) {
+            throw new IllegalArgumentException("총 좌석 수는 0보다 작을 수 없습니다.");
+        }
+    }
 }
