@@ -2,8 +2,8 @@ package com.tae.Etickette.integration.service;
 
 import com.tae.Etickette.booking.application.Dto.BookingRequestDto;
 import com.tae.Etickette.booking.application.BookingService;
-import com.tae.Etickette.session.application.Dto.SessionRegisterReqDto;
-import com.tae.Etickette.session.application.SessionRegisterService;
+import com.tae.Etickette.session.application.Dto.RegisterSessionReqDto;
+import com.tae.Etickette.session.application.RegisterSessionService;
 import com.tae.Etickette.session.domain.Session;
 import com.tae.Etickette.session.infra.SessionRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +17,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 import static com.tae.Etickette.booking.application.Dto.BookingRequestDto.*;
+import static com.tae.Etickette.session.application.Dto.RegisterSessionReqDto.*;
 
 
 @SpringBootTest
@@ -26,15 +27,18 @@ class BookingServiceTest {
     private BookingService bookingService;
 
     @Autowired
-    private SessionRegisterService sessionRegisterService;
+    private RegisterSessionService registerSessionService;
 
     @Autowired
     private SessionRepository sessionRepository;
 
     @BeforeEach
     public void setUp() {
-        SessionRegisterReqDto requestDto = new SessionRegisterReqDto(LocalDate.of(2025, 6, 1), LocalTime.of(14, 0), 120, 1L, 1L);
-        sessionRegisterService.registerSession(requestDto);
+        List<SessionInfo> sessionInfos = List.of(SessionInfo.builder()
+                .concertDate(LocalDate.of(2025, 6, 1)).startTime(LocalTime.of(15, 0))
+                .build());
+        RegisterSessionReqDto requestDto = new RegisterSessionReqDto(1L, 1L, sessionInfos);
+        registerSessionService.register(requestDto);
     }
 
     @Test
@@ -42,7 +46,7 @@ class BookingServiceTest {
         //given
         List<SeatInfo> requestSeats = List.of(new SeatInfo("A", 1), new SeatInfo("E", 10));
 
-        BookingRequestDto requestDto = builder()
+        BookingRequestDto requestDto = BookingRequestDto.builder()
                 .memberId(1L)
                 .sessionId(1L)
                 .seatInfos(requestSeats)

@@ -1,6 +1,6 @@
 package com.tae.Etickette.booking.application;
 
-import com.tae.Etickette.common.model.Seat;
+import com.tae.Etickette.global.model.Seat;
 import com.tae.Etickette.session.domain.Session;
 import org.springframework.stereotype.Component;
 

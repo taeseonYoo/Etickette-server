@@ -3,7 +3,7 @@ package com.tae.Etickette.booking.application;
 import com.tae.Etickette.booking.infra.BookingRepository;
 import com.tae.Etickette.booking.domain.Booking;
 import com.tae.Etickette.booking.application.Dto.BookingRequestDto;
-import com.tae.Etickette.common.model.Seat;
+import com.tae.Etickette.global.model.Seat;
 import com.tae.Etickette.session.domain.Session;
 import com.tae.Etickette.session.infra.SessionRepository;
 import lombok.RequiredArgsConstructor;

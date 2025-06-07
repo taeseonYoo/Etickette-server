@@ -1,4 +1,4 @@
-package com.tae.Etickette.common.model;
+package com.tae.Etickette.global.model;
 
 import lombok.Getter;
 

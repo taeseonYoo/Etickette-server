@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -15,8 +17,11 @@ import java.util.UUID;
 public class BookingRef implements Serializable {
     private String value;
 
+
     public static BookingRef generate() {
-        return new BookingRef(UUID.randomUUID().toString().substring(0, 5));
+        LocalDate today = LocalDate.now();
+        String format = today.format(DateTimeFormatter.ofPattern("MMdd"));
+        return new BookingRef(format + UUID.randomUUID().toString().substring(0, 5));
     }
     public BookingRef(String value) {
         this.value = value;

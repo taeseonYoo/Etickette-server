@@ -1,6 +1,6 @@
-package com.tae.Etickette.common.jpa;
+package com.tae.Etickette.global.jpa;
 
-import com.tae.Etickette.common.model.Money;
+import com.tae.Etickette.global.model.Money;
 import jakarta.persistence.AttributeConverter;
 
 public class MoneyConverter implements AttributeConverter<Money, Integer> {

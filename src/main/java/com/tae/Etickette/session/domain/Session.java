@@ -1,6 +1,7 @@
 package com.tae.Etickette.session.domain;
 
-import com.tae.Etickette.common.model.Seat;
+import com.tae.Etickette.global.event.Events;
+import com.tae.Etickette.global.model.Seat;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -42,19 +43,18 @@ public class Session {
     @CollectionTable(name = "session_seat", joinColumns = @JoinColumn(name = "session_id"))
     private List<Seat> seatingPlan = new ArrayList<>();
 
-    private Session(LocalDate concertDate, LocalTime startTime, Integer runningTime, Long concertId, Long venueId, List<Seat> seatingPlan) {
+    private Session(LocalDate concertDate, LocalTime startTime, Integer runningTime, Long concertId, Long venueId) {
         this.concertDate = concertDate;
         this.startTime = startTime;
         calculateEndTime(startTime, runningTime);
         this.status = SessionStatus.BEFORE;
         this.concertId = concertId;
         this.venueId = venueId;
-        this.seatingPlan = seatingPlan;
+        initSeatingPlan();
     }
 
-    public static Session create(LocalDate concertDate, LocalTime startTime, Integer runningTime, Long concertId,Long venueId,
-                                 List<Seat> seatingPlan) {
-        return new Session(concertDate, startTime, runningTime, concertId, venueId, seatingPlan);
+    public static Session create(LocalDate concertDate, LocalTime startTime, Integer runningTime, Long concertId,Long venueId) {
+        return new Session(concertDate, startTime, runningTime, concertId, venueId);
     }
 
     //공연 종료시간을 계산한다.
@@ -68,6 +68,12 @@ public class Session {
         }
     }
 
+    public void initSeatingPlan() {
+        for (int i = 1; i <= 50; i++) {
+            seatingPlan.add(new Seat(String.valueOf((char) ('A' + (i - 1) / 10)), ((i - 1) % 10) + 1, "VIP"));
+        }
+    }
+
 
     public boolean isActive() {
         return this.status == SessionStatus.BEFORE || this.status == SessionStatus.OPEN;
@@ -77,7 +83,18 @@ public class Session {
         this.status = SessionStatus.OPEN;
     }
     public void cancel() {
+        verifyNotYetStarted();
         this.status = SessionStatus.CANCELED;
+        Events.raise(new SessionCanceledEvent(this.getId()));
+    }
+
+    private void verifyNotYetStarted() {
+        if (!isNotYetStarted())
+            throw new AlreadyStartedException("이미 시작 된 공연입니다.");
+    }
+
+    private boolean isNotYetStarted() {
+        return status ==  SessionStatus.BEFORE || status ==  SessionStatus.OPEN || status ==  SessionStatus.COMPLETED;
     }
 
 
