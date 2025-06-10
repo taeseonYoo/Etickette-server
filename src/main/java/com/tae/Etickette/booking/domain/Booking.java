@@ -1,5 +1,7 @@
 package com.tae.Etickette.booking.domain;
 
+import com.tae.Etickette.global.jpa.MoneyConverter;
+import com.tae.Etickette.global.model.Money;
 import com.tae.Etickette.global.model.Seat;
 import com.tae.Etickette.session.domain.AlreadyStartedException;
 import com.tae.Etickette.session.domain.SessionStatus;
@@ -25,6 +27,9 @@ public class Booking {
     @Enumerated(value = EnumType.STRING)
     private BookingStatus status;
 
+    @Convert(converter = MoneyConverter.class)
+    private Money totalAmounts;
+
 //    private Long paymentId;
 
     @ElementCollection
@@ -37,12 +42,22 @@ public class Booking {
         this.memberId = memberId;
         this.sessionId = sessionId;
         verifySeatsAllowedPerBooking(seats);
-        this.seats = seats;
+        setSeats(seats);
         status = BookingStatus.BEFORE_PAY;
     }
 
     public static Booking create(Long memberId, Long sessionId, List<Seat> seats) {
         return new Booking(memberId, sessionId, seats);
+    }
+
+    private void setSeats(List<Seat> seats) {
+        this.seats = seats;
+        calculateTotalAmounts();
+    }
+
+    private void calculateTotalAmounts() {
+        this.totalAmounts = new Money(seats.stream()
+                .mapToInt(x -> x.getPrice().getValue()).sum());
     }
 
     public void cancel() {
