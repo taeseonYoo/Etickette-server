@@ -1,6 +1,6 @@
 package com.tae.Etickette.session.application;
 
-import com.tae.Etickette.concert.ConcertNotFoundException;
+import com.tae.Etickette.session.ConcertNotFoundException;
 import com.tae.Etickette.concert.domain.Concert;
 import com.tae.Etickette.concert.infra.ConcertRepository;
 import com.tae.Etickette.global.model.Seat;

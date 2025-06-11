@@ -3,7 +3,7 @@ package com.tae.Etickette.booking.application;
 import com.tae.Etickette.booking.domain.BookingRef;
 import com.tae.Etickette.booking.infra.BookingRepository;
 import com.tae.Etickette.booking.domain.Booking;
-import com.tae.Etickette.booking.application.Dto.BookingRequestDto;
+import com.tae.Etickette.booking.application.Dto.BookingRequest;
 import com.tae.Etickette.global.model.Seat;
 import com.tae.Etickette.session.domain.Session;
 import com.tae.Etickette.session.infra.SessionRepository;
@@ -22,7 +22,7 @@ public class BookingService {
     private final SessionRepository sessionRepository;
     private final BookingRepository bookingRepository;
     @Transactional
-    public BookingRef booking(BookingRequestDto requestDto) {
+    public BookingRef booking(BookingRequest requestDto) {
 
         Session session = sessionRepository.findById(requestDto.getSessionId()).orElseThrow(() ->
                 new SessionNotFoundException("세션을 찾을 수 없습니다."));

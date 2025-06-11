@@ -1,4 +1,4 @@
-package com.tae.Etickette.concert;
+package com.tae.Etickette.concert.application.dto;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -6,7 +6,7 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class ConcertRegisterReqDto {
+public class RegisterConcertRequest {
 
     private final String title;
     private final String overview;
@@ -14,7 +14,7 @@ public class ConcertRegisterReqDto {
     private final String ImgURL;
     private final List<GradePriceInfo> gradePrices;
     @Builder
-    public ConcertRegisterReqDto(String title, String overview, Integer runningTime, String imgURL, List<GradePriceInfo> gradePrices) {
+    public RegisterConcertRequest(String title, String overview, Integer runningTime, String imgURL, List<GradePriceInfo> gradePrices) {
         this.title = title;
         this.overview = overview;
         this.runningTime = runningTime;

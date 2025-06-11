@@ -1,7 +1,7 @@
 package com.tae.Etickette.venue.application;
 
-import com.tae.Etickette.venue.application.Dto.VenueCreateRequestDto;
-import com.tae.Etickette.venue.application.Dto.VenueCreateResponseDto;
+import com.tae.Etickette.venue.application.Dto.VenueCreateRequest;
+import com.tae.Etickette.venue.application.Dto.VenueCreateResponse;
 import com.tae.Etickette.venue.domain.Venue;
 import com.tae.Etickette.venue.infra.VenueRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ import static com.tae.Etickette.venue.application.VenueServiceHelper.*;
 public class RegisterVenueService {
     private final VenueRepository venueRepository;
 
-    public VenueCreateResponseDto register(VenueCreateRequestDto requestDto) {
+    public VenueCreateResponse register(VenueCreateRequest requestDto) {
         //중복 검사
         verifyDuplicateAddress(venueRepository,requestDto.getAddress());
         Venue venue = requestDto.toEntity();
@@ -25,7 +25,7 @@ public class RegisterVenueService {
         Venue savedVenue = venueRepository.save(venue);
 
 
-        return VenueCreateResponseDto.builder()
+        return VenueCreateResponse.builder()
                 .id(savedVenue.getId())
                 .place(savedVenue.getPlace())
                 .capacity(savedVenue.getCapacity())

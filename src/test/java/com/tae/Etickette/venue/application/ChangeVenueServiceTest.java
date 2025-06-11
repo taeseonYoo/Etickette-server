@@ -1,7 +1,7 @@
 package com.tae.Etickette.venue.application;
 
 import com.tae.Etickette.concert.domain.Address;
-import com.tae.Etickette.venue.application.Dto.ChangeAddressRequestDto;
+import com.tae.Etickette.venue.application.Dto.ChangeAddressRequest;
 import com.tae.Etickette.venue.domain.Venue;
 import com.tae.Etickette.venue.infra.VenueRepository;
 import org.junit.jupiter.api.Assertions;
@@ -11,14 +11,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DuplicateKeyException;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 
@@ -41,7 +39,7 @@ class ChangeVenueServiceTest {
         //given
         Venue venue = Venue.create("KSPO", 15000, new Address("서울시", "송파구 올림픽로 424", "11111"));
 
-        ChangeAddressRequestDto requestDto = ChangeAddressRequestDto.builder()
+        ChangeAddressRequest requestDto = ChangeAddressRequest.builder()
                 .venueId(1L)
                 .city("서울시")
                 .street("관악구 난곡로 242")
@@ -63,7 +61,7 @@ class ChangeVenueServiceTest {
     @DisplayName("changeAddress - 공연장이 없다면, 공연장 주소 변경에 실패한다.")
     void 주소변경_실패_공연장없음() {
         //given
-        ChangeAddressRequestDto requestDto = ChangeAddressRequestDto.builder()
+        ChangeAddressRequest requestDto = ChangeAddressRequest.builder()
                 .venueId(1L)
                 .city("서울시")
                 .street("관악구 난곡로 242")
@@ -80,7 +78,7 @@ class ChangeVenueServiceTest {
     @DisplayName("changeAddress - 같은 주소를 사용하는 공연장이 있다면, 공연장 주소 변경에 실패한다.")
     void 주소변경_실패_주소가이미존재함() {
         //given
-        ChangeAddressRequestDto requestDto = ChangeAddressRequestDto.builder()
+        ChangeAddressRequest requestDto = ChangeAddressRequest.builder()
                 .venueId(1L)
                 .city("서울시")
                 .street("관악구 난곡로 242")

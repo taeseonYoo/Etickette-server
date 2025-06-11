@@ -1,9 +1,10 @@
 package com.tae.Etickette.session.application;
 
-import com.tae.Etickette.concert.ConcertNotFoundException;
+import com.tae.Etickette.session.ConcertNotFoundException;
 import com.tae.Etickette.concert.domain.Concert;
 import com.tae.Etickette.concert.infra.ConcertRepository;
 import com.tae.Etickette.session.application.Dto.RegisterSessionReqDto;
+import com.tae.Etickette.session.domain.SettingSeatService;
 import com.tae.Etickette.session.infra.SessionRepository;
 import com.tae.Etickette.venue.application.VenueNotFoundException;
 import com.tae.Etickette.venue.domain.Venue;
@@ -35,10 +36,12 @@ class RegisterSessionServiceTest {
     private final VenueRepository venueRepository = mock(VenueRepository.class);
     private final ConcertRepository concertRepository = mock(ConcertRepository.class);
 
+    private final SettingSeatService settingSeatService = mock(SettingSeatService.class);
+
     RegisterSessionReqDto requestDto;
     @BeforeEach
     void setUp() {
-        registerSessionService = new RegisterSessionService(sessionRepository, venueRepository, concertRepository);
+        registerSessionService = new RegisterSessionService(sessionRepository, venueRepository, concertRepository,settingSeatService);
 
         List<SessionInfo> sessionInfos = List.of(SessionInfo.builder().concertDate(LocalDate.of(2025, 6, 1))
                         .startTime(LocalTime.of(15, 0)).build(),

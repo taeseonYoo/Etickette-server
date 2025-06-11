@@ -4,11 +4,11 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class DeleteVenueReqDto {
+public class DeleteVenueRequest {
     private Long venueId;
 
     @Builder
-    public DeleteVenueReqDto(Long venueId) {
+    public DeleteVenueRequest(Long venueId) {
         this.venueId = venueId;
     }
 

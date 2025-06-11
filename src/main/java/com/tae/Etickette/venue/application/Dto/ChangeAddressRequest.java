@@ -4,14 +4,14 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class ChangeAddressRequestDto {
+public class ChangeAddressRequest {
     private Long venueId;
     private String city;
     private String street;
     private String zipcode;
 
     @Builder
-    public ChangeAddressRequestDto(Long venueId, String city, String street, String zipcode) {
+    public ChangeAddressRequest(Long venueId, String city, String street, String zipcode) {
         this.venueId = venueId;
         this.city = city;
         this.street = street;

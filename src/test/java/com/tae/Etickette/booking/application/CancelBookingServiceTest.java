@@ -3,6 +3,7 @@ package com.tae.Etickette.booking.application;
 import com.tae.Etickette.booking.domain.Booking;
 import com.tae.Etickette.booking.domain.CancelPolicy;
 import com.tae.Etickette.booking.infra.BookingRepository;
+import com.tae.Etickette.global.model.Money;
 import com.tae.Etickette.global.model.Seat;
 import com.tae.Etickette.member.MemberNotFoundException;
 import com.tae.Etickette.member.domain.Member;
@@ -44,7 +45,10 @@ class CancelBookingServiceTest {
     @DisplayName("cancelAll - 취소에 성공하면, 상태는 CANCELED_BOOKING 으로 변경된다.")
     void 전체취소_성공() {
         //given
-        List<Booking> bookings = List.of(new Booking(1L, 1L, List.of(new Seat("A", 1))), new Booking(1L, 1L, List.of(new Seat("B", 1))));
+        List<Booking> bookings = List.of(new Booking(1L, 1L,
+                        List.of(new Seat("A", 1, "VIP", new Money(150000)))),
+                new Booking(1L, 1L,
+                        List.of(new Seat("B", 1,"VIP", new Money(150000)))));
         BDDMockito.given(bookingRepository.findBySessionId(any())).willReturn(bookings);
 
         //when

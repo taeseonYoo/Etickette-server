@@ -8,14 +8,14 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Getter
-public class BookingRequestDto {
+public class BookingRequest {
     private Long sessionId;
     private Long memberId;
 
     private List<SeatInfo> seatInfos;
 
     @Builder
-    public BookingRequestDto(Long sessionId, Long memberId, List<SeatInfo> seatInfos) {
+    public BookingRequest(Long sessionId, Long memberId, List<SeatInfo> seatInfos) {
         this.sessionId = sessionId;
         this.memberId = memberId;
         this.seatInfos = seatInfos;

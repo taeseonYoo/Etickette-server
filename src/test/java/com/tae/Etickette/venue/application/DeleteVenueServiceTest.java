@@ -1,7 +1,7 @@
 package com.tae.Etickette.venue.application;
 
 import com.tae.Etickette.concert.domain.Address;
-import com.tae.Etickette.venue.application.Dto.DeleteVenueReqDto;
+import com.tae.Etickette.venue.application.Dto.DeleteVenueRequest;
 import com.tae.Etickette.venue.domain.Venue;
 import com.tae.Etickette.venue.domain.VenueStatus;
 import com.tae.Etickette.venue.infra.VenueRepository;
@@ -37,7 +37,7 @@ class DeleteVenueServiceTest {
     @DisplayName("delete - 공연장 삭제에 성공한다.")
     void 삭제_성공() {
         //given
-        DeleteVenueReqDto requestDto = DeleteVenueReqDto.builder().venueId(1L).build();
+        DeleteVenueRequest requestDto = DeleteVenueRequest.builder().venueId(1L).build();
         Venue venue = Venue.create("KSPO", 15000, new Address("서울시", "송파구 올림픽로 424", "11111"));
 
         BDDMockito.given(venueRepository.findById(any()))
@@ -54,7 +54,7 @@ class DeleteVenueServiceTest {
     @DisplayName("delete - 공연장이 없다면, 공연장 삭제에 실패한다.")
     void 삭제_실패_공연장이없음() {
         //given
-        DeleteVenueReqDto requestDto = DeleteVenueReqDto.builder().venueId(1L).build();
+        DeleteVenueRequest requestDto = DeleteVenueRequest.builder().venueId(1L).build();
 
         BDDMockito.given(venueRepository.findById(any()))
                 .willReturn(Optional.empty());

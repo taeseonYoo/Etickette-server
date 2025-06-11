@@ -1,4 +1,4 @@
-package com.tae.Etickette.concert;
+package com.tae.Etickette.session;
 
 public class ConcertNotFoundException extends RuntimeException {
     public ConcertNotFoundException() {

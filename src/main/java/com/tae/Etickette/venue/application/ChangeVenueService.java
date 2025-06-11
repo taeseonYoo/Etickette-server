@@ -1,7 +1,7 @@
 package com.tae.Etickette.venue.application;
 
 import com.tae.Etickette.concert.domain.Address;
-import com.tae.Etickette.venue.application.Dto.ChangeAddressRequestDto;
+import com.tae.Etickette.venue.application.Dto.ChangeAddressRequest;
 import com.tae.Etickette.venue.domain.Venue;
 import com.tae.Etickette.venue.infra.VenueRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ public class ChangeVenueService {
     private final VenueRepository venueRepository;
 
     @Transactional
-    public void changeAddress(ChangeAddressRequestDto requestDto) {
+    public void changeAddress(ChangeAddressRequest requestDto) {
         Venue venue = venueRepository.findById(requestDto.getVenueId())
                 .orElseThrow(() -> new VenueNotFoundException("공연장을 찾을 수 없습니다."));
 

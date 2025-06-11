@@ -1,22 +1,22 @@
 package com.tae.Etickette.integration.service;
 
-import com.tae.Etickette.booking.application.Dto.BookingRequestDto;
+import com.tae.Etickette.booking.application.Dto.BookingRequest;
 import com.tae.Etickette.booking.application.BookingService;
 import com.tae.Etickette.booking.domain.Booking;
 import com.tae.Etickette.booking.domain.BookingRef;
 import com.tae.Etickette.booking.infra.BookingRepository;
-import com.tae.Etickette.concert.ConcertRegisterReqDto;
-import com.tae.Etickette.concert.ConcertRegisterService;
-import com.tae.Etickette.concert.domain.Address;
+import com.tae.Etickette.concert.application.dto.RegisterConcertRequest;
+import com.tae.Etickette.concert.application.ConcertRegisterService;
+import com.tae.Etickette.testhelper.ConcertCreateBuilder;
+import com.tae.Etickette.testhelper.VenueCreateBuilder;
 import com.tae.Etickette.session.application.Dto.RegisterSessionReqDto;
 import com.tae.Etickette.session.application.RegisterSessionService;
-import com.tae.Etickette.session.domain.Session;
-import com.tae.Etickette.session.infra.SessionRepository;
-import com.tae.Etickette.venue.application.Dto.VenueCreateRequestDto;
-import com.tae.Etickette.venue.application.Dto.VenueCreateResponseDto;
+import com.tae.Etickette.venue.application.Dto.VenueCreateRequest;
+import com.tae.Etickette.venue.application.Dto.VenueCreateResponse;
 import com.tae.Etickette.venue.application.RegisterVenueService;
-import com.tae.Etickette.venue.domain.Venue;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,10 +25,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Optional;
 
-import static com.tae.Etickette.booking.application.Dto.BookingRequestDto.*;
-import static com.tae.Etickette.concert.ConcertRegisterReqDto.*;
+import static com.tae.Etickette.booking.application.Dto.BookingRequest.*;
+import static com.tae.Etickette.concert.application.dto.RegisterConcertRequest.*;
 import static com.tae.Etickette.session.application.Dto.RegisterSessionReqDto.*;
 
 
@@ -50,16 +49,17 @@ class BookingServiceTest {
     @BeforeEach
     public void setUp() {
         //공연장 등록
-        VenueCreateRequestDto venueDto = createVenue();
-        VenueCreateResponseDto register = registerVenueService.register(venueDto);
+        VenueCreateRequest venueDto = VenueCreateBuilder.builder().build();
+        VenueCreateResponse register = registerVenueService.register(venueDto);
 
         List<GradePriceInfo> gradePriceInfos = List.of(
                 GradePriceInfo.builder().grade("VIP").price(150000).build(),
-                GradePriceInfo.builder().grade("S").price(100000).build()
+                GradePriceInfo.builder().grade("S").price(100000).build(),
+                GradePriceInfo.builder().grade("R").price(50000).build()
         );
         //공연 등록
-        ConcertRegisterReqDto concertDto = createConcert(gradePriceInfos);
-        concertRegisterService.registerConcert(concertDto);
+        RegisterConcertRequest concertDto = ConcertCreateBuilder.builder().gradePrices(gradePriceInfos).build();
+        Long concertId = concertRegisterService.register(concertDto);
 
         //공연 일정 등록
         List<SessionInfo> sessionInfos = List.of(
@@ -70,16 +70,25 @@ class BookingServiceTest {
                         .concertDate(LocalDate.of(2025, 6, 2))
                         .startTime(LocalTime.of(15, 0)).build()
         );
-        RegisterSessionReqDto sessionDto = sessionCreate(sessionInfos);
+
+        RegisterSessionReqDto sessionDto = RegisterSessionReqDto.builder()
+                .venueId(register.getId())
+                .concertId(concertId)
+                .sessionInfos(sessionInfos)
+                .build();
         registerSessionService.register(sessionDto);
     }
 
     @Test
+    @DisplayName("예약에 성공한다.")
     void 예약_성공() {
         //given
-        List<SeatInfo> requestSeats = List.of(new SeatInfo("A", 1), new SeatInfo("F", 10));
+        List<SeatInfo> requestSeats = List.of(
+                new SeatInfo("A", 1) ,
+                new SeatInfo("F", 10)
+        );
 
-        BookingRequestDto requestDto = BookingRequestDto.builder()
+        BookingRequest requestDto = BookingRequest.builder()
                 .memberId(1L)
                 .sessionId(1L)
                 .seatInfos(requestSeats)
@@ -90,28 +99,7 @@ class BookingServiceTest {
 
         //then
         Booking booking = bookingRepository.findById(bookingRef).get();
-        System.out.println(booking.getTotalAmounts().getValue());
+        Assertions.assertThat(booking.getTotalAmounts().getValue()).isEqualTo(150000 + 100000);
     }
 
-    private VenueCreateRequestDto createVenue() {
-        return VenueCreateRequestDto.builder()
-                .place("KSPO")
-                .capacity(10000)
-                .address(new Address("서울시", "송파구", "11111")).build();
-    }
-
-    private ConcertRegisterReqDto createConcert(List<GradePriceInfo> gradePriceInfos) {
-        return ConcertRegisterReqDto.builder().title("IU HER").overview("아이유 공연")
-                .runningTime(120).imgURL("")
-                .gradePrices(
-                        gradePriceInfos
-                )
-                .build();
-    }
-
-    private RegisterSessionReqDto sessionCreate(List<SessionInfo> sessionInfos) {
-        return RegisterSessionReqDto.builder().venueId(1L)
-                .concertId(1L)
-                .sessionInfos(sessionInfos).build();
-    }
 }

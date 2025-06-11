@@ -1,6 +1,6 @@
 package com.tae.Etickette.venue.presentation;
 
-import com.tae.Etickette.venue.application.Dto.DeleteVenueReqDto;
+import com.tae.Etickette.venue.application.Dto.DeleteVenueRequest;
 import com.tae.Etickette.venue.application.DeleteVenueService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,7 @@ public class VenueController {
     private final DeleteVenueService deleteVenueService;
     @PreAuthorize("hasRole('ADMIN')")
 //    @PostMapping("/")
-    public void delete(@Valid DeleteVenueReqDto requestDto) {
+    public void delete(@Valid DeleteVenueRequest requestDto) {
         deleteVenueService.delete(requestDto);
     }
 }
