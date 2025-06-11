@@ -1,5 +1,7 @@
 package com.tae.Etickette.global.model;
 
+import com.tae.Etickette.global.jpa.MoneyConverter;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -14,16 +16,19 @@ public class Seat {
     private String rowNum;
     private Integer columnNum;
     private String grade;
+    @Convert(converter = MoneyConverter.class)
+    private Money price;
 
     public Seat(String rowNum, Integer columnNum) {
         this.rowNum = rowNum;
         this.columnNum = columnNum;
     }
 
-    public Seat(String rowNum, Integer columnNum, String grade) {
+    public Seat(String rowNum, Integer columnNum, String grade, Money price) {
         this.rowNum = rowNum;
         this.columnNum = columnNum;
         this.grade = grade;
+        this.price = price;
     }
 
     @Override

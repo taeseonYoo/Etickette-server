@@ -41,7 +41,6 @@ public class Booking {
         this.bookingRef = BookingRef.generate();
         this.memberId = memberId;
         this.sessionId = sessionId;
-        verifySeatsAllowedPerBooking(seats);
         setSeats(seats);
         status = BookingStatus.BEFORE_PAY;
     }
@@ -51,10 +50,12 @@ public class Booking {
     }
 
     private void setSeats(List<Seat> seats) {
+        verifySeatsAllowedPerBooking(seats);
         this.seats = seats;
         calculateTotalAmounts();
     }
 
+    //예약된 좌석의 가격을 더한다.
     private void calculateTotalAmounts() {
         this.totalAmounts = new Money(seats.stream()
                 .mapToInt(x -> x.getPrice().getValue()).sum());
@@ -71,8 +72,10 @@ public class Booking {
     }
 
     private void verifySeatsAllowedPerBooking(List<Seat> seats) {
-        if (seats.isEmpty()) throw new RuntimeException();
-        else if(maxSeatsAllowedPerBooking(seats)) throw new RuntimeException();
+        if (seats.isEmpty())
+            throw new IllegalArgumentException("좌석이 없으면 예매할 수 없습니다.");
+        else if(maxSeatsAllowedPerBooking(seats))
+            throw new IllegalArgumentException("좌석은 최대" + MAX_SEATS_ALLOWED_PER_BOOKING + "매 구매 가능합니다.");
 
     }
     private final int MAX_SEATS_ALLOWED_PER_BOOKING = 2;

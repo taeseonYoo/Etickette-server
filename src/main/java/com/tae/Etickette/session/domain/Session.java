@@ -1,6 +1,8 @@
 package com.tae.Etickette.session.domain;
 
+import com.tae.Etickette.concert.domain.GradePrice;
 import com.tae.Etickette.global.event.Events;
+import com.tae.Etickette.global.model.Money;
 import com.tae.Etickette.global.model.Seat;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -10,7 +12,10 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -43,18 +48,18 @@ public class Session {
     @CollectionTable(name = "session_seat", joinColumns = @JoinColumn(name = "session_id"))
     private List<Seat> seatingPlan = new ArrayList<>();
 
-    private Session(LocalDate concertDate, LocalTime startTime, Integer runningTime, Long concertId, Long venueId) {
+    private Session(LocalDate concertDate, LocalTime startTime, Integer runningTime, Long concertId, Long venueId,List<Seat> seatingPlan) {
         this.concertDate = concertDate;
         this.startTime = startTime;
         calculateEndTime(startTime, runningTime);
         this.status = SessionStatus.BEFORE;
         this.concertId = concertId;
         this.venueId = venueId;
-        initSeatingPlan();
+        this.seatingPlan = seatingPlan;
     }
 
-    public static Session create(LocalDate concertDate, LocalTime startTime, Integer runningTime, Long concertId,Long venueId) {
-        return new Session(concertDate, startTime, runningTime, concertId, venueId);
+    public static Session create(LocalDate concertDate, LocalTime startTime, Integer runningTime, Long concertId,Long venueId,List<Seat> seatingPlan) {
+        return new Session(concertDate, startTime, runningTime, concertId, venueId,seatingPlan);
     }
 
     //공연 종료시간을 계산한다.
@@ -68,10 +73,9 @@ public class Session {
         }
     }
 
-    public void initSeatingPlan() {
-        for (int i = 1; i <= 50; i++) {
-            seatingPlan.add(new Seat(String.valueOf((char) ('A' + (i - 1) / 10)), ((i - 1) % 10) + 1, "VIP"));
-        }
+    public void initSeatingPlan(List<GradePrice> gradePrices) {
+
+
     }
 
 

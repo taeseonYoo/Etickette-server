@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * 세션의 공통된 로직을 구분한 헬퍼 클래스
+ */
 public final class SessionServiceHelper {
     public static void findExistingDate(SessionRepository repo, Long venueId, List<LocalDate> requestDates) {
         Set<LocalDate> existingDates = repo.findByVenueId(venueId).stream()
