@@ -1,9 +1,9 @@
-package com.tae.Etickette.payment;
+package com.tae.Etickette.payment.presentation;
 
+import com.tae.Etickette.payment.application.TossPaymentService;
 import lombok.RequiredArgsConstructor;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.ParseException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,18 +18,19 @@ public class PaymentController {
 
     private final TossPaymentService tossPaymentService;
 
-
-
-    @PostMapping("/saveAmount")
-    public void tempSave(@RequestBody SaveAmountRequestDto requestDto) {
-
-    }
-
     @PostMapping("/confirm")
-    public ResponseEntity<PaymentConfirmResponse> confirmPayment(@RequestBody PaymentConfirmRequest paymentConfirmRequest) throws IOException, ParseException {
+    public void confirmPayment(@RequestBody PaymentConfirmRequest request) {
         System.out.println("gd");
-        PaymentConfirmResponse response = tossPaymentService.confirm(paymentConfirmRequest);
-        return ResponseEntity.ok().body(response);
+        try {
+            JSONObject json = new JSONObject();
+            json.put("paymentKey", request.getPaymentKey());
+            json.put("orderId", request.getOrderId());
+            json.put("amount", request.getAmount());
+
+            tossPaymentService.confirm(json);
+        } catch (IOException | ParseException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

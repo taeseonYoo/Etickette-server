@@ -1,4 +1,4 @@
-package com.tae.Etickette.payment;
+package com.tae.Etickette.payment.presentation;
 
 import lombok.Getter;
 
