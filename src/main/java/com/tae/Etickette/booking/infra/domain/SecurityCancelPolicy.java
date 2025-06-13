@@ -2,6 +2,7 @@ package com.tae.Etickette.booking.infra.domain;
 
 import com.tae.Etickette.booking.domain.Booking;
 import com.tae.Etickette.booking.domain.CancelPolicy;
+import com.tae.Etickette.global.model.Canceller;
 import com.tae.Etickette.member.domain.Member;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -14,12 +15,17 @@ import java.util.Collection;
 @Component
 public class SecurityCancelPolicy implements CancelPolicy {
     @Override
-    public boolean hasCancellationPermission(Booking booking, Member canceller) {
+    public boolean hasCancellationPermission(Booking booking, Canceller canceller) {
         return isCancellerBooking(booking,canceller) || isCurrentUserAdminRole();
     }
 
-    private boolean isCancellerBooking(Booking booking, Member canceller) {
-        return booking.getMemberId().equals(canceller.getId());
+    @Override
+    public boolean hasEntireCancelPermission() {
+        return isCurrentUserAdminRole();
+    }
+
+    private boolean isCancellerBooking(Booking booking, Canceller canceller) {
+        return booking.getMemberId().equals(canceller.getMemberId());
     }
 
     private boolean isCurrentUserAdminRole() {

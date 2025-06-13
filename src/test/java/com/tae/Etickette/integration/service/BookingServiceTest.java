@@ -1,13 +1,12 @@
 package com.tae.Etickette.integration.service;
 
-import com.tae.Etickette.booking.application.Dto.BookingRequest;
+import com.tae.Etickette.booking.application.dto.BookingRequest;
 import com.tae.Etickette.booking.application.BookingService;
 import com.tae.Etickette.booking.domain.Booking;
 import com.tae.Etickette.booking.domain.BookingRef;
 import com.tae.Etickette.booking.infra.BookingRepository;
 import com.tae.Etickette.concert.application.dto.RegisterConcertRequest;
 import com.tae.Etickette.concert.application.ConcertRegisterService;
-import com.tae.Etickette.session.infra.SessionRepository;
 import com.tae.Etickette.testhelper.ConcertCreateBuilder;
 import com.tae.Etickette.testhelper.VenueCreateBuilder;
 import com.tae.Etickette.session.application.Dto.RegisterSessionRequest;
@@ -15,22 +14,18 @@ import com.tae.Etickette.session.application.RegisterSessionService;
 import com.tae.Etickette.venue.application.Dto.VenueCreateRequest;
 import com.tae.Etickette.venue.application.Dto.VenueCreateResponse;
 import com.tae.Etickette.venue.application.RegisterVenueService;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-import static com.tae.Etickette.booking.application.Dto.BookingRequest.*;
 import static com.tae.Etickette.concert.application.dto.RegisterConcertRequest.*;
 import static com.tae.Etickette.session.application.Dto.RegisterSessionRequest.*;
 

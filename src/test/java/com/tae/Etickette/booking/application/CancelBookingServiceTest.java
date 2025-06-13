@@ -4,6 +4,7 @@ import com.tae.Etickette.booking.domain.Booking;
 import com.tae.Etickette.booking.domain.CancelPolicy;
 import com.tae.Etickette.booking.domain.LineItem;
 import com.tae.Etickette.booking.infra.BookingRepository;
+import com.tae.Etickette.global.model.Canceller;
 import com.tae.Etickette.global.model.Money;
 import com.tae.Etickette.member.MemberNotFoundException;
 import com.tae.Etickette.member.domain.Member;
@@ -33,12 +34,11 @@ class CancelBookingServiceTest {
     @InjectMocks
     private CancelBookingService cancelBookingService;
     private final BookingRepository bookingRepository = mock(BookingRepository.class);
-    private final MemberRepository memberRepository = mock(MemberRepository.class);
     private final CancelPolicy cancelPolicy = mock(CancelPolicy.class);
 
     @BeforeEach
     void setUp() {
-        cancelBookingService = new CancelBookingService(bookingRepository,memberRepository,cancelPolicy);
+        cancelBookingService = new CancelBookingService(bookingRepository,cancelPolicy);
     }
 
     @Test
@@ -50,6 +50,7 @@ class CancelBookingServiceTest {
                 new Booking(1L, 1L,
                         List.of(new LineItem(new BookSeatId(2L, 1L), new Money(150000)))));
         BDDMockito.given(bookingRepository.findBySessionId(any())).willReturn(bookings);
+        BDDMockito.given(cancelPolicy.hasEntireCancelPermission()).willReturn(true);
 
         //when
         cancelBookingService.cancelAll(1L);
@@ -58,6 +59,21 @@ class CancelBookingServiceTest {
         Assertions.assertThat(bookings)
                 .extracting(Booking::getStatus)
                 .allMatch(status -> "CANCELED_BOOKING".equals(status.getValue()));
+    }
+    @Test
+    @DisplayName("cancelAll - 권한이 ADMIN 이 아니면, 전체취소에 실패한다.")
+    void 전체취소_실패_권한이없음() {
+        //given
+        List<Booking> bookings = List.of(new Booking(1L, 1L,
+                        List.of(new LineItem(new BookSeatId(1L, 1L), new Money(150000)))),
+                new Booking(1L, 1L,
+                        List.of(new LineItem(new BookSeatId(2L, 1L), new Money(150000)))));
+        BDDMockito.given(bookingRepository.findBySessionId(any())).willReturn(bookings);
+        BDDMockito.given(cancelPolicy.hasEntireCancelPermission()).willReturn(false);
+
+        //when & then
+        assertThrows(NoCancellablePermission.class, () ->
+                cancelBookingService.cancelAll(1L));
     }
 
     @Test
@@ -68,13 +84,11 @@ class CancelBookingServiceTest {
 
         BDDMockito.given(bookingRepository.findById(any()))
                 .willReturn(Optional.of(mockBooking));
-        BDDMockito.given(memberRepository.findByEmail(any()))
-                .willReturn(Optional.of(mock(Member.class)));
         BDDMockito.given(cancelPolicy.hasCancellationPermission(any(), any()))
                 .willReturn(true);
 
         //when
-        cancelBookingService.cancel(any(),"cancel@google");
+        cancelBookingService.cancel(any(),new Canceller(1L));
 
         //then
         BDDMockito.verify(mockBooking).cancel();
@@ -86,25 +100,9 @@ class CancelBookingServiceTest {
         //given
         BDDMockito.given(bookingRepository.findById(any()))
                 .willReturn(Optional.empty());
-
-
         //when & then
         assertThrows(BookingNotFoundException.class, () ->
-                cancelBookingService.cancel(any(),"cancel@google"));
-    }
-
-    @Test
-    @DisplayName("cancel - 예약한 회원을 찾을 수 없다면 ,개별취소에 실패한다.")
-    void 개별취소_실패_예약회원이없음() {
-        //given
-        BDDMockito.given(bookingRepository.findById(any()))
-                .willReturn(Optional.of(mock(Booking.class)));
-        BDDMockito.given(memberRepository.findByEmail(any()))
-                .willReturn(Optional.empty());
-
-        //when & then
-        assertThrows(MemberNotFoundException.class, () ->
-                cancelBookingService.cancel(any(),"cancel@google"));
+                cancelBookingService.cancel(any(),new Canceller(1L)));
     }
 
     @Test
@@ -113,13 +111,13 @@ class CancelBookingServiceTest {
         //given
         BDDMockito.given(bookingRepository.findById(any()))
                 .willReturn(Optional.of(mock(Booking.class)));
-        BDDMockito.given(memberRepository.findByEmail(any()))
-                .willReturn(Optional.of(mock(Member.class)));
         BDDMockito.given(cancelPolicy.hasCancellationPermission(any(), any()))
                 .willReturn(false);
 
         //when & then
         assertThrows(NoCancellablePermission.class, () ->
-                cancelBookingService.cancel(any(),"cancel@google"));
+                cancelBookingService.cancel(any(),new Canceller(1L)));
     }
+
+
 }

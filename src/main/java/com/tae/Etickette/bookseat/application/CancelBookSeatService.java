@@ -8,7 +8,7 @@ import com.tae.Etickette.booking.infra.BookingRepository;
 import com.tae.Etickette.bookseat.domain.CancelSeatPolicy;
 import com.tae.Etickette.bookseat.domain.BookSeat;
 import com.tae.Etickette.bookseat.domain.BookSeatId;
-import com.tae.Etickette.bookseat.domain.Canceller;
+import com.tae.Etickette.global.model.Canceller;
 import com.tae.Etickette.bookseat.infra.BookSeatRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -3,8 +3,7 @@ package com.tae.Etickette.booking.infra;
 import com.tae.Etickette.booking.domain.BookingCanceledEvent;
 import com.tae.Etickette.bookseat.application.CancelBookSeatService;
 import com.tae.Etickette.bookseat.domain.BookSeatId;
-import com.tae.Etickette.bookseat.domain.Canceller;
-import lombok.RequiredArgsConstructor;
+import com.tae.Etickette.global.model.Canceller;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
