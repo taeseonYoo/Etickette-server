@@ -1,9 +1,12 @@
 package com.tae.Etickette.session.application;
 
+import com.tae.Etickette.seat.SeatRepository;
+import com.tae.Etickette.bookseat.infra.BookSeatRepository;
 import com.tae.Etickette.session.ConcertNotFoundException;
 import com.tae.Etickette.concert.domain.Concert;
 import com.tae.Etickette.concert.infra.ConcertRepository;
-import com.tae.Etickette.session.application.Dto.RegisterSessionReqDto;
+import com.tae.Etickette.session.application.Dto.RegisterSessionRequest;
+import com.tae.Etickette.session.domain.Session;
 import com.tae.Etickette.session.domain.SettingSeatService;
 import com.tae.Etickette.session.infra.SessionRepository;
 import com.tae.Etickette.venue.application.VenueNotFoundException;
@@ -23,7 +26,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
-import static com.tae.Etickette.session.application.Dto.RegisterSessionReqDto.*;
+import static com.tae.Etickette.session.application.Dto.RegisterSessionRequest.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -35,13 +38,14 @@ class RegisterSessionServiceTest {
     private final SessionRepository sessionRepository = mock(SessionRepository.class);
     private final VenueRepository venueRepository = mock(VenueRepository.class);
     private final ConcertRepository concertRepository = mock(ConcertRepository.class);
-
+    private final SeatRepository seatRepository = mock(SeatRepository.class);
     private final SettingSeatService settingSeatService = mock(SettingSeatService.class);
+    private final BookSeatRepository bookSeatRepository = mock(BookSeatRepository.class);
 
-    RegisterSessionReqDto requestDto;
+    RegisterSessionRequest requestDto;
     @BeforeEach
     void setUp() {
-        registerSessionService = new RegisterSessionService(sessionRepository, venueRepository, concertRepository,settingSeatService);
+        registerSessionService = new RegisterSessionService(sessionRepository,concertRepository,venueRepository,seatRepository, bookSeatRepository,settingSeatService);
 
         List<SessionInfo> sessionInfos = List.of(SessionInfo.builder().concertDate(LocalDate.of(2025, 6, 1))
                         .startTime(LocalTime.of(15, 0)).build(),
@@ -58,8 +62,11 @@ class RegisterSessionServiceTest {
     @DisplayName("register - 세션 등록에 성공한다.")
     void 세션등록_성공() {
         //given
-        BDDMockito.given(venueRepository.findById(any())).willReturn(Optional.of(mock(Venue.class)));
         BDDMockito.given(concertRepository.findById(any())).willReturn(Optional.of(mock(Concert.class)));
+        BDDMockito.given(seatRepository.findIdByConcertId(any())).willReturn(mock(List.class));
+        BDDMockito.given(venueRepository.findById(any())).willReturn(Optional.of(mock(Venue.class)));
+
+        BDDMockito.given(sessionRepository.save(any())).willReturn(mock(Session.class));
         //when
         registerSessionService.register(requestDto);
 

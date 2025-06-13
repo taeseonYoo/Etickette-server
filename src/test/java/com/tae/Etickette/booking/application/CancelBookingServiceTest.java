@@ -2,12 +2,13 @@ package com.tae.Etickette.booking.application;
 
 import com.tae.Etickette.booking.domain.Booking;
 import com.tae.Etickette.booking.domain.CancelPolicy;
+import com.tae.Etickette.booking.domain.LineItem;
 import com.tae.Etickette.booking.infra.BookingRepository;
 import com.tae.Etickette.global.model.Money;
-import com.tae.Etickette.global.model.Seat;
 import com.tae.Etickette.member.MemberNotFoundException;
 import com.tae.Etickette.member.domain.Member;
 import com.tae.Etickette.member.infra.MemberRepository;
+import com.tae.Etickette.bookseat.domain.BookSeatId;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
@@ -46,9 +46,9 @@ class CancelBookingServiceTest {
     void 전체취소_성공() {
         //given
         List<Booking> bookings = List.of(new Booking(1L, 1L,
-                        List.of(new Seat("A", 1, "VIP", new Money(150000)))),
+                        List.of(new LineItem(new BookSeatId(1L, 1L), new Money(150000)))),
                 new Booking(1L, 1L,
-                        List.of(new Seat("B", 1,"VIP", new Money(150000)))));
+                        List.of(new LineItem(new BookSeatId(2L, 1L), new Money(150000)))));
         BDDMockito.given(bookingRepository.findBySessionId(any())).willReturn(bookings);
 
         //when

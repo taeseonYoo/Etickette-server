@@ -1,9 +1,6 @@
 package com.tae.Etickette.session.domain;
 
-import com.tae.Etickette.concert.domain.GradePrice;
 import com.tae.Etickette.global.event.Events;
-import com.tae.Etickette.global.model.Money;
-import com.tae.Etickette.global.model.Seat;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -11,11 +8,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -43,39 +35,23 @@ public class Session {
     @Column
     private Long venueId;
 
-    //좌석 정보
-    @ElementCollection
-    @CollectionTable(name = "session_seat", joinColumns = @JoinColumn(name = "session_id"))
-    private List<Seat> seatingPlan = new ArrayList<>();
 
-    private Session(LocalDate concertDate, LocalTime startTime, Integer runningTime, Long concertId, Long venueId,List<Seat> seatingPlan) {
+    private Session(LocalDate concertDate, LocalTime startTime, Integer runningTime, Long concertId, Long venueId) {
         this.concertDate = concertDate;
         this.startTime = startTime;
         calculateEndTime(startTime, runningTime);
         this.status = SessionStatus.BEFORE;
         this.concertId = concertId;
         this.venueId = venueId;
-        this.seatingPlan = seatingPlan;
     }
 
-    public static Session create(LocalDate concertDate, LocalTime startTime, Integer runningTime, Long concertId,Long venueId,List<Seat> seatingPlan) {
-        return new Session(concertDate, startTime, runningTime, concertId, venueId,seatingPlan);
+    public static Session create(LocalDate concertDate, LocalTime startTime, Integer runningTime, Long concertId,Long venueId) {
+        return new Session(concertDate, startTime, runningTime, concertId, venueId);
     }
 
     //공연 종료시간을 계산한다.
     private void calculateEndTime(LocalTime startTime, Integer runningTime) {
         this.endTime = startTime.plusMinutes(runningTime);
-    }
-
-    public void verifySeatsExist(List<Seat> requestedSeats) {
-        if (!seatingPlan.containsAll(requestedSeats)) {
-            throw new RuntimeException();
-        }
-    }
-
-    public void initSeatingPlan(List<GradePrice> gradePrices) {
-
-
     }
 
 

@@ -2,7 +2,7 @@ package com.tae.Etickette.session.domain;
 
 import com.tae.Etickette.concert.domain.GradePrice;
 import com.tae.Etickette.global.model.Money;
-import com.tae.Etickette.global.model.Seat;
+import com.tae.Etickette.bookseat.domain.BookSeat;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -13,19 +13,23 @@ import java.util.stream.Collectors;
 @Component
 public class SettingSeatService {
 
-    public List<Seat> setting(List<GradePrice> gradePrices) {
-        List<Seat> seatingPlan = new ArrayList<>();
+    public List<BookSeat> setting(List<Long> seatIds, List<GradePrice> gradePrices, Long sessionId) {
+
+        List<BookSeat> bookSeats = new ArrayList<>();
 
         Map<String, Money> map = gradePrices.stream()
                 .collect(Collectors.toMap(GradePrice::getGrade, GradePrice::getPrice));
 
-        for (int i = 1; i <= 50; i++) {
-            seatingPlan.add(new Seat(String.valueOf((char) ('A' + (i - 1) / 10)), ((i - 1) % 10) + 1, "VIP", map.getOrDefault("VIP", null)));
-        }
-        for (int i = 1; i <= 50; i++) {
-            seatingPlan.add(new Seat(String.valueOf((char) ('F' + (i - 1) / 10)), ((i - 1) % 10) + 1, "S", map.getOrDefault("S", null)));
-        }
+        int i = 0;
+        String grade = "";
 
-        return seatingPlan;
+        for (Long seatId : seatIds) {
+            if (i < 50) grade = "VIP";
+            else if (i < 100) grade = "S";
+            else grade = "R";
+            bookSeats.add(BookSeat.create(seatId, sessionId, grade, map.getOrDefault(grade, null)));
+            i++;
+        }
+        return bookSeats;
     }
 }

@@ -8,13 +8,13 @@ import java.time.LocalTime;
 import java.util.List;
 
 @Getter
-public class RegisterSessionReqDto {
+public class RegisterSessionRequest {
     private final Long concertId;
     private final Long venueId;
     private final List<SessionInfo> sessionInfos;
 
     @Builder
-    public RegisterSessionReqDto(Long concertId, Long venueId, List<SessionInfo> sessionInfos) {
+    public RegisterSessionRequest(Long concertId, Long venueId, List<SessionInfo> sessionInfos) {
         this.concertId = concertId;
         this.venueId = venueId;
         this.sessionInfos = sessionInfos;

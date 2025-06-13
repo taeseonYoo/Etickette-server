@@ -7,19 +7,23 @@ import com.tae.Etickette.booking.domain.BookingRef;
 import com.tae.Etickette.booking.infra.BookingRepository;
 import com.tae.Etickette.concert.application.dto.RegisterConcertRequest;
 import com.tae.Etickette.concert.application.ConcertRegisterService;
+import com.tae.Etickette.session.infra.SessionRepository;
 import com.tae.Etickette.testhelper.ConcertCreateBuilder;
 import com.tae.Etickette.testhelper.VenueCreateBuilder;
-import com.tae.Etickette.session.application.Dto.RegisterSessionReqDto;
+import com.tae.Etickette.session.application.Dto.RegisterSessionRequest;
 import com.tae.Etickette.session.application.RegisterSessionService;
 import com.tae.Etickette.venue.application.Dto.VenueCreateRequest;
 import com.tae.Etickette.venue.application.Dto.VenueCreateResponse;
 import com.tae.Etickette.venue.application.RegisterVenueService;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -28,7 +32,7 @@ import java.util.List;
 
 import static com.tae.Etickette.booking.application.Dto.BookingRequest.*;
 import static com.tae.Etickette.concert.application.dto.RegisterConcertRequest.*;
-import static com.tae.Etickette.session.application.Dto.RegisterSessionReqDto.*;
+import static com.tae.Etickette.session.application.Dto.RegisterSessionRequest.*;
 
 
 @SpringBootTest
@@ -46,6 +50,8 @@ class BookingServiceTest {
     @Autowired
     private ConcertRegisterService concertRegisterService;
 
+
+    List<Long> sessionIds;
     @BeforeEach
     public void setUp() {
         //공연장 등록
@@ -71,27 +77,24 @@ class BookingServiceTest {
                         .startTime(LocalTime.of(15, 0)).build()
         );
 
-        RegisterSessionReqDto sessionDto = RegisterSessionReqDto.builder()
+        RegisterSessionRequest sessionDto = RegisterSessionRequest.builder()
                 .venueId(register.getId())
                 .concertId(concertId)
                 .sessionInfos(sessionInfos)
                 .build();
-        registerSessionService.register(sessionDto);
+        sessionIds = registerSessionService.register(sessionDto);
     }
 
     @Test
     @DisplayName("예약에 성공한다.")
     void 예약_성공() {
-        //given
-        List<SeatInfo> requestSeats = List.of(
-                new SeatInfo("A", 1) ,
-                new SeatInfo("F", 10)
-        );
+//        given
+        List<Long> seatIds = List.of(1L,2L);
 
         BookingRequest requestDto = BookingRequest.builder()
                 .memberId(1L)
-                .sessionId(1L)
-                .seatInfos(requestSeats)
+                .sessionId(sessionIds.get(0))
+                .seatIds(seatIds)
                 .build();
 
         //when
@@ -99,7 +102,7 @@ class BookingServiceTest {
 
         //then
         Booking booking = bookingRepository.findById(bookingRef).get();
-        Assertions.assertThat(booking.getTotalAmounts().getValue()).isEqualTo(150000 + 100000);
+        Assertions.assertThat(booking.getTotalAmounts().getValue()).isEqualTo(150000 + 150000);
     }
 
 }

@@ -1,16 +1,13 @@
 package com.tae.Etickette.booking.domain;
 
+import com.tae.Etickette.global.event.Events;
 import com.tae.Etickette.global.jpa.MoneyConverter;
 import com.tae.Etickette.global.model.Money;
-import com.tae.Etickette.global.model.Seat;
-import com.tae.Etickette.session.domain.AlreadyStartedException;
-import com.tae.Etickette.session.domain.SessionStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -32,54 +29,46 @@ public class Booking {
 
 //    private Long paymentId;
 
-    @ElementCollection
-    @CollectionTable(name = "booked_seat",joinColumns = @JoinColumn(name = "booking_id"))
-    private List<Seat> seats = new ArrayList<>();
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name = "line_item",joinColumns = @JoinColumn(name = "booking_id"))
+    private List<LineItem> lineItems;
 
-
-    public Booking(Long memberId, Long sessionId, List<Seat> seats) {
+    public Booking(Long memberId, Long sessionId, List<LineItem> lineItems) {
         this.bookingRef = BookingRef.generate();
         this.memberId = memberId;
         this.sessionId = sessionId;
-        setSeats(seats);
+        setLineItems(lineItems);
+
         status = BookingStatus.BEFORE_PAY;
     }
 
-    public static Booking create(Long memberId, Long sessionId, List<Seat> seats) {
-        return new Booking(memberId, sessionId, seats);
-    }
-
-    private void setSeats(List<Seat> seats) {
-        verifySeatsAllowedPerBooking(seats);
-        this.seats = seats;
+    private void setLineItems(List<LineItem> lineItems) {
+        this.lineItems = lineItems;
         calculateTotalAmounts();
     }
 
-    //예약된 좌석의 가격을 더한다.
     private void calculateTotalAmounts() {
-        this.totalAmounts = new Money(seats.stream()
-                .mapToInt(x -> x.getPrice().getValue()).sum());
+        this.totalAmounts = new Money(lineItems.stream().mapToInt(x -> x.getPrice().getValue()).sum());
+    }
+
+    public static Booking create(Long memberId, Long sessionId,List<LineItem> lineItems) {
+        return new Booking(memberId, sessionId,lineItems);
     }
 
     public void cancel() {
-        if (isNotCanceled()) {
-            this.status = BookingStatus.CANCELED_BOOKING;
-        }
+        verifyNotCanceled();
+        this.status = BookingStatus.CANCELED_BOOKING;
+        //좌석을 취소한다.
+        Events.raise(new BookingCanceledEvent(lineItems.stream().map(LineItem::getSeatId).toList(), memberId, bookingRef));
+    }
+
+    private void verifyNotCanceled() {
+        if (!isNotCanceled())
+            throw new AlreadyCanceledException();
     }
 
     private boolean isNotCanceled() {
         return status == BookingStatus.COMPLETED_BOOKING || status == BookingStatus.BEFORE_PAY;
     }
 
-    private void verifySeatsAllowedPerBooking(List<Seat> seats) {
-        if (seats.isEmpty())
-            throw new IllegalArgumentException("좌석이 없으면 예매할 수 없습니다.");
-        else if(maxSeatsAllowedPerBooking(seats))
-            throw new IllegalArgumentException("좌석은 최대" + MAX_SEATS_ALLOWED_PER_BOOKING + "매 구매 가능합니다.");
-
-    }
-    private final int MAX_SEATS_ALLOWED_PER_BOOKING = 2;
-    private boolean maxSeatsAllowedPerBooking(List<Seat> seats) {
-        return seats.size() > MAX_SEATS_ALLOWED_PER_BOOKING;
-    }
 }

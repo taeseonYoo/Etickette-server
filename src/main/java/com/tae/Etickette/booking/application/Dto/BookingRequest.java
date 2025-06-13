@@ -11,21 +11,12 @@ import java.util.List;
 public class BookingRequest {
     private Long sessionId;
     private Long memberId;
-
-    private List<SeatInfo> seatInfos;
+    private List<Long> seatIds;
 
     @Builder
-    public BookingRequest(Long sessionId, Long memberId, List<SeatInfo> seatInfos) {
+    public BookingRequest(Long sessionId, Long memberId, List<Long> seatIds) {
         this.sessionId = sessionId;
         this.memberId = memberId;
-        this.seatInfos = seatInfos;
-    }
-
-    @Getter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class SeatInfo {
-        private String row;
-        private Integer column;
+        this.seatIds = seatIds;
     }
 }
