@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/members")
+@RequestMapping("/api/members")
 public class MemberController {
 
     private final MemberService memberService;
@@ -25,14 +25,14 @@ public class MemberController {
         return new ResponseEntity<>(memberService.getProfile(authentication.getName()), HttpStatus.OK);
     }
 
-    @PostMapping("/join")
+    @PostMapping("/signup")
     public ResponseEntity<?> join(@Valid @RequestBody MemberJoinRequestDto requestDto) {
 
         MemberJoinResponseDto responseDto = memberService.join(requestDto);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
-    @PutMapping("")
+    @PutMapping("/profile")
     public ResponseEntity<Void> update(@Valid @RequestBody PasswordChangeRequestDto requestDto,
                                        Authentication authentication) {
 
@@ -40,7 +40,7 @@ public class MemberController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("")
+    @DeleteMapping
     public ResponseEntity<Void> delete(@Valid @RequestBody MemberDeleteRequestDto memberDeleteRequestDto, Authentication authentication) {
 
         memberService.deleteMember(memberDeleteRequestDto, authentication.getName());

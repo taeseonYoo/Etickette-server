@@ -33,7 +33,7 @@ public class CustomLogoutFilter extends GenericFilterBean {
 
         //POST경로 logout요청을 확인한다.
         String requestUri = request.getRequestURI();
-        if (!requestUri.matches("^\\/logout$")) {
+        if (!requestUri.matches("^\\/api\\/members\\/logout$")) {
 
             filterChain.doFilter(request, response);
             return;

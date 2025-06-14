@@ -80,8 +80,9 @@ public class SecurityConfig {
                                 return configuration;
                             }
                         }));
+        // 로그아웃 요청 URL 설정
         http
-                .logout((auth) -> auth.logoutSuccessUrl("/").permitAll());
+                .logout((auth) -> auth.logoutSuccessUrl("/").logoutUrl("/api/members/logout").permitAll());
         //jwt를 통한 STATELESS 방식을 사용하므로, csrf 설정은 비활성화 한다.
         http
                 .csrf((auth) -> auth.disable());
@@ -104,24 +105,31 @@ public class SecurityConfig {
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/", "/login", "/logout", "/members/join", "/oauth2-jwt-header", "/reissue").permitAll()
+                        .requestMatchers("/", "/api/members/login", "/api/members/logout", "/api/members/signup", "/oauth2-jwt-header", "/reissue").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/payments/**").permitAll()
                         .requestMatchers("/admin").hasRole(Role.ADMIN.value())
                         .anyRequest().authenticated()
                 );
+
         //인가되지 않은 사용자에 대한 exception -> 프론트엔드 응답
         http.exceptionHandling((exception) ->
                 exception.authenticationEntryPoint(((request, response, authException) -> {
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 })));
+
         //custom logout filter 등록
         http
                 .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshTokenService), LogoutFilter.class);
+
         http
                 .addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
-        //커스텀 로그인 필터 등록
+
+        //커스텀 로그인 필터 등록 - 로그인 url 은 "/api/members/login"
+        LoginFilter loginFilter = new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshTokenService);
+        loginFilter.setFilterProcessesUrl("/api/members/login");
         http
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshTokenService), UsernamePasswordAuthenticationFilter.class);
+                .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class);
+
         //세션 설정
         http
                 .sessionManagement((session) -> session
