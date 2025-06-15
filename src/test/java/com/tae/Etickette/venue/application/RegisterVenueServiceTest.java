@@ -1,7 +1,7 @@
 package com.tae.Etickette.venue.application;
 
 import com.tae.Etickette.concert.domain.Address;
-import com.tae.Etickette.venue.application.Dto.VenueCreateRequest;
+import com.tae.Etickette.venue.application.Dto.VenueRegisterRequest;
 import com.tae.Etickette.venue.application.Dto.VenueCreateResponse;
 import com.tae.Etickette.venue.domain.Venue;
 import com.tae.Etickette.venue.infra.VenueRepository;
@@ -17,7 +17,7 @@ import org.springframework.dao.DuplicateKeyException;
 
 import java.util.Optional;
 
-import static com.tae.Etickette.venue.application.Dto.VenueCreateRequest.builder;
+import static com.tae.Etickette.venue.application.Dto.VenueRegisterRequest.builder;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -38,7 +38,7 @@ class RegisterVenueServiceTest {
     @DisplayName("register - 공연장 등록에 성공한다.")
     public void 공연장등록_성공() {
         //given
-        VenueCreateRequest requestDto = builder()
+        VenueRegisterRequest requestDto = builder()
                 .place("KSPO DOME")
                 .capacity(10000)
                 .address(new Address("서울시", "송파구 올림픽로 424", "11111"))
@@ -60,7 +60,7 @@ class RegisterVenueServiceTest {
     @DisplayName("register - 주소가 존재하면, 공연장 등록에 실패한다.")
     public void 공연장등록_실패_주소가존재함() {
         //given
-        VenueCreateRequest requestDto = builder()
+        VenueRegisterRequest requestDto = builder()
                 .place("KSPO DOME")
                 .capacity(10000)
                 .address(new Address("서울시", "송파구 올림픽로 424", "11111"))

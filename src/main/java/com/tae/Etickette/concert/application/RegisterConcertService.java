@@ -17,7 +17,7 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class ConcertRegisterService {
+public class RegisterConcertService {
     private final ConcertRepository concertRepository;
     private final SeatRepository seatRepository;
 

@@ -1,7 +1,7 @@
 package com.tae.Etickette.testhelper;
 
 import com.tae.Etickette.concert.domain.Address;
-import com.tae.Etickette.venue.application.Dto.VenueCreateRequest;
+import com.tae.Etickette.venue.application.Dto.VenueRegisterRequest;
 
 public class VenueCreateBuilder {
     private String place = "KSPO";
@@ -12,8 +12,8 @@ public class VenueCreateBuilder {
         return new VenueCreateBuilder();
     }
 
-    public VenueCreateRequest build() {
-        return VenueCreateRequest.builder()
+    public VenueRegisterRequest build() {
+        return VenueRegisterRequest.builder()
                 .place(place)
                 .capacity(capacity)
                 .address(address)

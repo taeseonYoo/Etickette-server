@@ -40,16 +40,14 @@ class ChangeVenueServiceTest {
         Venue venue = Venue.create("KSPO", 15000, new Address("서울시", "송파구 올림픽로 424", "11111"));
 
         ChangeAddressRequest requestDto = ChangeAddressRequest.builder()
-                .venueId(1L)
-                .city("서울시")
-                .street("관악구 난곡로 242")
-                .zipcode("22222").build();
+                .address(new Address("서울시", "관악구 난곡로 242", "22222"))
+                .build();
 
         BDDMockito.given(venueRepository.findById(any())).willReturn(Optional.of(venue));
         BDDMockito.given(venueRepository.findVenueByAddress(any())).willReturn(Optional.empty());
 
         //when
-        changeVenueService.changeAddress(requestDto);
+        changeVenueService.changeAddress(1L,requestDto);
 
         //then
         assertThat(venue.getAddress().getCity()).isEqualTo("서울시");
@@ -62,16 +60,14 @@ class ChangeVenueServiceTest {
     void 주소변경_실패_공연장없음() {
         //given
         ChangeAddressRequest requestDto = ChangeAddressRequest.builder()
-                .venueId(1L)
-                .city("서울시")
-                .street("관악구 난곡로 242")
-                .zipcode("22222").build();
+                .address(new Address("서울시", "관악구 난곡로 242", "22222"))
+                .build();
 
         BDDMockito.given(venueRepository.findById(any())).willReturn(Optional.empty());
 
         //when & then
         Assertions.assertThrows(VenueNotFoundException.class, () ->
-                changeVenueService.changeAddress(requestDto));
+                changeVenueService.changeAddress(1L,requestDto));
     }
 
     @Test
@@ -79,16 +75,14 @@ class ChangeVenueServiceTest {
     void 주소변경_실패_주소가이미존재함() {
         //given
         ChangeAddressRequest requestDto = ChangeAddressRequest.builder()
-                .venueId(1L)
-                .city("서울시")
-                .street("관악구 난곡로 242")
-                .zipcode("22222").build();
+                .address(new Address("서울시", "관악구 난곡로 242", "22222"))
+                .build();
 
         BDDMockito.given(venueRepository.findById(any())).willReturn(Optional.of(mock(Venue.class)));
         BDDMockito.given(venueRepository.findVenueByAddress(any())).willReturn(Optional.of(mock(Venue.class)));
 
         //when & then
         Assertions.assertThrows(DuplicateKeyException.class, () ->
-                changeVenueService.changeAddress(requestDto));
+                changeVenueService.changeAddress(1L,requestDto));
     }
 }

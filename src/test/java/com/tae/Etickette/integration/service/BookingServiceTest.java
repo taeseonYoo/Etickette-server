@@ -6,12 +6,12 @@ import com.tae.Etickette.booking.domain.Booking;
 import com.tae.Etickette.booking.domain.BookingRef;
 import com.tae.Etickette.booking.infra.BookingRepository;
 import com.tae.Etickette.concert.application.dto.RegisterConcertRequest;
-import com.tae.Etickette.concert.application.ConcertRegisterService;
+import com.tae.Etickette.concert.application.RegisterConcertService;
 import com.tae.Etickette.testhelper.ConcertCreateBuilder;
 import com.tae.Etickette.testhelper.VenueCreateBuilder;
 import com.tae.Etickette.session.application.Dto.RegisterSessionRequest;
 import com.tae.Etickette.session.application.RegisterSessionService;
-import com.tae.Etickette.venue.application.Dto.VenueCreateRequest;
+import com.tae.Etickette.venue.application.Dto.VenueRegisterRequest;
 import com.tae.Etickette.venue.application.Dto.VenueCreateResponse;
 import com.tae.Etickette.venue.application.RegisterVenueService;
 import org.assertj.core.api.Assertions;
@@ -43,14 +43,14 @@ class BookingServiceTest {
     @Autowired
     private RegisterVenueService registerVenueService;
     @Autowired
-    private ConcertRegisterService concertRegisterService;
+    private RegisterConcertService registerConcertService;
 
 
     List<Long> sessionIds;
     @BeforeEach
     public void setUp() {
         //공연장 등록
-        VenueCreateRequest venueDto = VenueCreateBuilder.builder().build();
+        VenueRegisterRequest venueDto = VenueCreateBuilder.builder().build();
         VenueCreateResponse register = registerVenueService.register(venueDto);
 
         List<GradePriceInfo> gradePriceInfos = List.of(
@@ -60,7 +60,7 @@ class BookingServiceTest {
         );
         //공연 등록
         RegisterConcertRequest concertDto = ConcertCreateBuilder.builder().gradePrices(gradePriceInfos).build();
-        Long concertId = concertRegisterService.register(concertDto);
+        Long concertId = registerConcertService.register(concertDto);
 
         //공연 일정 등록
         List<SessionInfo> sessionInfos = List.of(

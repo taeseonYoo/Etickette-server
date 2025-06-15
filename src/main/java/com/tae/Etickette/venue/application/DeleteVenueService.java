@@ -1,6 +1,6 @@
 package com.tae.Etickette.venue.application;
 
-import com.tae.Etickette.venue.application.Dto.DeleteVenueRequest;
+import com.tae.Etickette.venue.domain.DeleteVenuePolicy;
 import com.tae.Etickette.venue.domain.Venue;
 import com.tae.Etickette.venue.infra.VenueRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,12 +11,16 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class DeleteVenueService {
     private final VenueRepository venueRepository;
+    private final DeleteVenuePolicy deleteVenuePolicy;
 
     @Transactional
-    public void delete(DeleteVenueRequest requestDto) {
-        //TODO 권한 검증은 컨트롤러?
-        Venue venue = venueRepository.findById(requestDto.getVenueId())
+    public void delete(Long venueId) {
+        Venue venue = venueRepository.findById(venueId)
                 .orElseThrow(() -> new VenueNotFoundException("공연장을 찾을 수 없습니다."));
+
+        if (!deleteVenuePolicy.hasDeletePermission()) {
+            throw new NoDeletablePermission("삭제 권한이 없습니다.");
+        }
 
         venue.deleteVenue();
     }

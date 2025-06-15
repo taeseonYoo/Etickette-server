@@ -16,15 +16,13 @@ public class ChangeVenueService {
     private final VenueRepository venueRepository;
 
     @Transactional
-    public void changeAddress(ChangeAddressRequest requestDto) {
-        Venue venue = venueRepository.findById(requestDto.getVenueId())
+    public void changeAddress(Long venueId,ChangeAddressRequest requestDto) {
+        Venue venue = venueRepository.findById(venueId)
                 .orElseThrow(() -> new VenueNotFoundException("공연장을 찾을 수 없습니다."));
 
-        Address newAddress = new Address(
-                requestDto.getCity(),
-                requestDto.getStreet(),
-                requestDto.getZipcode());
+        Address newAddress = requestDto.getAddress();
 
+        //중복된 주소가 존재하는 지 검사
         verifyDuplicateAddress(venueRepository, newAddress);
 
         venue.changeAddress(newAddress);

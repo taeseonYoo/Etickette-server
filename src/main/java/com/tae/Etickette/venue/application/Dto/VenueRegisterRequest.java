@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class VenueCreateRequest {
+public class VenueRegisterRequest {
     @NotBlank
     private final String place;
     @Size(min = 1)
@@ -18,12 +18,16 @@ public class VenueCreateRequest {
 
 
     @Builder
-    public VenueCreateRequest(String place, Integer capacity, Address address) {
+    public VenueRegisterRequest(String place, Integer capacity, Address address) {
         this.place = place;
         this.capacity = capacity;
         this.address = address;
     }
 
+    /**
+     * 엔티티에 의존하긴 하지만, 편의를 위한 트레이드 오프
+     * @return 공연장 엔티티
+     */
     public Venue toEntity() {
         return Venue.create(place, capacity, address);
     }

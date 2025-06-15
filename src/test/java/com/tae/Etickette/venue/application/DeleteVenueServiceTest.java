@@ -1,7 +1,7 @@
 package com.tae.Etickette.venue.application;
 
 import com.tae.Etickette.concert.domain.Address;
-import com.tae.Etickette.venue.application.Dto.DeleteVenueRequest;
+import com.tae.Etickette.venue.domain.DeleteVenuePolicy;
 import com.tae.Etickette.venue.domain.Venue;
 import com.tae.Etickette.venue.domain.VenueStatus;
 import com.tae.Etickette.venue.infra.VenueRepository;
@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
 
@@ -27,41 +28,42 @@ class DeleteVenueServiceTest {
     @InjectMocks
     private DeleteVenueService deleteVenueService;
     private final VenueRepository venueRepository = mock(VenueRepository.class);
+    private final DeleteVenuePolicy deleteVenuePolicy = mock(DeleteVenuePolicy.class);
 
     @BeforeEach
     void setUp() {
-        deleteVenueService = new DeleteVenueService(venueRepository);
+        deleteVenueService = new DeleteVenueService(venueRepository,deleteVenuePolicy);
     }
 
     @Test
     @DisplayName("delete - 공연장 삭제에 성공한다.")
     void 삭제_성공() {
         //given
-        DeleteVenueRequest requestDto = DeleteVenueRequest.builder().venueId(1L).build();
         Venue venue = Venue.create("KSPO", 15000, new Address("서울시", "송파구 올림픽로 424", "11111"));
+        ReflectionTestUtils.setField(venue,"id",1L);
 
         BDDMockito.given(venueRepository.findById(any()))
                 .willReturn(Optional.of(venue));
 
         //when
-        deleteVenueService.delete(requestDto);
+        deleteVenueService.delete(1L);
 
         //then
-        Assertions.assertThat(venue.getStatus()).isEqualTo(VenueStatus.DELETE);
+        Assertions.assertThat(venue.getStatus()).isEqualTo(VenueStatus.DELETED);
     }
 
     @Test
     @DisplayName("delete - 공연장이 없다면, 공연장 삭제에 실패한다.")
     void 삭제_실패_공연장이없음() {
         //given
-        DeleteVenueRequest requestDto = DeleteVenueRequest.builder().venueId(1L).build();
+        Long venueId = 1L;
 
         BDDMockito.given(venueRepository.findById(any()))
                 .willReturn(Optional.empty());
 
         //when & then
         assertThrows(VenueNotFoundException.class, () ->
-                deleteVenueService.delete(requestDto));
+                deleteVenueService.delete(venueId));
     }
 
 

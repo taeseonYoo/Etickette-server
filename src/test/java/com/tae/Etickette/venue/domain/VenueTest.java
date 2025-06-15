@@ -1,8 +1,6 @@
 package com.tae.Etickette.venue.domain;
 
 import com.tae.Etickette.concert.domain.Address;
-import com.tae.Etickette.venue.domain.Venue;
-import com.tae.Etickette.venue.domain.VenueAlreadyDeletedException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,7 +43,7 @@ class VenueTest {
         venue.deleteVenue();
 
         //when & then
-        assertThrows(VenueAlreadyDeletedException.class,
+        assertThrows(AlreadyDeletedException.class,
                 () -> venue.changeAddress(new Address("서울시", "송파구 올림픽로 424", "11111")));
     }
 
@@ -58,7 +56,7 @@ class VenueTest {
         venue.deleteVenue();
 
         //when & then
-        assertThrows(VenueAlreadyDeletedException.class,
+        assertThrows(AlreadyDeletedException.class,
                 () -> venue.changeAddress(new Address("서울시", "송파구 올림픽로 424", "11111")));
         Assertions.assertThat(venue.getAddress().getZipcode()).isEqualTo("11111");
     }
@@ -74,7 +72,7 @@ class VenueTest {
         venue.deleteVenue();
 
         //then
-        Assertions.assertThat(venue.getStatus()).isEqualTo(VenueStatus.DELETE);
+        Assertions.assertThat(venue.getStatus()).isEqualTo(VenueStatus.DELETED);
     }
     @Test
     @DisplayName("deleteVenue - 이미 삭제된 공연장을 삭제하면, 공연장 삭제에 실패한다.")
@@ -85,7 +83,7 @@ class VenueTest {
         venue.deleteVenue();
 
         //when & then
-        assertThrows(VenueAlreadyDeletedException.class, () ->
+        assertThrows(AlreadyDeletedException.class, () ->
                 venue.deleteVenue());
     }
 

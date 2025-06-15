@@ -1,6 +1,6 @@
 package com.tae.Etickette.integration.service;
 
-import com.tae.Etickette.venue.application.Dto.VenueCreateRequest;
+import com.tae.Etickette.venue.application.Dto.VenueRegisterRequest;
 import com.tae.Etickette.venue.application.Dto.VenueCreateResponse;
 import com.tae.Etickette.venue.application.RegisterVenueService;
 import com.tae.Etickette.concert.domain.Address;
@@ -15,7 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.tae.Etickette.venue.application.Dto.VenueCreateRequest.builder;
+import static com.tae.Etickette.venue.application.Dto.VenueRegisterRequest.builder;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -34,7 +34,7 @@ public class RegisterVenueServiceTest {
     public void 공연장등록_성공() {
 
         //given
-        VenueCreateRequest requestDto = builder()
+        VenueRegisterRequest requestDto = builder()
                 .place("KSPO DOME(올림픽 체조경기장)")
                 .capacity(15000)
                 .address(new Address("서울시", "송파구 올림픽로 424", "11111"))
@@ -54,7 +54,7 @@ public class RegisterVenueServiceTest {
         //given
         venueRepository.save(Venue.create("KSPO", 15000, new Address("서울시", "송파구 올림픽로 424", "11111")));
 
-        VenueCreateRequest requestDto = builder()
+        VenueRegisterRequest requestDto = builder()
                 .place("KSPO DOME(올림픽 체조경기장)")
                 .capacity(15000)
                 .address(new Address("서울시", "송파구 올림픽로 424", "11111"))

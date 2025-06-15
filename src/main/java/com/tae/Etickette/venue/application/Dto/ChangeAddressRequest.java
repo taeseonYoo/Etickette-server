@@ -1,20 +1,17 @@
 package com.tae.Etickette.venue.application.Dto;
 
+import com.tae.Etickette.concert.domain.Address;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 public class ChangeAddressRequest {
-    private Long venueId;
-    private String city;
-    private String street;
-    private String zipcode;
+    @NotBlank
+    private Address address;
 
     @Builder
-    public ChangeAddressRequest(Long venueId, String city, String street, String zipcode) {
-        this.venueId = venueId;
-        this.city = city;
-        this.street = street;
-        this.zipcode = zipcode;
+    public ChangeAddressRequest(Address address) {
+        this.address = address;
     }
 }

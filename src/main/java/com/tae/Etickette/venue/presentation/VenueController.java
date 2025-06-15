@@ -1,20 +1,61 @@
 package com.tae.Etickette.venue.presentation;
 
-import com.tae.Etickette.venue.application.Dto.DeleteVenueRequest;
+import com.nimbusds.jose.proc.SecurityContext;
+import com.tae.Etickette.venue.application.ChangeVenueService;
 import com.tae.Etickette.venue.application.DeleteVenueService;
-import jakarta.validation.Valid;
+import com.tae.Etickette.venue.application.Dto.ChangeAddressRequest;
+import com.tae.Etickette.venue.application.Dto.VenueRegisterRequest;
+import com.tae.Etickette.venue.application.RegisterVenueService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/venues")
 public class VenueController {
-
+    private final ChangeVenueService changeVenueService;
     private final DeleteVenueService deleteVenueService;
-    @PreAuthorize("hasRole('ADMIN')")
-//    @PostMapping("/")
-    public void delete(@Valid DeleteVenueRequest requestDto) {
-        deleteVenueService.delete(requestDto);
+    private final RegisterVenueService registerVenueService;
+
+    /**
+     * 공연장 등록
+     * @param request
+     * @return
+     */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping
+    public ResponseEntity<Void> register(@RequestBody VenueRegisterRequest request) {
+        registerVenueService.register(request);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    /**
+     * 공연장 삭제
+     * @param venueId
+     * @return
+     */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("/{venueId}")
+    public ResponseEntity<Void> delete(@PathVariable Long venueId) {
+        deleteVenueService.delete(venueId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    /**
+     * 공연장 주소 수정
+     * @param venueId
+     * @param request
+     * @return
+     */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PutMapping("/{venueId}/address")
+    public ResponseEntity<Void> changeAddress(@PathVariable Long venueId,
+                                              @RequestBody ChangeAddressRequest request) {
+        changeVenueService.changeAddress(venueId, request);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
