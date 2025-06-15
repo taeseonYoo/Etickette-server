@@ -44,6 +44,7 @@ class DeleteVenueServiceTest {
 
         BDDMockito.given(venueRepository.findById(any()))
                 .willReturn(Optional.of(venue));
+        BDDMockito.given(deleteVenuePolicy.hasDeletePermission()).willReturn(true);
 
         //when
         deleteVenueService.delete(1L);
@@ -66,6 +67,21 @@ class DeleteVenueServiceTest {
                 deleteVenueService.delete(venueId));
     }
 
+    @Test
+    @DisplayName("delete - 권한이 없다면, 공연장 삭제에 실패한다.")
+    void 삭제_실패_권한없음() {
+        //given
+        Venue venue = Venue.create("KSPO", 15000, new Address("서울시", "송파구 올림픽로 424", "11111"));
+        ReflectionTestUtils.setField(venue,"id",1L);
 
+        BDDMockito.given(venueRepository.findById(any()))
+                .willReturn(Optional.of(venue));
+        BDDMockito.given(deleteVenuePolicy.hasDeletePermission()).willReturn(false);
+
+        //when & then
+        assertThrows(NoDeletablePermission
+                .class, () ->
+                deleteVenueService.delete(1L));
+    }
 
 }

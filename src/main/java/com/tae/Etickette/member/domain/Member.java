@@ -1,7 +1,6 @@
 package com.tae.Etickette.member.domain;
 
-import com.tae.Etickette.member.application.dto.PasswordChangeRequestDto;
-import com.tae.Etickette.member.BadPasswordException;
+import com.tae.Etickette.member.application.dto.ChangePasswordRequest;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -51,7 +50,7 @@ public class Member {
     public boolean matchPassword(EncryptionService encryptionService, String password) {
         return encryptionService.matches(password, this.password);
     }
-    public void changePassword(EncryptionService encryptionService, PasswordChangeRequestDto requestDto) {
+    public void changePassword(EncryptionService encryptionService, ChangePasswordRequest requestDto) {
         if (!matchPassword(encryptionService, requestDto.getOldPassword())) {
             throw new BadPasswordException("비밀번호가 일치하지 않습니다.");
         }

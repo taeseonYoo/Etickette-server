@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class VenueCreateResponse {
+public class RegisterVenueResponse {
 
     private Long id;
     private String place;
@@ -13,7 +13,7 @@ public class VenueCreateResponse {
     private Address address;
 
     @Builder
-    public VenueCreateResponse(Long id, String place, Integer capacity, Address address) {
+    public RegisterVenueResponse(Long id, String place, Integer capacity, Address address) {
         this.id = id;
         this.place = place;
         this.capacity = capacity;

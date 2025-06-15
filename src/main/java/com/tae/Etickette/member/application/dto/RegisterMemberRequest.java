@@ -11,7 +11,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class MemberJoinRequestDto {
+public class RegisterMemberRequest {
     @Size(max = 20)
     @NotBlank
     private final String name;
@@ -25,7 +25,7 @@ public class MemberJoinRequestDto {
     private final String password;
 
     @Builder
-    public MemberJoinRequestDto(String name, String email, String password) {
+    public RegisterMemberRequest(String name, String email, String password) {
         this.name=name;
         this.email=email;
         this.password = password;

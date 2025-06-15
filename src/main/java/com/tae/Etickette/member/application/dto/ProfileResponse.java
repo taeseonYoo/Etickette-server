@@ -4,12 +4,12 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class ProfileResponseDto {
+public class ProfileResponse {
     private String name;
     private String email;
 
     @Builder
-    public ProfileResponseDto(String name, String email) {
+    public ProfileResponse(String name, String email) {
         this.name = name;
         this.email = email;
     }

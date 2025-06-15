@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class VenueRegisterRequest {
+public class RegisterVenueRequest {
     @NotBlank
     private final String place;
     @Size(min = 1)
@@ -18,7 +18,7 @@ public class VenueRegisterRequest {
 
 
     @Builder
-    public VenueRegisterRequest(String place, Integer capacity, Address address) {
+    public RegisterVenueRequest(String place, Integer capacity, Address address) {
         this.place = place;
         this.capacity = capacity;
         this.address = address;

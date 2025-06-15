@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tae.Etickette.global.refresh.application.RefreshTokenService;
 import com.tae.Etickette.global.auth.CustomUserDetails;
 import com.tae.Etickette.global.util.CookieUtil;
-import com.tae.Etickette.member.application.dto.LoginRequestDto;
+import com.tae.Etickette.member.application.dto.LoginRequest;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
@@ -42,18 +42,18 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
 
-        LoginRequestDto loginRequestDto = new LoginRequestDto();
+        LoginRequest loginRequest = new LoginRequest();
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             ServletInputStream inputStream = request.getInputStream();
             String messageBody = StreamUtils.copyToString(inputStream, StandardCharsets.UTF_8);
-            loginRequestDto = objectMapper.readValue(messageBody, LoginRequestDto.class);
+            loginRequest = objectMapper.readValue(messageBody, LoginRequest.class);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        String email = loginRequestDto.getEmail();
-        String password = loginRequestDto.getPassword();
+        String email = loginRequest.getEmail();
+        String password = loginRequest.getPassword();
 
 
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(email, password, null);

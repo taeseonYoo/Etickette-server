@@ -1,16 +1,14 @@
 package com.tae.Etickette.venue.presentation;
 
-import com.nimbusds.jose.proc.SecurityContext;
 import com.tae.Etickette.venue.application.ChangeVenueService;
 import com.tae.Etickette.venue.application.DeleteVenueService;
 import com.tae.Etickette.venue.application.Dto.ChangeAddressRequest;
-import com.tae.Etickette.venue.application.Dto.VenueRegisterRequest;
+import com.tae.Etickette.venue.application.Dto.RegisterVenueRequest;
 import com.tae.Etickette.venue.application.RegisterVenueService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -28,7 +26,7 @@ public class VenueController {
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
-    public ResponseEntity<Void> register(@RequestBody VenueRegisterRequest request) {
+    public ResponseEntity<Void> register(@RequestBody RegisterVenueRequest request) {
         registerVenueService.register(request);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

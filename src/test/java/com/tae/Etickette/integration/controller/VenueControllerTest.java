@@ -3,7 +3,7 @@ package com.tae.Etickette.integration.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tae.Etickette.concert.domain.Address;
 import com.tae.Etickette.venue.application.Dto.ChangeAddressRequest;
-import com.tae.Etickette.venue.application.Dto.VenueRegisterRequest;
+import com.tae.Etickette.venue.application.Dto.RegisterVenueRequest;
 import com.tae.Etickette.venue.domain.Venue;
 import com.tae.Etickette.venue.domain.VenueStatus;
 import com.tae.Etickette.venue.infra.VenueRepository;
@@ -99,7 +99,7 @@ public class VenueControllerTest {
     @WithMockUser(roles = "ADMIN")
     void 공연장생성_성공() throws Exception {
         //given
-        VenueRegisterRequest request = VenueRegisterRequest.builder()
+        RegisterVenueRequest request = RegisterVenueRequest.builder()
                 .place("KSPO")
                 .capacity(10000)
                 .address(new Address("서울", "잠실", "11111"))
@@ -115,7 +115,7 @@ public class VenueControllerTest {
     @WithMockUser(roles = "USER")
     void 공연장생성_실패_권한() throws Exception {
         //given
-        VenueRegisterRequest request = VenueRegisterRequest.builder()
+        RegisterVenueRequest request = RegisterVenueRequest.builder()
                 .place("KSPO")
                 .capacity(10000)
                 .address(new Address("서울", "잠실", "11111"))

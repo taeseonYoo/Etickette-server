@@ -5,11 +5,11 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class MemberDeleteRequestDto {
+public class DeleteMemberRequest {
     @NotBlank
     String password;
     @Builder
-    public MemberDeleteRequestDto(String password) {
+    public DeleteMemberRequest(String password) {
         this.password = password;
     }
 }

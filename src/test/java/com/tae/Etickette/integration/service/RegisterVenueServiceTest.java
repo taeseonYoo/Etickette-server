@@ -1,10 +1,10 @@
 package com.tae.Etickette.integration.service;
 
-import com.tae.Etickette.venue.application.Dto.VenueRegisterRequest;
-import com.tae.Etickette.venue.application.Dto.VenueCreateResponse;
+import com.tae.Etickette.venue.application.Dto.RegisterVenueRequest;
+import com.tae.Etickette.venue.application.Dto.RegisterVenueResponse;
 import com.tae.Etickette.venue.application.RegisterVenueService;
 import com.tae.Etickette.concert.domain.Address;
-import com.tae.Etickette.venue.application.VenueQueryService;
+import com.tae.Etickette.venue.application.VenueNotFoundException;
 import com.tae.Etickette.venue.domain.Venue;
 import com.tae.Etickette.venue.infra.VenueRepository;
 import org.assertj.core.api.Assertions;
@@ -15,7 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.tae.Etickette.venue.application.Dto.VenueRegisterRequest.builder;
+import static com.tae.Etickette.venue.application.Dto.RegisterVenueRequest.builder;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -25,8 +25,6 @@ public class RegisterVenueServiceTest {
     @Autowired
     private RegisterVenueService registerVenueService;
     @Autowired
-    private VenueQueryService venueQueryService;
-    @Autowired
     private VenueRepository venueRepository;
 
     @Test
@@ -34,14 +32,15 @@ public class RegisterVenueServiceTest {
     public void 공연장등록_성공() {
 
         //given
-        VenueRegisterRequest requestDto = builder()
+        RegisterVenueRequest requestDto = builder()
                 .place("KSPO DOME(올림픽 체조경기장)")
                 .capacity(15000)
                 .address(new Address("서울시", "송파구 올림픽로 424", "11111"))
                 .build();
         //when
-        VenueCreateResponse responseDto = registerVenueService.register(requestDto);
-        Venue findVenue = venueQueryService.findById(responseDto.getId());
+        RegisterVenueResponse responseDto = registerVenueService.register(requestDto);
+        Venue findVenue = venueRepository.findById(responseDto.getId())
+                .orElseThrow(() -> new VenueNotFoundException("공연장을 찾을 수 없습니다."));
 
         //then
         Assertions.assertThat(findVenue.getPlace()).isEqualTo("KSPO DOME(올림픽 체조경기장)");
@@ -54,7 +53,7 @@ public class RegisterVenueServiceTest {
         //given
         venueRepository.save(Venue.create("KSPO", 15000, new Address("서울시", "송파구 올림픽로 424", "11111")));
 
-        VenueRegisterRequest requestDto = builder()
+        RegisterVenueRequest requestDto = builder()
                 .place("KSPO DOME(올림픽 체조경기장)")
                 .capacity(15000)
                 .address(new Address("서울시", "송파구 올림픽로 424", "11111"))

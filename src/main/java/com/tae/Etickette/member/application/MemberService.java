@@ -1,10 +1,10 @@
 package com.tae.Etickette.member.application;
 
+import com.tae.Etickette.member.domain.ChangePolicy;
 import com.tae.Etickette.member.domain.EncryptionService;
 import com.tae.Etickette.member.application.dto.*;
 import com.tae.Etickette.member.domain.Member;
 import com.tae.Etickette.member.infra.MemberRepository;
-import com.tae.Etickette.member.MemberNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,9 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final EncryptionService encryptionService;
-
+    private final ChangePolicy changePolicy;
     @Transactional
-    public MemberJoinResponseDto join(MemberJoinRequestDto requestDto) {
+    public RegisterMemberResponse register(RegisterMemberRequest requestDto) {
 
         boolean duplicated = memberRepository.findByEmail(requestDto.getEmail()).isPresent();
         if (duplicated) {
@@ -29,7 +29,7 @@ public class MemberService {
         Member member = requestDto.toEntity(encryptionService, requestDto.getPassword());
 
         Member savedMember = memberRepository.save(member);
-        return MemberJoinResponseDto.builder()
+        return RegisterMemberResponse.builder()
                 .id(savedMember.getId())
                 .name(savedMember.getName())
                 .email(savedMember.getEmail())
@@ -37,42 +37,38 @@ public class MemberService {
     }
 
     @Transactional
-    public void changePassword(PasswordChangeRequestDto requestDto, String email) {
-        //TODO OAUTH는 비밀번호를 수정할 수 없다.
-        //TODO 수정에 성공하면 JWT를 재발급 해야한다?
+    public void changePassword(ChangePasswordRequest requestDto, String requestEmail) {
+        Member member = memberRepository.findByEmail(requestEmail).orElseThrow(() -> new MemberNotFoundException("회원 정보를 찾을 수 없습니다."));
 
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberNotFoundException("회원 정보를 찾을 수 없습니다."));
+        //TODO Changer 객체로 전달할까?
+        if (!changePolicy.hasUpdatePermission(member, requestEmail)) {
+            throw new NoChangeablePermission("회원 정보 수정 권한이 없습니다.");
+        }
 
         member.changePassword(encryptionService, requestDto);
     }
 
     @Transactional
-    public void deleteMember(MemberDeleteRequestDto requestDto, String email) {
+    public void deleteMember(DeleteMemberRequest requestDto, String email) {
 
-        Member member = findByEmail(email);
-        //TODO 비밀번호로 회원 검증
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("회원 정보를 찾을 수 없습니다."));
+
         boolean match = member.matchPassword(encryptionService, requestDto.getPassword());
         if (!match) {
-            //TODO Exception 변경 예정
-            throw new RuntimeException("");
+            throw new NoChangeablePermission("회원 정보 수정 권한이 없습니다.");
         }
-        //TODO 토큰 삭제 -> Refresh 도입 고민
+        //TODO 토큰 삭제를 해야한다.
 
         member.deleteMember();
     }
 
-    public ProfileResponseDto getProfile(String email) {
-        Member member = findByEmail(email);
-        return ProfileResponseDto.builder().name(member.getName()).email(member.getEmail()).build();
+    public ProfileResponse getProfile(String email) {
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("회원 정보를 찾을 수 없습니다."));
+        return ProfileResponse.builder().name(member.getName()).email(member.getEmail()).build();
     }
 
     public Member findById(Long memberId) {
         return memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException("회원 정보를 찾을 수 없습니다."));
     }
-
-    public Member findByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("회원 정보를 찾을 수 없습니다."));
-    }
-
-
 }

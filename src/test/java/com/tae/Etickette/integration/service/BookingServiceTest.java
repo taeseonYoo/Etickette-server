@@ -11,8 +11,8 @@ import com.tae.Etickette.testhelper.ConcertCreateBuilder;
 import com.tae.Etickette.testhelper.VenueCreateBuilder;
 import com.tae.Etickette.session.application.Dto.RegisterSessionRequest;
 import com.tae.Etickette.session.application.RegisterSessionService;
-import com.tae.Etickette.venue.application.Dto.VenueRegisterRequest;
-import com.tae.Etickette.venue.application.Dto.VenueCreateResponse;
+import com.tae.Etickette.venue.application.Dto.RegisterVenueRequest;
+import com.tae.Etickette.venue.application.Dto.RegisterVenueResponse;
 import com.tae.Etickette.venue.application.RegisterVenueService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,8 +50,8 @@ class BookingServiceTest {
     @BeforeEach
     public void setUp() {
         //공연장 등록
-        VenueRegisterRequest venueDto = VenueCreateBuilder.builder().build();
-        VenueCreateResponse register = registerVenueService.register(venueDto);
+        RegisterVenueRequest venueDto = VenueCreateBuilder.builder().build();
+        RegisterVenueResponse register = registerVenueService.register(venueDto);
 
         List<GradePriceInfo> gradePriceInfos = List.of(
                 GradePriceInfo.builder().grade("VIP").price(150000).build(),
