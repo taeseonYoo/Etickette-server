@@ -9,7 +9,7 @@ import com.tae.Etickette.session.application.Dto.RegisterSessionRequest;
 import com.tae.Etickette.session.domain.Session;
 import com.tae.Etickette.session.domain.SettingSeatService;
 import com.tae.Etickette.session.infra.SessionRepository;
-import com.tae.Etickette.venue.application.VenueNotFoundException;
+import com.tae.Etickette.venue.command.application.VenueNotFoundException;
 import com.tae.Etickette.venue.infra.VenueRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

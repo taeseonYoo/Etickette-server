@@ -1,4 +1,4 @@
-package com.tae.Etickette.venue.domain;
+package com.tae.Etickette.venue.command.domain;
 
 import lombok.RequiredArgsConstructor;
 

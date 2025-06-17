@@ -1,15 +1,19 @@
 package com.tae.Etickette.venue.presentation;
 
-import com.tae.Etickette.venue.application.ChangeVenueService;
-import com.tae.Etickette.venue.application.DeleteVenueService;
-import com.tae.Etickette.venue.application.Dto.ChangeAddressRequest;
-import com.tae.Etickette.venue.application.Dto.RegisterVenueRequest;
-import com.tae.Etickette.venue.application.RegisterVenueService;
+import com.tae.Etickette.venue.command.application.ChangeVenueService;
+import com.tae.Etickette.venue.command.application.DeleteVenueService;
+import com.tae.Etickette.venue.command.application.Dto.ChangeAddressRequest;
+import com.tae.Etickette.venue.command.application.Dto.RegisterVenueRequest;
+import com.tae.Etickette.venue.command.application.RegisterVenueService;
+import com.tae.Etickette.venue.query.ActivateVenueResponse;
+import com.tae.Etickette.venue.query.VenueQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,6 +22,7 @@ public class VenueController {
     private final ChangeVenueService changeVenueService;
     private final DeleteVenueService deleteVenueService;
     private final RegisterVenueService registerVenueService;
+    private final VenueQueryService venueQueryService;
 
     /**
      * 공연장 등록
@@ -55,5 +60,14 @@ public class VenueController {
                                               @RequestBody ChangeAddressRequest request) {
         changeVenueService.changeAddress(venueId, request);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    /**
+     * 사용 가능한 공연장 리스트를 반환한다.
+     * @return
+     */
+    @GetMapping("")
+    public ResponseEntity<List<ActivateVenueResponse>> getActivateVenueList() {
+        return ResponseEntity.ok(venueQueryService.getActivateVenueList());
     }
 }

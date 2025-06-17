@@ -1,6 +1,9 @@
 package com.tae.Etickette.venue.domain;
 
 import com.tae.Etickette.concert.domain.Address;
+import com.tae.Etickette.venue.command.domain.AlreadyDeletedException;
+import com.tae.Etickette.venue.command.domain.Venue;
+import com.tae.Etickette.venue.command.domain.VenueStatus;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,9 +1,10 @@
 package com.tae.Etickette.venue.application;
 
 import com.tae.Etickette.concert.domain.Address;
-import com.tae.Etickette.venue.application.Dto.RegisterVenueRequest;
-import com.tae.Etickette.venue.application.Dto.RegisterVenueResponse;
-import com.tae.Etickette.venue.domain.Venue;
+import com.tae.Etickette.venue.command.application.Dto.RegisterVenueRequest;
+import com.tae.Etickette.venue.command.application.Dto.RegisterVenueResponse;
+import com.tae.Etickette.venue.command.application.RegisterVenueService;
+import com.tae.Etickette.venue.command.domain.Venue;
 import com.tae.Etickette.venue.infra.VenueRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +18,7 @@ import org.springframework.dao.DuplicateKeyException;
 
 import java.util.Optional;
 
-import static com.tae.Etickette.venue.application.Dto.RegisterVenueRequest.builder;
+import static com.tae.Etickette.venue.command.application.Dto.RegisterVenueRequest.builder;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;

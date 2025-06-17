@@ -1,4 +1,4 @@
-package com.tae.Etickette.venue.domain;
+package com.tae.Etickette.venue.command.domain;
 
 import com.tae.Etickette.concert.domain.Address;
 import jakarta.persistence.*;
@@ -49,7 +49,7 @@ public class Venue {
             throw new AlreadyDeletedException("이미 삭제된 공연장 입니다.");
         }
     }
-    private boolean isActivate() {
+    public boolean isActivate() {
         return status == VenueStatus.ACTIVE;
     }
 

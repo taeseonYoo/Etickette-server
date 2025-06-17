@@ -1,4 +1,4 @@
-package com.tae.Etickette.venue.application.Dto;
+package com.tae.Etickette.venue.command.application.Dto;
 
 import com.tae.Etickette.concert.domain.Address;
 import jakarta.validation.constraints.NotBlank;

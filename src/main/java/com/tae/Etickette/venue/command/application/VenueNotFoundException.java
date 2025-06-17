@@ -1,4 +1,4 @@
-package com.tae.Etickette.venue.application;
+package com.tae.Etickette.venue.command.application;
 
 public class VenueNotFoundException extends RuntimeException {
     public VenueNotFoundException() {

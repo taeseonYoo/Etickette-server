@@ -1,7 +1,7 @@
-package com.tae.Etickette.venue.application.Dto;
+package com.tae.Etickette.venue.command.application.Dto;
 
 import com.tae.Etickette.concert.domain.Address;
-import com.tae.Etickette.venue.domain.Venue;
+import com.tae.Etickette.venue.command.domain.Venue;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;

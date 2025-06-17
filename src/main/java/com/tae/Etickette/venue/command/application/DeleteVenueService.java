@@ -1,7 +1,7 @@
-package com.tae.Etickette.venue.application;
+package com.tae.Etickette.venue.command.application;
 
-import com.tae.Etickette.venue.domain.DeleteVenuePolicy;
-import com.tae.Etickette.venue.domain.Venue;
+import com.tae.Etickette.venue.command.domain.DeleteVenuePolicy;
+import com.tae.Etickette.venue.command.domain.Venue;
 import com.tae.Etickette.venue.infra.VenueRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

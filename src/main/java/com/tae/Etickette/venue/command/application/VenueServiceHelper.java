@@ -1,4 +1,4 @@
-package com.tae.Etickette.venue.application;
+package com.tae.Etickette.venue.command.application;
 
 import com.tae.Etickette.concert.domain.Address;
 import com.tae.Etickette.venue.infra.VenueRepository;

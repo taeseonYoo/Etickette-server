@@ -2,12 +2,13 @@ package com.tae.Etickette.integration.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tae.Etickette.concert.domain.Address;
-import com.tae.Etickette.venue.application.Dto.ChangeAddressRequest;
-import com.tae.Etickette.venue.application.Dto.RegisterVenueRequest;
-import com.tae.Etickette.venue.domain.Venue;
-import com.tae.Etickette.venue.domain.VenueStatus;
+import com.tae.Etickette.venue.command.application.Dto.ChangeAddressRequest;
+import com.tae.Etickette.venue.command.application.Dto.RegisterVenueRequest;
+import com.tae.Etickette.venue.command.domain.Venue;
+import com.tae.Etickette.venue.command.domain.VenueStatus;
 import com.tae.Etickette.venue.infra.VenueRepository;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -17,7 +18,10 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -125,5 +129,58 @@ public class VenueControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(request))
         ).andExpect(status().isForbidden());
+    }
+
+    @Test
+    @DisplayName("공연장 검색에 성공한다.")
+    void 공연장검색_성공() throws Exception {
+        //given
+        Venue venue1 = Venue.create("KSPO DOME", 10000, new Address("서울", "올림픽로", "12345"));
+        Venue venue2 = Venue.create("올림픽홀", 5000, new Address("서울", "잠실로", "54321"));
+        venueRepository.saveAll(List.of(venue1, venue2));
+
+        //when & then
+        mockMvc.perform(get("/api/venues")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2));
+    }
+
+    @Test
+    @DisplayName("공연장 검색 , 삭제된 공연장은 제외해야한다.")
+    void 공연장검색_성공_삭제된공연장은제외() throws Exception {
+        //given
+        Venue venue1 = Venue.create("KSPO DOME", 10000, new Address("서울", "올림픽로", "12345"));
+        Venue venue2 = Venue.create("올림픽홀", 5000, new Address("서울", "잠실로", "54321"));
+        venueRepository.saveAll(List.of(venue1, venue2));
+        venue2.deleteVenue();
+
+        //when & then
+        mockMvc.perform(get("/api/venues")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(1));
+    }
+
+    @Test
+    @DisplayName("공연장 검색에 성공하면, [id,장소명,관객수,주소]가 제대로 반환되어야한다.")
+    void 공연장검색_성공_데이터검증() throws Exception {
+        //given
+        Venue venue1 = Venue.create("KSPO DOME", 10000, new Address("서울", "올림픽로", "12345"));
+        Venue venue2 = Venue.create("올림픽홀", 5000, new Address("서울", "잠실로", "54321"));
+        venueRepository.saveAll(List.of(venue1, venue2));
+        venue2.deleteVenue();
+
+        //when & then
+        mockMvc.perform(get("/api/venues")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[0].place").value("KSPO DOME"))
+                .andExpect(jsonPath("$[0].capacity").value(10000))
+                .andExpect(jsonPath("$[0].address.city").value("서울"))
+                .andExpect(jsonPath("$[0].address.street").value("올림픽로"))
+                .andExpect(jsonPath("$[0].address.zipcode").value("12345"));
+
     }
 }

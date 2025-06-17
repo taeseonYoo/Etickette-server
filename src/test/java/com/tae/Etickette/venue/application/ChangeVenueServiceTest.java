@@ -1,8 +1,10 @@
 package com.tae.Etickette.venue.application;
 
 import com.tae.Etickette.concert.domain.Address;
-import com.tae.Etickette.venue.application.Dto.ChangeAddressRequest;
-import com.tae.Etickette.venue.domain.Venue;
+import com.tae.Etickette.venue.command.application.ChangeVenueService;
+import com.tae.Etickette.venue.command.application.Dto.ChangeAddressRequest;
+import com.tae.Etickette.venue.command.application.VenueNotFoundException;
+import com.tae.Etickette.venue.command.domain.Venue;
 import com.tae.Etickette.venue.infra.VenueRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

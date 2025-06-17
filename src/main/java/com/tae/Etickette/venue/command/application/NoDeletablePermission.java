@@ -1,4 +1,4 @@
-package com.tae.Etickette.venue.application;
+package com.tae.Etickette.venue.command.application;
 
 public class NoDeletablePermission extends RuntimeException {
     public NoDeletablePermission() {

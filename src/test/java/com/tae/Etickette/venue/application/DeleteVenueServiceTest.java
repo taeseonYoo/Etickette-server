@@ -1,9 +1,12 @@
 package com.tae.Etickette.venue.application;
 
 import com.tae.Etickette.concert.domain.Address;
-import com.tae.Etickette.venue.domain.DeleteVenuePolicy;
-import com.tae.Etickette.venue.domain.Venue;
-import com.tae.Etickette.venue.domain.VenueStatus;
+import com.tae.Etickette.venue.command.application.DeleteVenueService;
+import com.tae.Etickette.venue.command.application.NoDeletablePermission;
+import com.tae.Etickette.venue.command.application.VenueNotFoundException;
+import com.tae.Etickette.venue.command.domain.DeleteVenuePolicy;
+import com.tae.Etickette.venue.command.domain.Venue;
+import com.tae.Etickette.venue.command.domain.VenueStatus;
 import com.tae.Etickette.venue.infra.VenueRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

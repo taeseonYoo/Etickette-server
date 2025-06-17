@@ -1,7 +1,6 @@
 package com.tae.Etickette.venue.infra;
 
-import com.tae.Etickette.venue.domain.DeleteVenuePolicy;
-import com.tae.Etickette.venue.domain.Venue;
+import com.tae.Etickette.venue.command.domain.DeleteVenuePolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
