@@ -19,7 +19,7 @@ public class VenueQueryService {
     private final VenueDataDao venueDataDao;
 
     public List<VenueData> getActivateVenueList() {
-        Specification<VenueData> specs = VenueDataSpecs.statusActive(Venue.getActiveInfo());
+        Specification<VenueData> specs = VenueDataSpecs.statusActive();
         return venueDataDao.findAll(specs);
     }
 

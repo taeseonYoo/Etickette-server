@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "venue")
 public class VenueData {
     @Id
+    @Column(name = "venue_id")
     private Long id;
     @Column
     private String place;

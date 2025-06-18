@@ -5,7 +5,6 @@ import com.tae.Etickette.venue.command.application.DeleteVenueService;
 import com.tae.Etickette.venue.command.application.Dto.ChangeAddressRequest;
 import com.tae.Etickette.venue.command.application.Dto.RegisterVenueRequest;
 import com.tae.Etickette.venue.command.application.RegisterVenueService;
-import com.tae.Etickette.venue.query.ActivateVenueResponse;
 import com.tae.Etickette.venue.query.VenueData;
 import com.tae.Etickette.venue.query.VenueQueryService;
 import lombok.RequiredArgsConstructor;
