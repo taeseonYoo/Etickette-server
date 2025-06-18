@@ -6,6 +6,7 @@ import com.tae.Etickette.venue.command.application.Dto.ChangeAddressRequest;
 import com.tae.Etickette.venue.command.application.Dto.RegisterVenueRequest;
 import com.tae.Etickette.venue.command.application.RegisterVenueService;
 import com.tae.Etickette.venue.query.ActivateVenueResponse;
+import com.tae.Etickette.venue.query.VenueData;
 import com.tae.Etickette.venue.query.VenueQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -67,7 +68,7 @@ public class VenueController {
      * @return
      */
     @GetMapping("")
-    public ResponseEntity<List<ActivateVenueResponse>> getActivateVenueList() {
+    public ResponseEntity<List<VenueData>> getActivateVenueList() {
         return ResponseEntity.ok(venueQueryService.getActivateVenueList());
     }
 }

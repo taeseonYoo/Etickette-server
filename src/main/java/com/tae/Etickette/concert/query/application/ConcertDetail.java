@@ -4,10 +4,12 @@ import com.tae.Etickette.concert.domain.Address;
 import com.tae.Etickette.concert.domain.Concert;
 import com.tae.Etickette.concert.domain.ConcertStatus;
 import com.tae.Etickette.concert.domain.GradePrice;
-import com.tae.Etickette.venue.command.domain.Venue;
+import com.tae.Etickette.venue.query.VenueData;
+import lombok.Getter;
 
 import java.util.List;
 
+@Getter
 public class ConcertDetail {
     private Long concertId;
     private String title;
@@ -23,7 +25,7 @@ public class ConcertDetail {
 
     private List<SessionDetail> sessionDetails;
 
-    public ConcertDetail(Concert concert, Venue venue, List<SessionDetail> sessionDetails) {
+    public ConcertDetail(Concert concert, VenueData venue, List<SessionDetail> sessionDetails) {
         this.sessionDetails = sessionDetails;
         this.concertId = concert.getId();
         this.title = concert.getTitle();

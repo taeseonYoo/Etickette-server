@@ -64,4 +64,7 @@ public class Venue {
             throw new IllegalArgumentException("총 좌석 수는 0보다 작을 수 없습니다.");
         }
     }
+    public static VenueStatus getActiveInfo() {
+        return VenueStatus.ACTIVE;
+    }
 }
