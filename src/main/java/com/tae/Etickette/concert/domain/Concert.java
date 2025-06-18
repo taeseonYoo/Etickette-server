@@ -24,7 +24,7 @@ public class Concert {
     @Column(nullable = false)
     private Integer runningTime;
     @Column
-    private String ImgURL;
+    private String imgURL;
 
     @Enumerated(value = EnumType.STRING)
     private ConcertStatus status;
@@ -42,7 +42,7 @@ public class Concert {
         this.title = title;
         this.overview = overview;
         this.runningTime = runningTime;
-        this.ImgURL = imgURL;
+        this.imgURL = imgURL;
         this.status = ConcertStatus.BEFORE;
 
         this.gradePrices = gradePrices;

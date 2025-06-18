@@ -11,14 +11,14 @@ public class RegisterConcertRequest {
     private final String title;
     private final String overview;
     private final Integer runningTime;
-    private final String ImgURL;
+    private final String imgURL;
     private final List<GradePriceInfo> gradePrices;
     @Builder
     public RegisterConcertRequest(String title, String overview, Integer runningTime, String imgURL, List<GradePriceInfo> gradePrices) {
         this.title = title;
         this.overview = overview;
         this.runningTime = runningTime;
-        ImgURL = imgURL;
+        this.imgURL = imgURL;
         this.gradePrices = gradePrices;
     }
 
