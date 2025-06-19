@@ -5,8 +5,8 @@ import com.tae.Etickette.booking.application.BookingService;
 import com.tae.Etickette.booking.domain.Booking;
 import com.tae.Etickette.booking.domain.BookingRef;
 import com.tae.Etickette.booking.infra.BookingRepository;
-import com.tae.Etickette.concert.application.dto.RegisterConcertRequest;
-import com.tae.Etickette.concert.application.RegisterConcertService;
+import com.tae.Etickette.concert.command.application.dto.RegisterConcertRequest;
+import com.tae.Etickette.concert.command.application.RegisterConcertService;
 import com.tae.Etickette.testhelper.ConcertCreateBuilder;
 import com.tae.Etickette.testhelper.VenueCreateBuilder;
 import com.tae.Etickette.session.application.Dto.RegisterSessionRequest;
@@ -26,7 +26,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-import static com.tae.Etickette.concert.application.dto.RegisterConcertRequest.*;
+import static com.tae.Etickette.concert.command.application.dto.RegisterConcertRequest.*;
 import static com.tae.Etickette.session.application.Dto.RegisterSessionRequest.*;
 
 

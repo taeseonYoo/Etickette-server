@@ -1,11 +1,9 @@
 package com.tae.Etickette.concert.query.application;
 
-import com.tae.Etickette.concert.domain.Concert;
+import com.tae.Etickette.concert.command.domain.Concert;
 import com.tae.Etickette.concert.infra.ConcertRepository;
 import com.tae.Etickette.session.domain.Session;
 import com.tae.Etickette.session.infra.SessionRepository;
-import com.tae.Etickette.venue.command.domain.Venue;
-import com.tae.Etickette.venue.infra.VenueRepository;
 import com.tae.Etickette.venue.query.VenueData;
 import com.tae.Etickette.venue.query.VenueQueryService;
 import lombok.RequiredArgsConstructor;
@@ -29,11 +27,12 @@ public class ConcertDetailService {
 
         Optional<VenueData> venueData = venueQueryService.getVenue(sessions.get(0).getVenueId());
 
-        return concertOpt.map(concert->{
-            List<SessionDetail> sessionDetails = sessions.stream().map(SessionDetail::new)
+        return venueData.flatMap(venue -> concertOpt.map(concert -> {
+            List<SessionDetail> sessionDetails = sessions.stream()
+                    .map(SessionDetail::new)
                     .collect(Collectors.toList());
-            return new ConcertDetail(concert, venueData.orElse(null), sessionDetails);
-        });
+            return new ConcertDetail(concert, venue, sessionDetails);
+        }));
 
     }
 }

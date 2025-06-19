@@ -1,6 +1,6 @@
 package com.tae.Etickette.venue.domain;
 
-import com.tae.Etickette.concert.domain.Address;
+import com.tae.Etickette.concert.command.domain.Address;
 import com.tae.Etickette.venue.command.domain.AlreadyDeletedException;
 import com.tae.Etickette.venue.command.domain.Venue;
 import com.tae.Etickette.venue.command.domain.VenueStatus;

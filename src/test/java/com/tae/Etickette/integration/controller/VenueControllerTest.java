@@ -1,7 +1,7 @@
 package com.tae.Etickette.integration.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tae.Etickette.concert.domain.Address;
+import com.tae.Etickette.concert.command.domain.Address;
 import com.tae.Etickette.venue.command.application.Dto.ChangeAddressRequest;
 import com.tae.Etickette.venue.command.application.Dto.RegisterVenueRequest;
 import com.tae.Etickette.venue.command.domain.Venue;
@@ -175,7 +175,7 @@ public class VenueControllerTest {
         mockMvc.perform(get("/api/venues")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[0].id").value(venue1.getId()))
                 .andExpect(jsonPath("$[0].place").value("KSPO DOME"))
                 .andExpect(jsonPath("$[0].capacity").value(10000))
                 .andExpect(jsonPath("$[0].address.city").value("서울"))

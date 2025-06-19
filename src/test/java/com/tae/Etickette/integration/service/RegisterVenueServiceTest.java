@@ -3,7 +3,7 @@ package com.tae.Etickette.integration.service;
 import com.tae.Etickette.venue.command.application.Dto.RegisterVenueRequest;
 import com.tae.Etickette.venue.command.application.Dto.RegisterVenueResponse;
 import com.tae.Etickette.venue.command.application.RegisterVenueService;
-import com.tae.Etickette.concert.domain.Address;
+import com.tae.Etickette.concert.command.domain.Address;
 import com.tae.Etickette.venue.command.application.VenueNotFoundException;
 import com.tae.Etickette.venue.command.domain.Venue;
 import com.tae.Etickette.venue.infra.VenueRepository;

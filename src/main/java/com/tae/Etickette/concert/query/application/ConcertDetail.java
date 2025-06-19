@@ -1,9 +1,9 @@
 package com.tae.Etickette.concert.query.application;
 
-import com.tae.Etickette.concert.domain.Address;
-import com.tae.Etickette.concert.domain.Concert;
-import com.tae.Etickette.concert.domain.ConcertStatus;
-import com.tae.Etickette.concert.domain.GradePrice;
+import com.tae.Etickette.concert.command.domain.Address;
+import com.tae.Etickette.concert.command.domain.Concert;
+import com.tae.Etickette.concert.command.domain.ConcertStatus;
+import com.tae.Etickette.concert.command.domain.GradePrice;
 import com.tae.Etickette.venue.query.VenueData;
 import lombok.Getter;
 

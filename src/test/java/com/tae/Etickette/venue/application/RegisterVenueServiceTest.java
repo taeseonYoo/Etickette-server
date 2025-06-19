@@ -1,6 +1,6 @@
 package com.tae.Etickette.venue.application;
 
-import com.tae.Etickette.concert.domain.Address;
+import com.tae.Etickette.concert.command.domain.Address;
 import com.tae.Etickette.venue.command.application.Dto.RegisterVenueRequest;
 import com.tae.Etickette.venue.command.application.Dto.RegisterVenueResponse;
 import com.tae.Etickette.venue.command.application.RegisterVenueService;

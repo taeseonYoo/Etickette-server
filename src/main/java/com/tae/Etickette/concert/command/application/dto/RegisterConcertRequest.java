@@ -1,4 +1,4 @@
-package com.tae.Etickette.concert.application.dto;
+package com.tae.Etickette.concert.command.application.dto;
 
 import lombok.Builder;
 import lombok.Getter;

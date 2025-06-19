@@ -1,9 +1,9 @@
-package com.tae.Etickette.concert.application;
+package com.tae.Etickette.concert.command.application;
 
-import com.tae.Etickette.concert.application.dto.RegisterConcertRequest;
+import com.tae.Etickette.concert.command.application.dto.RegisterConcertRequest;
 import com.tae.Etickette.global.model.Money;
-import com.tae.Etickette.concert.domain.Concert;
-import com.tae.Etickette.concert.domain.GradePrice;
+import com.tae.Etickette.concert.command.domain.Concert;
+import com.tae.Etickette.concert.command.domain.GradePrice;
 import com.tae.Etickette.concert.infra.ConcertRepository;
 import com.tae.Etickette.seat.Seat;
 import com.tae.Etickette.seat.SeatRepository;

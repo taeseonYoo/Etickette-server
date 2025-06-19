@@ -4,7 +4,6 @@ import com.tae.Etickette.concert.query.dao.ConcertSummaryDao;
 import com.tae.Etickette.concert.query.dto.ConcertSummary;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +13,7 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class ConcertQueryService {
+public class ConcertSummaryService {
     private final ConcertSummaryDao concertSummaryDao;
 
     public List<ConcertSummary> getAllConcerts() {
@@ -22,8 +21,6 @@ public class ConcertQueryService {
     }
 
     public Page<ConcertSummary> getPageList(Pageable pageable) {
-        Page<ConcertSummary> all = concertSummaryDao.findAll(pageable);
-        System.out.println(all.getContent().size());
-        return all;
+        return concertSummaryDao.findAll(pageable);
     }
 }

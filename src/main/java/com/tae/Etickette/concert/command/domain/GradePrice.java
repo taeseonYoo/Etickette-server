@@ -1,4 +1,4 @@
-package com.tae.Etickette.concert.domain;
+package com.tae.Etickette.concert.command.domain;
 
 import com.tae.Etickette.global.model.Money;
 import com.tae.Etickette.global.jpa.MoneyConverter;

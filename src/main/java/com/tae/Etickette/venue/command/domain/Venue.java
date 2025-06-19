@@ -1,6 +1,6 @@
 package com.tae.Etickette.venue.command.domain;
 
-import com.tae.Etickette.concert.domain.Address;
+import com.tae.Etickette.concert.command.domain.Address;
 import jakarta.persistence.*;
 import lombok.*;
 

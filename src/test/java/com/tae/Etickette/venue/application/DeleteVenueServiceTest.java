@@ -1,6 +1,6 @@
 package com.tae.Etickette.venue.application;
 
-import com.tae.Etickette.concert.domain.Address;
+import com.tae.Etickette.concert.command.domain.Address;
 import com.tae.Etickette.venue.command.application.DeleteVenueService;
 import com.tae.Etickette.venue.command.application.NoDeletablePermission;
 import com.tae.Etickette.venue.command.application.VenueNotFoundException;

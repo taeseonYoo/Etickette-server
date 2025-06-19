@@ -48,7 +48,7 @@ class CancelBookingServiceTest {
                         List.of(new LineItem(new BookSeatId(2L, 1L), new Money(150000)))));
         BDDMockito.given(bookingRepository.findBySessionId(any())).willReturn(bookings);
         BDDMockito.given(cancelPolicy.hasEntireCancelPermission()).willReturn(true);
-        BDDMockito.given(bookingRepository.findById(any())).willReturn(Optional.of(mock(Booking.class)));
+        BDDMockito.given(bookingRepository.findById(any())).willReturn(Optional.ofNullable(mock(Booking.class)));
 
         //when
         cancelBookingService.cancelAll(1L);
