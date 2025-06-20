@@ -1,4 +1,4 @@
-package com.tae.Etickette.seat;
+package com.tae.Etickette.seat.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;

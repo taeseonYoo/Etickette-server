@@ -5,7 +5,6 @@ import com.tae.Etickette.session.application.RegisterSessionService;
 import com.tae.Etickette.testhelper.ConcertCreateBuilder;
 import com.tae.Etickette.testhelper.SessionCreateBuilder;
 import com.tae.Etickette.testhelper.VenueCreateBuilder;
-import com.tae.Etickette.venue.command.application.Dto.RegisterVenueRequest;
 import com.tae.Etickette.venue.command.application.Dto.RegisterVenueResponse;
 import com.tae.Etickette.venue.command.application.RegisterVenueService;
 import org.junit.jupiter.api.DisplayName;

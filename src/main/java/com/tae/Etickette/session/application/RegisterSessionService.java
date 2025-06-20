@@ -2,7 +2,7 @@ package com.tae.Etickette.session.application;
 
 import com.tae.Etickette.bookseat.domain.BookSeat;
 import com.tae.Etickette.bookseat.infra.BookSeatRepository;
-import com.tae.Etickette.seat.SeatRepository;
+import com.tae.Etickette.seat.infra.SeatRepository;
 import com.tae.Etickette.concert.command.domain.Concert;
 import com.tae.Etickette.concert.infra.ConcertRepository;
 import com.tae.Etickette.session.application.Dto.RegisterSessionRequest;

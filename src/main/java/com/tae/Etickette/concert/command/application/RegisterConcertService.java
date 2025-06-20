@@ -5,8 +5,8 @@ import com.tae.Etickette.global.model.Money;
 import com.tae.Etickette.concert.command.domain.Concert;
 import com.tae.Etickette.concert.command.domain.GradePrice;
 import com.tae.Etickette.concert.infra.ConcertRepository;
-import com.tae.Etickette.seat.Seat;
-import com.tae.Etickette.seat.SeatRepository;
+import com.tae.Etickette.seat.domain.Seat;
+import com.tae.Etickette.seat.infra.SeatRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +37,7 @@ public class RegisterConcertService {
         Concert savedConcert = concertRepository.save(concert);
 
         List<Seat> seats = initSeat(savedConcert.getId());
-        seatRepository.saveAll(seats);
+        seatRepository.saveAllInBulk(seats);
 
         return savedConcert.getId();
     }

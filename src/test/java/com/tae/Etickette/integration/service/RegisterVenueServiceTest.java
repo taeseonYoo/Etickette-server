@@ -30,7 +30,6 @@ public class RegisterVenueServiceTest {
     @Test
     @DisplayName("register - 공연장 등록에 성공한다.")
     public void 공연장등록_성공() {
-
         //given
         RegisterVenueRequest requestDto = builder()
                 .place("KSPO DOME(올림픽 체조경기장)")
