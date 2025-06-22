@@ -46,11 +46,12 @@ public class ConcertControllerTest {
         //given
         RegisterVenueResponse venue = venueService.register(VenueCreateBuilder.builder().build());
 
-        Long savedConcert1 = concertService.register(ConcertCreateBuilder.builder().title("공연 A").build());
-        Long savedConcert2 = concertService.register(ConcertCreateBuilder.builder().title("공연 B").build());
+        Long savedConcert1 = concertService.register(ConcertCreateBuilder.builder().title("공연 A").venueId(venue.getId()).build());
+        Long savedConcert2 = concertService.register(ConcertCreateBuilder.builder().title("공연 B").venueId(venue.getId()).build());
 
-        sessionService.register(SessionCreateBuilder.builder().concertId(savedConcert1).venueId(venue.getId()).build());
-        sessionService.register(SessionCreateBuilder.builder().concertId(savedConcert2).venueId(venue.getId()).sessionInfos(List.of(SessionInfo.builder().concertDate(LocalDate.of(2025, 5, 10)).startTime(LocalTime.of(15, 0)).build())).build());
+        sessionService.register(SessionCreateBuilder.builder().concertId(savedConcert1).build());
+        sessionService.register(SessionCreateBuilder.builder().concertId(savedConcert2)
+                .sessionInfos(List.of(SessionInfo.builder().concertDate(LocalDate.of(2025, 5, 10)).startTime(LocalTime.of(15, 0)).build())).build());
 
         //when & then
         mockMvc.perform(get("/api/concerts")
@@ -65,9 +66,9 @@ public class ConcertControllerTest {
         //given
         RegisterVenueResponse venue = venueService.register(VenueCreateBuilder.builder().place("KSPO").build());
 
-        Long concertId = concertService.register(ConcertCreateBuilder.builder().title("공연 A").imgURL("").build());
+        Long concertId = concertService.register(ConcertCreateBuilder.builder().title("공연 A").imgURL("").venueId(venue.getId()).build());
 
-        sessionService.register(SessionCreateBuilder.builder().concertId(concertId).venueId(venue.getId()).build());
+        sessionService.register(SessionCreateBuilder.builder().concertId(concertId).build());
 
         //when & then
         mockMvc.perform(get("/api/concerts")
@@ -98,12 +99,12 @@ public class ConcertControllerTest {
         //given
         RegisterVenueResponse venue = venueService.register(VenueCreateBuilder.builder().place("KSPO").build());
 
-        Long concertId = concertService.register(ConcertCreateBuilder.builder().title("공연 A").imgURL("").build());
+        Long concertId = concertService.register(ConcertCreateBuilder.builder().title("공연 A").imgURL("").venueId(venue.getId()).build());
 
-        sessionService.register(SessionCreateBuilder.builder().concertId(concertId).venueId(venue.getId()).build());
+        sessionService.register(SessionCreateBuilder.builder().concertId(concertId).build());
 
         //when & then
-        mockMvc.perform(get("/api/concerts/" + venue.getId())
+        mockMvc.perform(get("/api/concerts/" + concertId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }

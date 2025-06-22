@@ -32,21 +32,18 @@ public class Session {
      */
     @Column
     private Long concertId;
-    @Column
-    private Long venueId;
 
 
-    private Session(LocalDate concertDate, LocalTime startTime, Integer runningTime, Long concertId, Long venueId) {
+    private Session(LocalDate concertDate, LocalTime startTime, Integer runningTime, Long concertId) {
         this.concertDate = concertDate;
         this.startTime = startTime;
         calculateEndTime(startTime, runningTime);
         this.status = SessionStatus.BEFORE;
         this.concertId = concertId;
-        this.venueId = venueId;
     }
 
-    public static Session create(LocalDate concertDate, LocalTime startTime, Integer runningTime, Long concertId,Long venueId) {
-        return new Session(concertDate, startTime, runningTime, concertId, venueId);
+    public static Session create(LocalDate concertDate, LocalTime startTime, Integer runningTime, Long concertId) {
+        return new Session(concertDate, startTime, runningTime, concertId);
     }
 
     //공연 종료시간을 계산한다.

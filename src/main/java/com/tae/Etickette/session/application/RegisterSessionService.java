@@ -33,12 +33,12 @@ public class RegisterSessionService {
     private final SettingSeatService settingSeatService;
     @Transactional
     public List<Long> register(RegisterSessionRequest requestDto) {
-        //공연장 확인
-        venueRepository.findById(requestDto.getVenueId())
-                .orElseThrow(() -> new VenueNotFoundException("공연장을 찾을 수 없습니다."));
         //공연 확인
         Concert concert = concertRepository.findById(requestDto.getConcertId()).orElseThrow(() ->
                 new ConcertNotFoundException("공연을 찾을 수 없습니다."));
+        //공연장 확인
+        venueRepository.findById(concert.getVenueId())
+                .orElseThrow(() -> new VenueNotFoundException("공연장을 찾을 수 없습니다."));
         //공연에 등록된 좌석 id를 가져온다.
         List<Long> seatIds = seatRepository.findIdByConcertId(concert.getId());
         if (seatIds.isEmpty()) {
@@ -46,19 +46,19 @@ public class RegisterSessionService {
         }
 
         //시간 중복 확인
-        findExistingDate(sessionRepository, requestDto.getVenueId(), requestDto.getConcertDates());
+        findExistingDate(sessionRepository, concert.getVenueId(), requestDto.getConcertDates());
 
         List<Long> sessionIds = new ArrayList<>();
         for (SessionInfo sessionInfo : requestDto.getSessionInfos()) {
             Session session = Session.create(sessionInfo.getConcertDate(),
                     sessionInfo.getStartTime(),
                     concert.getRunningTime(),
-                    requestDto.getConcertId(),
-                    requestDto.getVenueId()
+                    requestDto.getConcertId()
                     );
             Session savedSession = sessionRepository.save(session);
             sessionIds.add(savedSession.getId());
 
+            //TODO 현재 ID를 Embedded 키로 관리중이라 SELECT + MERGE로 처리된다.
             List<BookSeat> bookSeats = settingSeatService.setting(seatIds, concert.getGradePrices(), savedSession.getId());
             bookSeatRepository.saveAll(bookSeats);
         }

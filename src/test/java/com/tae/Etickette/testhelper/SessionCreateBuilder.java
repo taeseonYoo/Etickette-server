@@ -12,9 +12,7 @@ import static com.tae.Etickette.session.application.Dto.RegisterSessionRequest.*
 
 public class SessionCreateBuilder {
     private Long concertId;
-    private Long venueId;
-    private List<SessionInfo> sessionInfos = List.of(new SessionInfo(LocalDate.of(2025, 6, 1), LocalTime.of(15, 0)));
-
+    private List<SessionInfo> sessionInfos = List.of(SessionInfo.builder().concertDate(LocalDate.of(2025, 6, 6)).startTime(LocalTime.of(15, 0)).build());
 
     public static SessionCreateBuilder builder() {
         return new SessionCreateBuilder();
@@ -22,17 +20,12 @@ public class SessionCreateBuilder {
     public RegisterSessionRequest build() {
         return RegisterSessionRequest.builder()
                 .concertId(concertId)
-                .venueId(venueId)
                 .sessionInfos(sessionInfos)
                 .build();
     }
 
     public SessionCreateBuilder concertId(Long concertId) {
         this.concertId = concertId;
-        return this;
-    }
-    public SessionCreateBuilder venueId(Long venueId) {
-        this.venueId = venueId;
         return this;
     }
     public SessionCreateBuilder sessionInfos(List<SessionInfo> sessionInfos) {

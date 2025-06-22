@@ -13,13 +13,13 @@ import java.util.stream.Collectors;
  */
 public final class SessionServiceHelper {
     public static void findExistingDate(SessionRepository repo, Long venueId, List<LocalDate> requestDates) {
-        Set<LocalDate> existingDates = repo.findByVenueId(venueId).stream()
+        Set<LocalDate> existingDates = repo.findAllByVenueId(venueId).stream()
                 .map(Session::getConcertDate)
                 .collect(Collectors.toSet());
 
         for (LocalDate date : requestDates) {
             if (existingDates.contains(date)) {
-                throw new RuntimeException();
+                throw new AlreadyExistingDate("이미 스케줄이 존재합니다.");
             }
         }
     }

@@ -32,8 +32,10 @@ public class RegisterConcertService {
                 requestDto.getOverview(),
                 requestDto.getRunningTime(),
                 requestDto.getImgURL(),
-                gradePrices
+                gradePrices,
+                requestDto.getVenueId()
         );
+
         Concert savedConcert = concertRepository.save(concert);
 
         List<Seat> seats = initSeat(savedConcert.getId());

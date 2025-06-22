@@ -73,7 +73,6 @@ class BookingServiceTest {
         );
 
         RegisterSessionRequest sessionDto = RegisterSessionRequest.builder()
-                .venueId(register.getId())
                 .concertId(concertId)
                 .sessionInfos(sessionInfos)
                 .build();

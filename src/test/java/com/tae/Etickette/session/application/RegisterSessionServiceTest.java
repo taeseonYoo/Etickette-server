@@ -52,7 +52,6 @@ class RegisterSessionServiceTest {
                         .startTime(LocalTime.of(15, 0)).build());
 
         requestDto = builder()
-                .venueId(1L)
                 .concertId(1L)
                 .sessionInfos(sessionInfos).build();
     }
@@ -77,6 +76,7 @@ class RegisterSessionServiceTest {
     @DisplayName("register - 공연장이 없다면, 세션 등록에 실패한다.")
     void 세션등록_실패_공연장이없음() {
         //given
+        BDDMockito.given(concertRepository.findById(any())).willReturn(Optional.of(mock(Concert.class)));
         BDDMockito.given(venueRepository.findById(any())).willReturn(Optional.empty());
 
         //when & then
@@ -88,7 +88,6 @@ class RegisterSessionServiceTest {
     @DisplayName("register - 공연이 없다면, 세션 등록에 실패한다.")
     void 세션등록_실패_공연이없음() {
         //given
-        BDDMockito.given(venueRepository.findById(any())).willReturn(Optional.of(mock(Venue.class)));
         BDDMockito.given(concertRepository.findById(any())).willReturn(Optional.empty());
 
         //when & then

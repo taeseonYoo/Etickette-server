@@ -37,8 +37,9 @@ public class Concert {
     /**
      * 연관관계
      */
+    private Long venueId;
 
-    public Concert(String title, String overview, Integer runningTime, String imgURL,  List<GradePrice> gradePrices) {
+    public Concert(String title, String overview, Integer runningTime, String imgURL,  List<GradePrice> gradePrices,Long venueId) {
         this.title = title;
         this.overview = overview;
         this.runningTime = runningTime;
@@ -47,10 +48,11 @@ public class Concert {
 
         this.gradePrices = gradePrices;
         //연관관계 설정
+        this.venueId = venueId;
     }
 
-    public static Concert create(String title, String overview, Integer runningTime, String imgURL, List<GradePrice> gradePrices) {
-        return new Concert(title, overview, runningTime, imgURL, gradePrices);
+    public static Concert create(String title, String overview, Integer runningTime, String imgURL, List<GradePrice> gradePrices,Long venueId) {
+        return new Concert(title, overview, runningTime, imgURL, gradePrices,venueId);
     }
 
 

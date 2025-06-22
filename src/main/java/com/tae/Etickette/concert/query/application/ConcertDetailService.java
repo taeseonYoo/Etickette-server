@@ -23,9 +23,9 @@ public class ConcertDetailService {
         Optional<Concert> concertOpt = concertRepository.findById(concertId);
         List<Session> sessions = sessionRepository.findAllByConcertId(concertId);
 
-        if (sessions.isEmpty()) return Optional.empty();
+        if (concertOpt.isEmpty()) return Optional.empty();
 
-        Optional<VenueData> venueData = venueQueryService.getVenue(sessions.get(0).getVenueId());
+        Optional<VenueData> venueData = venueQueryService.getVenue(concertOpt.get().getVenueId());
 
         return venueData.flatMap(venue -> concertOpt.map(concert -> {
             List<SessionDetail> sessionDetails = sessions.stream()

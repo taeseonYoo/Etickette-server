@@ -16,8 +16,7 @@ import org.hibernate.annotations.Synchronize;
 @Subselect("""
 SELECT DISTINCT 
     c.concert_id,c.title, c.imgURL, v.place
-FROM concert c join session s on c.concert_id = s.concert_id
-join venue v on v.venue_id = s.venue_id
+FROM concert c join venue v on v.venue_id = c.venue_id
 """)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

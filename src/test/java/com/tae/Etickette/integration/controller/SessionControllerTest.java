@@ -12,10 +12,19 @@ import com.tae.Etickette.venue.command.application.Dto.RegisterVenueResponse;
 import com.tae.Etickette.venue.command.application.RegisterVenueService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.json.JacksonTester;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@AutoConfigureJsonTesters
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
@@ -27,21 +36,27 @@ public class SessionControllerTest {
     RegisterConcertService registerConcertService;
     @Autowired
     RegisterVenueService registerVenueService;
+    @Autowired
+    MockMvc mockMvc;
+    @Autowired
+    private JacksonTester<RegisterSessionRequest> json;
 
     @Test
-    void 세션등록_성공() {
+    void 세션등록_성공() throws Exception {
         RegisterVenueRequest venueRequest = VenueCreateBuilder.builder().build();
         RegisterVenueResponse venueResponse = registerVenueService.register(venueRequest);
 
-        RegisterConcertRequest concertRequest = ConcertCreateBuilder.builder().build();
+        RegisterConcertRequest concertRequest = ConcertCreateBuilder.builder().venueId(venueResponse.getId()).build();
         Long concertId = registerConcertService.register(concertRequest);
 
         RegisterSessionRequest sessionRequest = SessionCreateBuilder.builder()
-                .venueId(venueResponse.getId())
                 .concertId(concertId)
                 .build();
 
         //when
-        registerSessionService.register(sessionRequest);
+        mockMvc.perform(post("/api/sessions")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json.write(sessionRequest).getJson())
+        ).andExpect(status().isOk());
     }
 }

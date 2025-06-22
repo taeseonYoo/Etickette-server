@@ -16,6 +16,7 @@ public class ConcertCreateBuilder {
             GradePriceInfo.builder().grade("S").price(100000).build(),
             GradePriceInfo.builder().grade("R").price(50000).build()
     );
+    private Long venueId = 1L;
 
     public static ConcertCreateBuilder builder() {
         return new ConcertCreateBuilder();
@@ -27,6 +28,7 @@ public class ConcertCreateBuilder {
                 .runningTime(runningTime)
                 .imgURL(imgURL)
                 .gradePrices(gradePriceInfos)
+                .venueId(venueId)
                 .build();
     }
 
@@ -48,6 +50,11 @@ public class ConcertCreateBuilder {
     }
     public ConcertCreateBuilder gradePrices(List<GradePriceInfo> gradePriceInfos) {
         this.gradePriceInfos = gradePriceInfos;
+        return this;
+    }
+
+    public ConcertCreateBuilder venueId(Long venueId) {
+        this.venueId = venueId;
         return this;
     }
 
