@@ -26,7 +26,7 @@ public class ConcertController {
     private final ConcertDetailService concertDetailService;
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
-    public ResponseEntity<Void> register(RegisterConcertRequest request) {
+    public ResponseEntity<Void> register(@RequestBody RegisterConcertRequest request) {
         registerConcertService.register(request);
         return new ResponseEntity<>(HttpStatus.OK);
     }

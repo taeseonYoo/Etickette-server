@@ -1,18 +1,21 @@
 package com.tae.Etickette.concert.command.application.dto;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RegisterConcertRequest {
 
-    private final String title;
-    private final String overview;
-    private final Integer runningTime;
-    private final String imgURL;
-    private final List<GradePriceInfo> gradePrices;
+    private String title;
+    private String overview;
+    private Integer runningTime;
+    private String imgURL;
+    private List<GradePriceInfo> gradePrices;
     @Builder
     public RegisterConcertRequest(String title, String overview, Integer runningTime, String imgURL, List<GradePriceInfo> gradePrices) {
         this.title = title;
@@ -23,6 +26,7 @@ public class RegisterConcertRequest {
     }
 
     @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class GradePriceInfo{
         private String grade;
         private Integer price;
