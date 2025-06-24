@@ -51,11 +51,11 @@ public class BookSeat {
         this.status = SeatStatus.AVAILABLE;
     }
     private void verifySeatNotBooked(){
-        if (!isNotYetBooked()) throw new RuntimeException("임시");
+        if (!isNotYetBooked()) throw new RuntimeException("변경 할 수 없음");
     }
 
     private boolean isNotYetBooked() {
-        return this.status == SeatStatus.AVAILABLE;
+        return this.status == SeatStatus.AVAILABLE || this.status == SeatStatus.LOCKED;
     }
 
 }
