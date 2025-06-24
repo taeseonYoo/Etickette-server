@@ -1,9 +1,8 @@
 package com.tae.Etickette.session.infra;
 
-import com.tae.Etickette.booking.application.CancelBookingService;
+import com.tae.Etickette.booking.command.application.CancelBookingService;
 import com.tae.Etickette.session.domain.SessionCanceledEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -1,9 +1,8 @@
 package com.tae.Etickette.booking.infra.domain;
 
-import com.tae.Etickette.booking.domain.Booking;
-import com.tae.Etickette.booking.domain.CancelPolicy;
+import com.tae.Etickette.booking.command.domain.Booking;
+import com.tae.Etickette.booking.command.domain.CancelPolicy;
 import com.tae.Etickette.global.model.Canceller;
-import com.tae.Etickette.member.domain.Member;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;

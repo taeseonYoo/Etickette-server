@@ -1,4 +1,4 @@
-package com.tae.Etickette.booking.domain;
+package com.tae.Etickette.booking.command.domain;
 
 import com.tae.Etickette.global.model.Canceller;
 

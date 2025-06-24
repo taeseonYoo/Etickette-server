@@ -1,6 +1,6 @@
 package com.tae.Etickette.booking.query;
 
-import com.tae.Etickette.booking.domain.LineItem;
+import com.tae.Etickette.booking.command.domain.LineItem;
 import com.tae.Etickette.seat.query.SeatData;
 import lombok.Getter;
 

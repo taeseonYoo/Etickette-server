@@ -38,24 +38,37 @@ public class BookSeat {
         return new BookSeat(seatId, sessionId, grade, price);
     }
 
-
     public void reserve() {
+        verifySeatNotLocked();
         this.status = SeatStatus.BOOKED;
     }
+    private void verifySeatNotLocked() {
+        if (!isLocked()) throw new RuntimeException("");
+    }
+    private boolean isLocked() {
+        return this.status == SeatStatus.LOCKED;
+    }
+    //결제 전 좌석 잠금
     public void lock() {
-        verifySeatNotBooked();
+        verifySeatAvailable();
         this.status = SeatStatus.LOCKED;
     }
-    public void cancel() {
-        verifySeatNotBooked();
-        this.status = SeatStatus.AVAILABLE;
-    }
-    private void verifySeatNotBooked(){
-        if (!isNotYetBooked()) throw new RuntimeException("변경 할 수 없음");
+    private void verifySeatAvailable() {
+        if (isPreempted()) throw new RuntimeException("선점 불가능");
     }
 
-    private boolean isNotYetBooked() {
-        return this.status == SeatStatus.AVAILABLE || this.status == SeatStatus.LOCKED;
+    //좌석 취소
+    public void cancel() {
+        verifySeatPreempt();
+        this.status = SeatStatus.AVAILABLE;
     }
+    private void verifySeatPreempt(){
+        if (!isPreempted()) throw new RuntimeException("취소할 수 없음.");
+    }
+
+    private boolean isPreempted() {
+        return this.status == SeatStatus.BOOKED || this.status == SeatStatus.LOCKED;
+    }
+
 
 }

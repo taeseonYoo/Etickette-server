@@ -1,6 +1,8 @@
 package com.tae.Etickette.booking.application;
 
-import com.tae.Etickette.booking.application.dto.BookingRequest;
+import com.tae.Etickette.booking.command.application.BookingService;
+import com.tae.Etickette.booking.command.application.SessionNotFoundException;
+import com.tae.Etickette.booking.command.application.dto.BookingRequest;
 import com.tae.Etickette.booking.infra.BookingRepository;
 import com.tae.Etickette.bookseat.infra.BookSeatRepository;
 import com.tae.Etickette.session.infra.SessionRepository;

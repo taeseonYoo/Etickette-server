@@ -1,4 +1,4 @@
-package com.tae.Etickette.booking.application;
+package com.tae.Etickette.booking.command.application;
 
 public class SessionNotFoundException extends RuntimeException {
     public SessionNotFoundException() {

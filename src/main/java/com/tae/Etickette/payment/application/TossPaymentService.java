@@ -1,8 +1,8 @@
 package com.tae.Etickette.payment.application;
 
-import com.tae.Etickette.booking.application.BookingNotFoundException;
-import com.tae.Etickette.booking.domain.Booking;
-import com.tae.Etickette.booking.domain.BookingRef;
+import com.tae.Etickette.booking.command.application.BookingNotFoundException;
+import com.tae.Etickette.booking.command.domain.Booking;
+import com.tae.Etickette.booking.command.domain.BookingRef;
 import com.tae.Etickette.booking.infra.BookingRepository;
 import com.tae.Etickette.payment.domain.TossPaymentsVariables;
 import com.tae.Etickette.payment.domain.PayMethod;
@@ -21,7 +21,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor

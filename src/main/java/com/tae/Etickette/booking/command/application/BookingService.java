@@ -1,10 +1,10 @@
-package com.tae.Etickette.booking.application;
+package com.tae.Etickette.booking.command.application;
 
-import com.tae.Etickette.booking.domain.BookingRef;
-import com.tae.Etickette.booking.domain.LineItem;
+import com.tae.Etickette.booking.command.domain.BookingRef;
+import com.tae.Etickette.booking.command.domain.LineItem;
 import com.tae.Etickette.booking.infra.BookingRepository;
-import com.tae.Etickette.booking.domain.Booking;
-import com.tae.Etickette.booking.application.dto.BookingRequest;
+import com.tae.Etickette.booking.command.domain.Booking;
+import com.tae.Etickette.booking.command.application.dto.BookingRequest;
 import com.tae.Etickette.bookseat.domain.BookSeat;
 import com.tae.Etickette.bookseat.domain.BookSeatId;
 import com.tae.Etickette.bookseat.infra.BookSeatRepository;

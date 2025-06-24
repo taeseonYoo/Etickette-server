@@ -1,5 +1,6 @@
-package com.tae.Etickette.booking.domain;
+package com.tae.Etickette.booking.command.domain;
 
+import com.tae.Etickette.bookseat.domain.BookSeatId;
 import com.tae.Etickette.global.event.Events;
 import com.tae.Etickette.global.jpa.MoneyConverter;
 import com.tae.Etickette.global.model.Money;
@@ -75,5 +76,7 @@ public class Booking {
         this.paymentId = paymentId;
         this.status = BookingStatus.COMPLETED_BOOKING;
         //TODO 예약 된 좌석의 상태를 이벤트로 변경한다.
+        List<BookSeatId> seatIds = this.getLineItems().stream().map(LineItem::getSeatId).toList();
+        Events.raise(new ConfirmPaymentEvent(seatIds));
     }
 }

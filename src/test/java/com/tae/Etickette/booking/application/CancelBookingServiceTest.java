@@ -1,8 +1,11 @@
 package com.tae.Etickette.booking.application;
 
-import com.tae.Etickette.booking.domain.Booking;
-import com.tae.Etickette.booking.domain.CancelPolicy;
-import com.tae.Etickette.booking.domain.LineItem;
+import com.tae.Etickette.booking.command.application.BookingNotFoundException;
+import com.tae.Etickette.booking.command.application.CancelBookingService;
+import com.tae.Etickette.booking.command.application.NoCancellablePermission;
+import com.tae.Etickette.booking.command.domain.Booking;
+import com.tae.Etickette.booking.command.domain.CancelPolicy;
+import com.tae.Etickette.booking.command.domain.LineItem;
 import com.tae.Etickette.booking.infra.BookingRepository;
 import com.tae.Etickette.global.model.Canceller;
 import com.tae.Etickette.global.model.Money;
@@ -14,7 +17,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,11 +38,7 @@ class CancelBookingServiceTest {
     private CancelBookingService cancelBookingService;
     private final BookingRepository bookingRepository = mock(BookingRepository.class);
     private final CancelPolicy cancelPolicy = mock(CancelPolicy.class);
-
-    @BeforeEach
-    void setUp() {
-        cancelBookingService = new CancelBookingService(bookingRepository,cancelPolicy);
-    }
+    ApplicationEventPublisher eventPublisher = mock(ApplicationEventPublisher.class);
 
     @Test
     @DisplayName("cancelAll - 취소에 성공하면, 상태는 CANCELED_BOOKING 으로 변경된다.")
@@ -49,6 +51,7 @@ class CancelBookingServiceTest {
         BDDMockito.given(bookingRepository.findBySessionId(any())).willReturn(bookings);
         BDDMockito.given(cancelPolicy.hasEntireCancelPermission()).willReturn(true);
         BDDMockito.given(bookingRepository.findById(any())).willReturn(Optional.ofNullable(mock(Booking.class)));
+        BDDMockito.doNothing().when(eventPublisher).publishEvent(any());
 
         //when
         cancelBookingService.cancelAll(1L);

@@ -1,8 +1,8 @@
-package com.tae.Etickette.booking.application;
+package com.tae.Etickette.booking.command.application;
 
-import com.tae.Etickette.booking.domain.Booking;
-import com.tae.Etickette.booking.domain.BookingRef;
-import com.tae.Etickette.booking.domain.CancelPolicy;
+import com.tae.Etickette.booking.command.domain.Booking;
+import com.tae.Etickette.booking.command.domain.BookingRef;
+import com.tae.Etickette.booking.command.domain.CancelPolicy;
 import com.tae.Etickette.booking.infra.BookingRepository;
 import com.tae.Etickette.global.model.Canceller;
 import lombok.RequiredArgsConstructor;

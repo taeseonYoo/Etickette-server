@@ -1,12 +1,14 @@
 package com.tae.Etickette.integration.service;
 
-import com.tae.Etickette.booking.application.dto.BookingRequest;
-import com.tae.Etickette.booking.application.BookingService;
-import com.tae.Etickette.booking.domain.Booking;
-import com.tae.Etickette.booking.domain.BookingRef;
+import com.tae.Etickette.booking.command.application.dto.BookingRequest;
+import com.tae.Etickette.booking.command.application.BookingService;
+import com.tae.Etickette.booking.command.domain.Booking;
+import com.tae.Etickette.booking.command.domain.BookingRef;
 import com.tae.Etickette.booking.infra.BookingRepository;
+import com.tae.Etickette.bookseat.infra.BookSeatRepository;
 import com.tae.Etickette.concert.command.application.dto.RegisterConcertRequest;
 import com.tae.Etickette.concert.command.application.RegisterConcertService;
+import com.tae.Etickette.seat.infra.SeatRepository;
 import com.tae.Etickette.testhelper.ConcertCreateBuilder;
 import com.tae.Etickette.testhelper.VenueCreateBuilder;
 import com.tae.Etickette.session.application.Dto.RegisterSessionRequest;
@@ -15,6 +17,7 @@ import com.tae.Etickette.venue.command.application.Dto.RegisterVenueRequest;
 import com.tae.Etickette.venue.command.application.Dto.RegisterVenueResponse;
 import com.tae.Etickette.venue.command.application.RegisterVenueService;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Comparator;
 import java.util.List;
 
 import static com.tae.Etickette.concert.command.application.dto.RegisterConcertRequest.*;
@@ -39,19 +43,20 @@ class BookingServiceTest {
     private RegisterSessionService registerSessionService;
     @Autowired
     private BookingRepository bookingRepository;
-
     @Autowired
     private RegisterVenueService registerVenueService;
     @Autowired
     private RegisterConcertService registerConcertService;
-
+    @Autowired
+    private SeatRepository seatRepository;
 
     List<Long> sessionIds;
+    List<Long> idByConcertId;
     @BeforeEach
     public void setUp() {
         //공연장 등록
         RegisterVenueRequest venueDto = VenueCreateBuilder.builder().build();
-        RegisterVenueResponse register = registerVenueService.register(venueDto);
+        RegisterVenueResponse venue = registerVenueService.register(venueDto);
 
         List<GradePriceInfo> gradePriceInfos = List.of(
                 GradePriceInfo.builder().grade("VIP").price(150000).build(),
@@ -59,16 +64,13 @@ class BookingServiceTest {
                 GradePriceInfo.builder().grade("R").price(50000).build()
         );
         //공연 등록
-        RegisterConcertRequest concertDto = ConcertCreateBuilder.builder().gradePrices(gradePriceInfos).build();
+        RegisterConcertRequest concertDto = ConcertCreateBuilder.builder().gradePrices(gradePriceInfos).venueId(venue.getId()).build();
         Long concertId = registerConcertService.register(concertDto);
 
         //공연 일정 등록
         List<SessionInfo> sessionInfos = List.of(
                 SessionInfo.builder()
                         .concertDate(LocalDate.of(2025, 6, 1))
-                        .startTime(LocalTime.of(15, 0)).build(),
-                SessionInfo.builder()
-                        .concertDate(LocalDate.of(2025, 6, 2))
                         .startTime(LocalTime.of(15, 0)).build()
         );
 
@@ -77,18 +79,18 @@ class BookingServiceTest {
                 .sessionInfos(sessionInfos)
                 .build();
         sessionIds = registerSessionService.register(sessionDto);
+
+        idByConcertId = seatRepository.findIdByConcertId(concertId);
     }
 
     @Test
     @DisplayName("예약에 성공한다.")
     void 예약_성공() {
 //        given
-        List<Long> seatIds = List.of(1L,2L);
-
         BookingRequest requestDto = BookingRequest.builder()
                 .memberId(1L)
                 .sessionId(sessionIds.get(0))
-                .seatIds(seatIds)
+                .seatIds(List.of(idByConcertId.get(0), idByConcertId.get(1)))
                 .build();
 
         //when

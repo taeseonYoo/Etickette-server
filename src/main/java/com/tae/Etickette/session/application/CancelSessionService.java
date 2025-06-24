@@ -1,6 +1,6 @@
 package com.tae.Etickette.session.application;
 
-import com.tae.Etickette.booking.application.SessionNotFoundException;
+import com.tae.Etickette.booking.command.application.SessionNotFoundException;
 import com.tae.Etickette.session.domain.Session;
 import com.tae.Etickette.session.infra.SessionRepository;
 import lombok.RequiredArgsConstructor;

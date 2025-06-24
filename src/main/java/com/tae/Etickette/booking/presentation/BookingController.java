@@ -1,9 +1,9 @@
-package com.tae.Etickette.booking;
+package com.tae.Etickette.booking.presentation;
 
-import com.tae.Etickette.booking.application.BookingService;
-import com.tae.Etickette.booking.application.CancelBookingService;
-import com.tae.Etickette.booking.application.dto.BookingRequest;
-import com.tae.Etickette.booking.domain.BookingRef;
+import com.tae.Etickette.booking.command.application.BookingService;
+import com.tae.Etickette.booking.command.application.CancelBookingService;
+import com.tae.Etickette.booking.command.application.dto.BookingRequest;
+import com.tae.Etickette.booking.command.domain.BookingRef;
 import com.tae.Etickette.booking.query.BookingQueryService;
 import com.tae.Etickette.booking.query.PaymentInfo;
 import com.tae.Etickette.global.auth.CustomUserDetails;
@@ -11,7 +11,6 @@ import com.tae.Etickette.global.model.Canceller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 

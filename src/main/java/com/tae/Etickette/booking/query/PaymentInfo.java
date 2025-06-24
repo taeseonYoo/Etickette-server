@@ -1,6 +1,6 @@
 package com.tae.Etickette.booking.query;
 
-import com.tae.Etickette.booking.domain.Booking;
+import com.tae.Etickette.booking.command.domain.Booking;
 import lombok.Getter;
 
 import java.util.List;

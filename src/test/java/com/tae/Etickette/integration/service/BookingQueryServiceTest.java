@@ -1,8 +1,8 @@
 package com.tae.Etickette.integration.service;
 
-import com.tae.Etickette.booking.application.BookingService;
-import com.tae.Etickette.booking.application.dto.BookingRequest;
-import com.tae.Etickette.booking.domain.BookingRef;
+import com.tae.Etickette.booking.command.application.BookingService;
+import com.tae.Etickette.booking.command.application.dto.BookingRequest;
+import com.tae.Etickette.booking.command.domain.BookingRef;
 import com.tae.Etickette.booking.query.PaymentInfo;
 import com.tae.Etickette.booking.query.BookingQueryService;
 import com.tae.Etickette.concert.command.application.RegisterConcertService;
@@ -10,6 +10,7 @@ import com.tae.Etickette.concert.command.application.dto.RegisterConcertRequest;
 import com.tae.Etickette.member.domain.Member;
 import com.tae.Etickette.member.domain.Role;
 import com.tae.Etickette.member.infra.MemberRepository;
+import com.tae.Etickette.seat.infra.SeatRepository;
 import com.tae.Etickette.session.application.Dto.RegisterSessionRequest;
 import com.tae.Etickette.session.application.RegisterSessionService;
 import com.tae.Etickette.testhelper.ConcertCreateBuilder;
@@ -27,8 +28,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 
 @SpringBootTest
@@ -47,6 +48,8 @@ class BookingQueryServiceTest {
     MemberRepository memberRepository;
     @Autowired
     BookingService bookingService;
+    @Autowired
+    SeatRepository seatRepository;
 
     @Test
     @DisplayName("Booking후에 결제 해야하는 정보를 가져온다.")
@@ -62,7 +65,8 @@ class BookingQueryServiceTest {
         RegisterSessionRequest sessionRequest = SessionCreateBuilder.builder().concertId(concertId).sessionInfos(List.of(RegisterSessionRequest.SessionInfo.builder().concertDate(LocalDate.of(2025, 6, 6)).startTime(LocalTime.of(15, 0)).build())).build();
         List<Long> sessions = registerSessionService.register(sessionRequest);
 
-        BookingRequest request = BookingRequest.builder().memberId(savedMember.getId()).sessionId(sessions.get(0)).seatIds(List.of(1L)).build();
+        List<Long> seatIds = seatRepository.findIdByConcertId(concertId);
+        BookingRequest request = BookingRequest.builder().memberId(savedMember.getId()).sessionId(sessions.get(0)).seatIds(List.of(seatIds.get(0))).build();
         BookingRef bookingRef = bookingService.booking(request);
 
         PaymentInfo paymentInfo = bookingQueryService.getPaymentInfo(bookingRef);

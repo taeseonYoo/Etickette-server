@@ -1,23 +1,15 @@
 package com.tae.Etickette.session.application;
 
-import com.tae.Etickette.booking.application.SessionNotFoundException;
-import com.tae.Etickette.global.event.Events;
+import com.tae.Etickette.booking.command.application.SessionNotFoundException;
 import com.tae.Etickette.session.domain.Session;
-import com.tae.Etickette.session.domain.SessionCanceledEvent;
-import com.tae.Etickette.session.domain.SessionStatus;
 import com.tae.Etickette.session.infra.SessionRepository;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.ApplicationEventPublisher;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;

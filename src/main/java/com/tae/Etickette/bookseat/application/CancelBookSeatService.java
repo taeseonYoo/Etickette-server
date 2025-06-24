@@ -1,9 +1,9 @@
 package com.tae.Etickette.bookseat.application;
 
-import com.tae.Etickette.booking.application.BookingNotFoundException;
-import com.tae.Etickette.booking.application.NoCancellablePermission;
-import com.tae.Etickette.booking.domain.Booking;
-import com.tae.Etickette.booking.domain.BookingRef;
+import com.tae.Etickette.booking.command.application.BookingNotFoundException;
+import com.tae.Etickette.booking.command.application.NoCancellablePermission;
+import com.tae.Etickette.booking.command.domain.Booking;
+import com.tae.Etickette.booking.command.domain.BookingRef;
 import com.tae.Etickette.booking.infra.BookingRepository;
 import com.tae.Etickette.bookseat.domain.CancelSeatPolicy;
 import com.tae.Etickette.bookseat.domain.BookSeat;

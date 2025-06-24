@@ -1,19 +1,17 @@
 package com.tae.Etickette.integration.controller;
 
-import com.tae.Etickette.booking.application.BookingService;
-import com.tae.Etickette.booking.application.CancelBookingService;
-import com.tae.Etickette.booking.application.dto.BookingRequest;
-import com.tae.Etickette.booking.domain.BookingRef;
+import com.tae.Etickette.booking.command.application.BookingService;
+import com.tae.Etickette.booking.command.application.CancelBookingService;
+import com.tae.Etickette.booking.command.application.dto.BookingRequest;
+import com.tae.Etickette.booking.command.domain.BookingRef;
 import com.tae.Etickette.concert.command.application.RegisterConcertService;
 import com.tae.Etickette.concert.command.application.dto.RegisterConcertRequest;
 import com.tae.Etickette.global.auth.CustomUserDetails;
-import com.tae.Etickette.member.application.MemberService;
 import com.tae.Etickette.member.domain.Member;
 import com.tae.Etickette.member.domain.Role;
 import com.tae.Etickette.member.infra.MemberRepository;
 import com.tae.Etickette.session.application.Dto.RegisterSessionRequest;
 import com.tae.Etickette.session.application.RegisterSessionService;
-import com.tae.Etickette.session.domain.Session;
 import com.tae.Etickette.testhelper.ConcertCreateBuilder;
 import com.tae.Etickette.testhelper.SessionCreateBuilder;
 import com.tae.Etickette.testhelper.VenueCreateBuilder;
@@ -26,9 +24,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +33,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;

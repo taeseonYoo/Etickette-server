@@ -1,4 +1,4 @@
-package com.tae.Etickette.booking.domain;
+package com.tae.Etickette.booking.command.domain;
 
 public class AlreadyCanceledException extends RuntimeException {
     public AlreadyCanceledException() {

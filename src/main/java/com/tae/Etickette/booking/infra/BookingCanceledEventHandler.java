@@ -1,6 +1,6 @@
 package com.tae.Etickette.booking.infra;
 
-import com.tae.Etickette.booking.domain.BookingCanceledEvent;
+import com.tae.Etickette.booking.command.domain.BookingCanceledEvent;
 import com.tae.Etickette.bookseat.application.CancelBookSeatService;
 import com.tae.Etickette.bookseat.domain.BookSeatId;
 import com.tae.Etickette.global.model.Canceller;

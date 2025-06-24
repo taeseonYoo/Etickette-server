@@ -1,7 +1,7 @@
 package com.tae.Etickette.booking.query;
 
-import com.tae.Etickette.booking.domain.Booking;
-import com.tae.Etickette.booking.domain.BookingRef;
+import com.tae.Etickette.booking.command.domain.Booking;
+import com.tae.Etickette.booking.command.domain.BookingRef;
 import com.tae.Etickette.booking.infra.BookingRepository;
 import com.tae.Etickette.seat.query.SeatData;
 import com.tae.Etickette.seat.query.SeatQueryService;
@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)

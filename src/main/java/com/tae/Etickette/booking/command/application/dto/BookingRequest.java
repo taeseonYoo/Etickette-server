@@ -1,4 +1,4 @@
-package com.tae.Etickette.booking.application.dto;
+package com.tae.Etickette.booking.command.application.dto;
 
 import lombok.Builder;
 import lombok.Getter;

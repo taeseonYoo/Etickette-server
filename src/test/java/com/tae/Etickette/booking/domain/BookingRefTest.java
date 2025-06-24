@@ -1,5 +1,6 @@
 package com.tae.Etickette.booking.domain;
 
+import com.tae.Etickette.booking.command.domain.BookingRef;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
