@@ -27,7 +27,7 @@ public class Booking {
     @Convert(converter = MoneyConverter.class)
     private Money totalAmounts;
 
-//    private Long paymentId;
+    private Long paymentId;
 
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "line_item",joinColumns = @JoinColumn(name = "booking_id"))
@@ -71,4 +71,9 @@ public class Booking {
         return status == BookingStatus.COMPLETED_BOOKING || status == BookingStatus.BEFORE_PAY;
     }
 
+    public void confirmPayment(Long paymentId) {
+        this.paymentId = paymentId;
+        this.status = BookingStatus.COMPLETED_BOOKING;
+        //TODO 예약 된 좌석의 상태를 이벤트로 변경한다.
+    }
 }

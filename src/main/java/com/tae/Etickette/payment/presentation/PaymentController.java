@@ -20,7 +20,7 @@ public class PaymentController {
 
     @PostMapping("/confirm")
     public void confirmPayment(@RequestBody PaymentConfirmRequest request) {
-        System.out.println("gd");
+
         try {
             JSONObject json = new JSONObject();
             json.put("paymentKey", request.getPaymentKey());

@@ -1,5 +1,9 @@
 package com.tae.Etickette.payment.application;
 
+import com.tae.Etickette.booking.application.BookingNotFoundException;
+import com.tae.Etickette.booking.domain.Booking;
+import com.tae.Etickette.booking.domain.BookingRef;
+import com.tae.Etickette.booking.infra.BookingRepository;
 import com.tae.Etickette.payment.domain.TossPaymentsVariables;
 import com.tae.Etickette.payment.domain.PayMethod;
 import com.tae.Etickette.payment.domain.Payment;
@@ -24,6 +28,7 @@ import java.util.UUID;
 public class TossPaymentService {
 
     private final PaymentRepository paymentRepository;
+    private final BookingRepository bookingRepository;
 
     @Value(("${toss.secret-key}"))
     private String secretKey;
@@ -62,10 +67,17 @@ public class TossPaymentService {
                 (String) tossResult.get(TossPaymentsVariables.REQUESTEDAT.getValue()),
                 (String) tossResult.get(TossPaymentsVariables.APPROVEDAT.getValue()));
         paymentRepository.save(payment);
+
+        //예약 상태를 결제완료로 변경한다.
+        Booking booking = bookingRepository
+                .findById(new BookingRef(payment.getOrderId())).orElseThrow(() -> new BookingNotFoundException("예약이 없음"));
+
+        booking.confirmPayment(payment.getId());
+
     }
 
     private void fail(JSONObject tossResult) {
-        //TODO 결제에 실패하는 경우..
+        //TODO 결제에 실패하는 경우
     }
     private HttpURLConnection getTossResult(JSONObject tossRequest) throws IOException {
         String widgetSecretKey = secretKey;

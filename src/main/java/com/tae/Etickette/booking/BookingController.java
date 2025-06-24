@@ -4,6 +4,8 @@ import com.tae.Etickette.booking.application.BookingService;
 import com.tae.Etickette.booking.application.CancelBookingService;
 import com.tae.Etickette.booking.application.dto.BookingRequest;
 import com.tae.Etickette.booking.domain.BookingRef;
+import com.tae.Etickette.booking.query.BookingQueryService;
+import com.tae.Etickette.booking.query.PaymentInfo;
 import com.tae.Etickette.global.auth.CustomUserDetails;
 import com.tae.Etickette.global.model.Canceller;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ public class BookingController {
 
     private final BookingService bookingService;
     private final CancelBookingService cancelBookingService;
+    private final BookingQueryService bookingQueryService;
 
     @PostMapping
     public ResponseEntity<Void> booking(@RequestBody BookingRequest request) {
@@ -30,7 +33,12 @@ public class BookingController {
     @PostMapping("/{bookingRef}/cancel")
     public ResponseEntity<Void> cancel(@PathVariable("bookingRef") String bookingRef) {
         CustomUserDetails details = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
-        cancelBookingService.cancel(new BookingRef(bookingRef),new Canceller(details.getId()));
+        cancelBookingService.cancel(new BookingRef(bookingRef), new Canceller(details.getId()));
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/{bookingRef}")
+    public ResponseEntity<PaymentInfo> getPaymentInfo(@PathVariable("bookingRef") String bookingRef) {
+        return ResponseEntity.ok(bookingQueryService.getPaymentInfo(new BookingRef(bookingRef)));
     }
 }

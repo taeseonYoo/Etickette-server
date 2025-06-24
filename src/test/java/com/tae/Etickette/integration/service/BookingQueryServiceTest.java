@@ -1,0 +1,74 @@
+package com.tae.Etickette.integration.service;
+
+import com.tae.Etickette.booking.application.BookingService;
+import com.tae.Etickette.booking.application.dto.BookingRequest;
+import com.tae.Etickette.booking.domain.BookingRef;
+import com.tae.Etickette.booking.query.PaymentInfo;
+import com.tae.Etickette.booking.query.BookingQueryService;
+import com.tae.Etickette.concert.command.application.RegisterConcertService;
+import com.tae.Etickette.concert.command.application.dto.RegisterConcertRequest;
+import com.tae.Etickette.member.domain.Member;
+import com.tae.Etickette.member.domain.Role;
+import com.tae.Etickette.member.infra.MemberRepository;
+import com.tae.Etickette.session.application.Dto.RegisterSessionRequest;
+import com.tae.Etickette.session.application.RegisterSessionService;
+import com.tae.Etickette.testhelper.ConcertCreateBuilder;
+import com.tae.Etickette.testhelper.SessionCreateBuilder;
+import com.tae.Etickette.testhelper.VenueCreateBuilder;
+import com.tae.Etickette.venue.command.application.Dto.RegisterVenueRequest;
+import com.tae.Etickette.venue.command.application.Dto.RegisterVenueResponse;
+import com.tae.Etickette.venue.command.application.RegisterVenueService;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
+import java.util.Optional;
+
+
+@SpringBootTest
+@Transactional
+class BookingQueryServiceTest {
+    @Autowired
+    BookingQueryService bookingQueryService;
+
+    @Autowired
+    RegisterVenueService registerVenueService;
+    @Autowired
+    RegisterConcertService registerConcertService;
+    @Autowired
+    RegisterSessionService registerSessionService;
+    @Autowired
+    MemberRepository memberRepository;
+    @Autowired
+    BookingService bookingService;
+
+    @Test
+    @DisplayName("Booking후에 결제 해야하는 정보를 가져온다.")
+    void 결제정보가져오기_성공() {
+
+        Member savedMember = memberRepository.save(Member.create("user", "user@spring", "@Abc12", Role.ADMIN));
+        RegisterVenueRequest venueRequest = VenueCreateBuilder.builder().build();
+        RegisterVenueResponse venueResponse = registerVenueService.register(venueRequest);
+
+        RegisterConcertRequest concertRequest = ConcertCreateBuilder.builder().venueId(venueResponse.getId()).build();
+        Long concertId = registerConcertService.register(concertRequest);
+
+        RegisterSessionRequest sessionRequest = SessionCreateBuilder.builder().concertId(concertId).sessionInfos(List.of(RegisterSessionRequest.SessionInfo.builder().concertDate(LocalDate.of(2025, 6, 6)).startTime(LocalTime.of(15, 0)).build())).build();
+        List<Long> sessions = registerSessionService.register(sessionRequest);
+
+        BookingRequest request = BookingRequest.builder().memberId(savedMember.getId()).sessionId(sessions.get(0)).seatIds(List.of(1L)).build();
+        BookingRef bookingRef = bookingService.booking(request);
+
+        PaymentInfo paymentInfo = bookingQueryService.getPaymentInfo(bookingRef);
+
+        Assertions.assertThat(paymentInfo.getBookingRef()).isEqualTo(bookingRef.getValue());
+        Assertions.assertThat(paymentInfo.getTotalAmounts()).isEqualTo(150000);
+        Assertions.assertThat(paymentInfo.getDetails().get(0).getSeatInfo()).isEqualTo("A1");
+    }
+}
