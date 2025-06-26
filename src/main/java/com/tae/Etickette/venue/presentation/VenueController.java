@@ -29,7 +29,7 @@ public class VenueController {
      * @param request
      * @return
      */
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+//    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
     public ResponseEntity<Void> register(@RequestBody RegisterVenueRequest request) {
         registerVenueService.register(request);

@@ -2,7 +2,7 @@ package com.tae.Etickette.session.domain;
 
 import com.tae.Etickette.concert.command.domain.GradePrice;
 import com.tae.Etickette.global.model.Money;
-import com.tae.Etickette.bookseat.domain.BookSeat;
+import com.tae.Etickette.bookseat.command.domain.BookSeat;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

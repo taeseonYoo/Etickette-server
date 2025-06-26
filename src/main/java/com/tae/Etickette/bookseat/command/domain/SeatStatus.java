@@ -1,4 +1,4 @@
-package com.tae.Etickette.bookseat.domain;
+package com.tae.Etickette.bookseat.command.domain;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

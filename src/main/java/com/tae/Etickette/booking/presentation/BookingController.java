@@ -11,7 +11,9 @@ import com.tae.Etickette.global.model.Canceller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,20 +26,25 @@ public class BookingController {
     private final BookingQueryService bookingQueryService;
 
     @PostMapping
-    public ResponseEntity<Void> booking(@RequestBody BookingRequest request) {
-        bookingService.booking(request);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<String> booking(@RequestBody BookingRequest request) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        BookingRef booking = bookingService.booking(request, email);
+        return ResponseEntity.ok(booking.getValue());
     }
 
     @PostMapping("/{bookingRef}/cancel")
     public ResponseEntity<Void> cancel(@PathVariable("bookingRef") String bookingRef) {
-        CustomUserDetails details = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
-        cancelBookingService.cancel(new BookingRef(bookingRef), new Canceller(details.getId()));
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        cancelBookingService.cancel(new BookingRef(bookingRef), email);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/{bookingRef}")
     public ResponseEntity<PaymentInfo> getPaymentInfo(@PathVariable("bookingRef") String bookingRef) {
-        return ResponseEntity.ok(bookingQueryService.getPaymentInfo(new BookingRef(bookingRef)));
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        return ResponseEntity.ok(bookingQueryService.getPaymentInfo(new BookingRef(bookingRef),email));
     }
 }

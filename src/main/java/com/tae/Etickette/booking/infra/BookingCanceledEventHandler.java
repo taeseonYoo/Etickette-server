@@ -1,8 +1,8 @@
 package com.tae.Etickette.booking.infra;
 
 import com.tae.Etickette.booking.command.domain.BookingCanceledEvent;
-import com.tae.Etickette.bookseat.application.CancelBookSeatService;
-import com.tae.Etickette.bookseat.domain.BookSeatId;
+import com.tae.Etickette.bookseat.command.application.CancelBookSeatService;
+import com.tae.Etickette.bookseat.command.domain.BookSeatId;
 import com.tae.Etickette.global.model.Canceller;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;

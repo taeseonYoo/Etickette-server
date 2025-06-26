@@ -7,6 +7,7 @@ import com.tae.Etickette.booking.query.PaymentInfo;
 import com.tae.Etickette.booking.query.BookingQueryService;
 import com.tae.Etickette.concert.command.application.RegisterConcertService;
 import com.tae.Etickette.concert.command.application.dto.RegisterConcertRequest;
+import com.tae.Etickette.concert.command.application.dto.RegisterConcertResponse;
 import com.tae.Etickette.member.domain.Member;
 import com.tae.Etickette.member.domain.Role;
 import com.tae.Etickette.member.infra.MemberRepository;
@@ -60,16 +61,16 @@ class BookingQueryServiceTest {
         RegisterVenueResponse venueResponse = registerVenueService.register(venueRequest);
 
         RegisterConcertRequest concertRequest = ConcertCreateBuilder.builder().venueId(venueResponse.getId()).build();
-        Long concertId = registerConcertService.register(concertRequest);
+        RegisterConcertResponse response = registerConcertService.register(concertRequest);
 
-        RegisterSessionRequest sessionRequest = SessionCreateBuilder.builder().concertId(concertId).sessionInfos(List.of(RegisterSessionRequest.SessionInfo.builder().concertDate(LocalDate.of(2025, 6, 6)).startTime(LocalTime.of(15, 0)).build())).build();
+        RegisterSessionRequest sessionRequest = SessionCreateBuilder.builder().concertId(response.getConcertId()).sessionInfos(List.of(RegisterSessionRequest.SessionInfo.builder().concertDate(LocalDate.of(2025, 6, 6)).startTime(LocalTime.of(15, 0)).build())).build();
         List<Long> sessions = registerSessionService.register(sessionRequest);
 
-        List<Long> seatIds = seatRepository.findIdByConcertId(concertId);
-        BookingRequest request = BookingRequest.builder().memberId(savedMember.getId()).sessionId(sessions.get(0)).seatIds(List.of(seatIds.get(0))).build();
-        BookingRef bookingRef = bookingService.booking(request);
+        List<Long> seatIds = seatRepository.findIdByConcertId(response.getConcertId());
+        BookingRequest request = BookingRequest.builder().sessionId(sessions.get(0)).seatIds(List.of(seatIds.get(0))).build();
+        BookingRef bookingRef = bookingService.booking(request, savedMember.getEmail());
 
-        PaymentInfo paymentInfo = bookingQueryService.getPaymentInfo(bookingRef);
+        PaymentInfo paymentInfo = bookingQueryService.getPaymentInfo(bookingRef,savedMember.getEmail());
 
         Assertions.assertThat(paymentInfo.getBookingRef()).isEqualTo(bookingRef.getValue());
         Assertions.assertThat(paymentInfo.getTotalAmounts()).isEqualTo(150000);

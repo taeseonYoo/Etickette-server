@@ -6,6 +6,7 @@ import com.tae.Etickette.booking.command.application.dto.BookingRequest;
 import com.tae.Etickette.booking.command.domain.BookingRef;
 import com.tae.Etickette.concert.command.application.RegisterConcertService;
 import com.tae.Etickette.concert.command.application.dto.RegisterConcertRequest;
+import com.tae.Etickette.concert.command.application.dto.RegisterConcertResponse;
 import com.tae.Etickette.global.auth.CustomUserDetails;
 import com.tae.Etickette.member.domain.Member;
 import com.tae.Etickette.member.domain.Role;
@@ -81,13 +82,13 @@ class BookingControllerTest {
         RegisterVenueResponse venueResponse = registerVenueService.register(venueRequest);
 
         RegisterConcertRequest concertRequest = ConcertCreateBuilder.builder().venueId(venueResponse.getId()).build();
-        Long concertId = registerConcertService.register(concertRequest);
+        RegisterConcertResponse response = registerConcertService.register(concertRequest);
 
-        RegisterSessionRequest sessionRequest = SessionCreateBuilder.builder().concertId(concertId).sessionInfos(List.of(RegisterSessionRequest.SessionInfo.builder().concertDate(LocalDate.of(2025, 6, 6)).startTime(LocalTime.of(15, 0)).build())).build();
+        RegisterSessionRequest sessionRequest = SessionCreateBuilder.builder().concertId(response.getConcertId()).sessionInfos(List.of(RegisterSessionRequest.SessionInfo.builder().concertDate(LocalDate.of(2025, 6, 6)).startTime(LocalTime.of(15, 0)).build())).build();
         List<Long> sessions = registerSessionService.register(sessionRequest);
 
-        BookingRequest request = BookingRequest.builder().memberId(savedMember.getId()).sessionId(sessions.get(0)).seatIds(List.of(1L)).build();
-        BookingRef bookingRef = bookingService.booking(request);
+        BookingRequest request = BookingRequest.builder().sessionId(sessions.get(0)).seatIds(List.of(1L)).build();
+        BookingRef bookingRef = bookingService.booking(request, savedMember.getEmail());
 
         //when
         mockMvc.perform(post("/api/booking/"+bookingRef.getValue()+"/cancel")

@@ -2,6 +2,7 @@ package com.tae.Etickette.integration.service;
 
 import com.tae.Etickette.concert.command.application.RegisterConcertService;
 import com.tae.Etickette.concert.command.application.dto.RegisterConcertRequest;
+import com.tae.Etickette.concert.command.application.dto.RegisterConcertResponse;
 import com.tae.Etickette.concert.command.domain.Concert;
 import com.tae.Etickette.concert.infra.ConcertRepository;
 import com.tae.Etickette.seat.infra.SeatRepository;
@@ -38,10 +39,10 @@ public class RegisterConcertServiceTest {
                 .runningTime(120).build();
 
         //when
-        Long savedId = registerConcertService.register(request);
+        RegisterConcertResponse response = registerConcertService.register(request);
 
         //then
-        Concert concert = concertRepository.findById(savedId).get();
+        Concert concert = concertRepository.findById(response.getConcertId()).get();
         Assertions.assertThat(concert.getTitle()).isEqualTo("공연A");
     }
 
@@ -52,10 +53,10 @@ public class RegisterConcertServiceTest {
         RegisterConcertRequest request = ConcertCreateBuilder.builder().build();
 
         //when
-        Long savedId = registerConcertService.register(request);
+        RegisterConcertResponse response = registerConcertService.register(request);
 
         //then
-        List<Long> seatIds = seatRepository.findIdByConcertId(savedId);
+        List<Long> seatIds = seatRepository.findIdByConcertId(response.getConcertId());
         Assertions.assertThat(seatIds).isNotEmpty();
     }
 

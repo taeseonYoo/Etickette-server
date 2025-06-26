@@ -8,6 +8,10 @@ import com.tae.Etickette.booking.infra.BookingRepository;
 import com.tae.Etickette.bookseat.infra.BookSeatRepository;
 import com.tae.Etickette.concert.command.application.dto.RegisterConcertRequest;
 import com.tae.Etickette.concert.command.application.RegisterConcertService;
+import com.tae.Etickette.concert.command.application.dto.RegisterConcertResponse;
+import com.tae.Etickette.member.domain.Member;
+import com.tae.Etickette.member.domain.Role;
+import com.tae.Etickette.member.infra.MemberRepository;
 import com.tae.Etickette.seat.infra.SeatRepository;
 import com.tae.Etickette.testhelper.ConcertCreateBuilder;
 import com.tae.Etickette.testhelper.VenueCreateBuilder;
@@ -23,6 +27,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -49,6 +55,8 @@ class BookingServiceTest {
     private RegisterConcertService registerConcertService;
     @Autowired
     private SeatRepository seatRepository;
+    @Autowired
+    private MemberRepository memberRepository;
 
     List<Long> sessionIds;
     List<Long> idByConcertId;
@@ -65,7 +73,7 @@ class BookingServiceTest {
         );
         //공연 등록
         RegisterConcertRequest concertDto = ConcertCreateBuilder.builder().gradePrices(gradePriceInfos).venueId(venue.getId()).build();
-        Long concertId = registerConcertService.register(concertDto);
+        RegisterConcertResponse response = registerConcertService.register(concertDto);
 
         //공연 일정 등록
         List<SessionInfo> sessionInfos = List.of(
@@ -75,12 +83,12 @@ class BookingServiceTest {
         );
 
         RegisterSessionRequest sessionDto = RegisterSessionRequest.builder()
-                .concertId(concertId)
+                .concertId(response.getConcertId())
                 .sessionInfos(sessionInfos)
                 .build();
         sessionIds = registerSessionService.register(sessionDto);
 
-        idByConcertId = seatRepository.findIdByConcertId(concertId);
+        idByConcertId = seatRepository.findIdByConcertId(response.getConcertId());
     }
 
     @Test
@@ -88,13 +96,13 @@ class BookingServiceTest {
     void 예약_성공() {
 //        given
         BookingRequest requestDto = BookingRequest.builder()
-                .memberId(1L)
                 .sessionId(sessionIds.get(0))
                 .seatIds(List.of(idByConcertId.get(0), idByConcertId.get(1)))
                 .build();
+        Member test = memberRepository.save(Member.create("test", "test@test", "@Abc", Role.ADMIN));
 
         //when
-        BookingRef bookingRef = bookingService.booking(requestDto);
+        BookingRef bookingRef = bookingService.booking(requestDto,test.getEmail());
 
         //then
         Booking booking = bookingRepository.findById(bookingRef).get();

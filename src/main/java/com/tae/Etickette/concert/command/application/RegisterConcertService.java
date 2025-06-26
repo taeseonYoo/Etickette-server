@@ -1,6 +1,7 @@
 package com.tae.Etickette.concert.command.application;
 
 import com.tae.Etickette.concert.command.application.dto.RegisterConcertRequest;
+import com.tae.Etickette.concert.command.application.dto.RegisterConcertResponse;
 import com.tae.Etickette.global.model.Money;
 import com.tae.Etickette.concert.command.domain.Concert;
 import com.tae.Etickette.concert.command.domain.GradePrice;
@@ -22,7 +23,7 @@ public class RegisterConcertService {
     private final SeatRepository seatRepository;
 
     @Transactional
-    public Long register(RegisterConcertRequest requestDto) {
+    public RegisterConcertResponse register(RegisterConcertRequest requestDto) {
 
         List<GradePrice> gradePrices = requestDto.getGradePrices().stream()
                 .map(info -> new GradePrice(info.getGrade(), new Money(info.getPrice())))
@@ -41,7 +42,7 @@ public class RegisterConcertService {
         List<Seat> seats = initSeat(savedConcert.getId());
         seatRepository.saveAllInBulk(seats);
 
-        return savedConcert.getId();
+        return RegisterConcertResponse.builder().concertId(concert.getId()).build();
     }
 
     private List<Seat> initSeat(Long concertId) {

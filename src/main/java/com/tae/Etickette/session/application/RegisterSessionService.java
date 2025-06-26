@@ -1,6 +1,6 @@
 package com.tae.Etickette.session.application;
 
-import com.tae.Etickette.bookseat.domain.BookSeat;
+import com.tae.Etickette.bookseat.command.domain.BookSeat;
 import com.tae.Etickette.bookseat.infra.BookSeatRepository;
 import com.tae.Etickette.seat.infra.SeatRepository;
 import com.tae.Etickette.concert.command.domain.Concert;

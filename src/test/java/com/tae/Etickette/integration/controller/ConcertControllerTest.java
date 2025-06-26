@@ -1,6 +1,7 @@
 package com.tae.Etickette.integration.controller;
 
 import com.tae.Etickette.concert.command.application.RegisterConcertService;
+import com.tae.Etickette.concert.command.application.dto.RegisterConcertResponse;
 import com.tae.Etickette.session.application.RegisterSessionService;
 import com.tae.Etickette.testhelper.ConcertCreateBuilder;
 import com.tae.Etickette.testhelper.SessionCreateBuilder;
@@ -46,11 +47,11 @@ public class ConcertControllerTest {
         //given
         RegisterVenueResponse venue = venueService.register(VenueCreateBuilder.builder().build());
 
-        Long savedConcert1 = concertService.register(ConcertCreateBuilder.builder().title("공연 A").venueId(venue.getId()).build());
-        Long savedConcert2 = concertService.register(ConcertCreateBuilder.builder().title("공연 B").venueId(venue.getId()).build());
+        RegisterConcertResponse response1 = concertService.register(ConcertCreateBuilder.builder().title("공연 A").venueId(venue.getId()).build());
+        RegisterConcertResponse response2 = concertService.register(ConcertCreateBuilder.builder().title("공연 B").venueId(venue.getId()).build());
 
-        sessionService.register(SessionCreateBuilder.builder().concertId(savedConcert1).build());
-        sessionService.register(SessionCreateBuilder.builder().concertId(savedConcert2)
+        sessionService.register(SessionCreateBuilder.builder().concertId(response1.getConcertId()).build());
+        sessionService.register(SessionCreateBuilder.builder().concertId(response2.getConcertId())
                 .sessionInfos(List.of(SessionInfo.builder().concertDate(LocalDate.of(2025, 5, 10)).startTime(LocalTime.of(15, 0)).build())).build());
 
         //when & then
@@ -66,15 +67,15 @@ public class ConcertControllerTest {
         //given
         RegisterVenueResponse venue = venueService.register(VenueCreateBuilder.builder().place("KSPO").build());
 
-        Long concertId = concertService.register(ConcertCreateBuilder.builder().title("공연 A").imgURL("").venueId(venue.getId()).build());
+        RegisterConcertResponse response = concertService.register(ConcertCreateBuilder.builder().title("공연 A").imgURL("").venueId(venue.getId()).build());
 
-        sessionService.register(SessionCreateBuilder.builder().concertId(concertId).build());
+        sessionService.register(SessionCreateBuilder.builder().concertId(response.getConcertId()).build());
 
         //when & then
         mockMvc.perform(get("/api/concerts")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content[0].concertId").value(concertId))
+                .andExpect(jsonPath("$.content[0].concertId").value(response.getConcertId()))
                 .andExpect(jsonPath("$.content[0].title").value("공연 A"))
                 .andExpect(jsonPath("$.content[0].imgURL").value(""))
                 .andExpect(jsonPath("$.content[0].place").value("KSPO"))
@@ -99,12 +100,12 @@ public class ConcertControllerTest {
         //given
         RegisterVenueResponse venue = venueService.register(VenueCreateBuilder.builder().place("KSPO").build());
 
-        Long concertId = concertService.register(ConcertCreateBuilder.builder().title("공연 A").imgURL("").venueId(venue.getId()).build());
+        RegisterConcertResponse response = concertService.register(ConcertCreateBuilder.builder().title("공연 A").imgURL("").venueId(venue.getId()).build());
 
-        sessionService.register(SessionCreateBuilder.builder().concertId(concertId).build());
+        sessionService.register(SessionCreateBuilder.builder().concertId(response.getConcertId()).build());
 
         //when & then
-        mockMvc.perform(get("/api/concerts/" + concertId)
+        mockMvc.perform(get("/api/concerts/" + response.getConcertId())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }

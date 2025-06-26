@@ -1,7 +1,7 @@
-package com.tae.Etickette.bookseat.application;
+package com.tae.Etickette.bookseat.command.application;
 
-import com.tae.Etickette.bookseat.domain.BookSeat;
-import com.tae.Etickette.bookseat.domain.BookSeatId;
+import com.tae.Etickette.bookseat.command.domain.BookSeat;
+import com.tae.Etickette.bookseat.command.domain.BookSeatId;
 import com.tae.Etickette.bookseat.infra.BookSeatRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -1,8 +1,8 @@
 package com.tae.Etickette.booking.infra;
 
 import com.tae.Etickette.booking.command.domain.ConfirmPaymentEvent;
-import com.tae.Etickette.bookseat.application.BookSeatService;
-import com.tae.Etickette.bookseat.domain.BookSeatId;
+import com.tae.Etickette.bookseat.command.application.BookSeatService;
+import com.tae.Etickette.bookseat.command.domain.BookSeatId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;

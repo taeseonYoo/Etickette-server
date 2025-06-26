@@ -1,4 +1,4 @@
-package com.tae.Etickette.bookseat.domain;
+package com.tae.Etickette.bookseat.command.domain;
 
 import com.tae.Etickette.global.jpa.MoneyConverter;
 import com.tae.Etickette.global.model.Money;
@@ -11,11 +11,14 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @IdClass(BookSeatId.class)
+@Table(name = "book_seat")
 public class BookSeat {
 
     @Id
+    @Column(name = "seat_id")
     private Long seatId;
     @Id
+    @Column(name = "session_id")
     private Long sessionId;
 
     private String grade;

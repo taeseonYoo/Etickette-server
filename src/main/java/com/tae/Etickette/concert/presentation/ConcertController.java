@@ -2,6 +2,7 @@ package com.tae.Etickette.concert.presentation;
 
 import com.tae.Etickette.concert.command.application.RegisterConcertService;
 import com.tae.Etickette.concert.command.application.dto.RegisterConcertRequest;
+import com.tae.Etickette.concert.command.application.dto.RegisterConcertResponse;
 import com.tae.Etickette.concert.query.application.ConcertDetail;
 import com.tae.Etickette.concert.query.application.ConcertDetailService;
 import com.tae.Etickette.concert.query.application.ConcertSummaryService;
@@ -24,11 +25,10 @@ public class ConcertController {
     private final RegisterConcertService registerConcertService;
     private final ConcertSummaryService concertSummaryService;
     private final ConcertDetailService concertDetailService;
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+//    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
-    public ResponseEntity<Void> register(@RequestBody RegisterConcertRequest request) {
-        registerConcertService.register(request);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<RegisterConcertResponse> register(@RequestBody RegisterConcertRequest request) {
+        return ResponseEntity.ok(registerConcertService.register(request));
     }
 
     /**

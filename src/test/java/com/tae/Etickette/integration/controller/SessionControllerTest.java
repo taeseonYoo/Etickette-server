@@ -2,6 +2,7 @@ package com.tae.Etickette.integration.controller;
 
 import com.tae.Etickette.concert.command.application.RegisterConcertService;
 import com.tae.Etickette.concert.command.application.dto.RegisterConcertRequest;
+import com.tae.Etickette.concert.command.application.dto.RegisterConcertResponse;
 import com.tae.Etickette.global.event.Events;
 import com.tae.Etickette.session.application.Dto.RegisterSessionRequest;
 import com.tae.Etickette.session.application.RegisterSessionService;
@@ -61,10 +62,10 @@ public class SessionControllerTest {
         RegisterVenueResponse venueResponse = registerVenueService.register(venueRequest);
 
         RegisterConcertRequest concertRequest = ConcertCreateBuilder.builder().venueId(venueResponse.getId()).build();
-        Long concertId = registerConcertService.register(concertRequest);
+        RegisterConcertResponse response = registerConcertService.register(concertRequest);
 
         RegisterSessionRequest sessionRequest = SessionCreateBuilder.builder()
-                .concertId(concertId)
+                .concertId(response.getConcertId())
                 .build();
 
         //when
@@ -81,10 +82,10 @@ public class SessionControllerTest {
         RegisterVenueResponse venueResponse = registerVenueService.register(venueRequest);
 
         RegisterConcertRequest concertRequest = ConcertCreateBuilder.builder().venueId(venueResponse.getId()).build();
-        Long concertId = registerConcertService.register(concertRequest);
+        RegisterConcertResponse response = registerConcertService.register(concertRequest);
 
         RegisterSessionRequest sessionRequest = SessionCreateBuilder.builder()
-                .concertId(concertId)
+                .concertId(response.getConcertId())
                 .build();
         List<Long> sessionIds = registerSessionService.register(sessionRequest);
 

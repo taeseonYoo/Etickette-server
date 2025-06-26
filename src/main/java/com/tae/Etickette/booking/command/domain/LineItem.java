@@ -2,7 +2,7 @@ package com.tae.Etickette.booking.command.domain;
 
 import com.tae.Etickette.global.jpa.MoneyConverter;
 import com.tae.Etickette.global.model.Money;
-import com.tae.Etickette.bookseat.domain.BookSeatId;
+import com.tae.Etickette.bookseat.command.domain.BookSeatId;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Embedded;
