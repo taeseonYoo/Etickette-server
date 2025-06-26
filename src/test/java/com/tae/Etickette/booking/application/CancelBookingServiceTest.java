@@ -5,9 +5,8 @@ import com.tae.Etickette.booking.command.application.CancelBookingService;
 import com.tae.Etickette.booking.command.application.NoCancellablePermission;
 import com.tae.Etickette.booking.command.domain.Booking;
 import com.tae.Etickette.booking.command.domain.CancelPolicy;
-import com.tae.Etickette.booking.command.domain.LineItem;
+import com.tae.Etickette.booking.command.domain.SeatItem;
 import com.tae.Etickette.booking.infra.BookingRepository;
-import com.tae.Etickette.global.model.Canceller;
 import com.tae.Etickette.global.model.Money;
 import com.tae.Etickette.bookseat.command.domain.BookSeatId;
 import com.tae.Etickette.member.domain.Member;
@@ -45,9 +44,9 @@ class CancelBookingServiceTest {
     void 전체취소_성공() {
         //given
         List<Booking> bookings = List.of(new Booking(1L, 1L,
-                        List.of(new LineItem(new BookSeatId(1L, 1L), new Money(150000)))),
+                        List.of(new SeatItem(new BookSeatId(1L, 1L), new Money(150000)))),
                 new Booking(1L, 1L,
-                        List.of(new LineItem(new BookSeatId(2L, 1L), new Money(150000)))));
+                        List.of(new SeatItem(new BookSeatId(2L, 1L), new Money(150000)))));
         BDDMockito.given(bookingRepository.findBySessionId(any())).willReturn(bookings);
         BDDMockito.given(cancelPolicy.hasEntireCancelPermission()).willReturn(true);
         BDDMockito.given(bookingRepository.findById(any())).willReturn(Optional.ofNullable(mock(Booking.class)));
@@ -66,9 +65,9 @@ class CancelBookingServiceTest {
     void 전체취소_실패_권한이없음() {
         //given
         List<Booking> bookings = List.of(new Booking(1L, 1L,
-                        List.of(new LineItem(new BookSeatId(1L, 1L), new Money(150000)))),
+                        List.of(new SeatItem(new BookSeatId(1L, 1L), new Money(150000)))),
                 new Booking(1L, 1L,
-                        List.of(new LineItem(new BookSeatId(2L, 1L), new Money(150000)))));
+                        List.of(new SeatItem(new BookSeatId(2L, 1L), new Money(150000)))));
         BDDMockito.given(bookingRepository.findBySessionId(any())).willReturn(bookings);
         BDDMockito.given(cancelPolicy.hasEntireCancelPermission()).willReturn(false);
 

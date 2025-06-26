@@ -1,13 +1,14 @@
 package com.tae.Etickette.booking.command.application;
 
 import com.tae.Etickette.booking.command.domain.BookingRef;
-import com.tae.Etickette.booking.command.domain.LineItem;
+import com.tae.Etickette.booking.command.domain.SeatItem;
 import com.tae.Etickette.booking.infra.BookingRepository;
 import com.tae.Etickette.booking.command.domain.Booking;
 import com.tae.Etickette.booking.command.application.dto.BookingRequest;
 import com.tae.Etickette.bookseat.command.domain.BookSeat;
 import com.tae.Etickette.bookseat.command.domain.BookSeatId;
 import com.tae.Etickette.bookseat.infra.BookSeatRepository;
+import com.tae.Etickette.member.application.MemberNotFoundException;
 import com.tae.Etickette.member.domain.Member;
 import com.tae.Etickette.member.infra.MemberRepository;
 import com.tae.Etickette.session.domain.Session;
@@ -34,20 +35,23 @@ public class BookingService {
         Session session = sessionRepository.findById(requestDto.getSessionId()).orElseThrow(() ->
                 new SessionNotFoundException("세션을 찾을 수 없습니다."));
 
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException(""));
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new MemberNotFoundException("회원 정보를 찾을 수 없습니다."));
+
+        //TODO 회원이 이미 예약한 좌석의 갯수가 몇개인지 확인해야 한다. -> 고민 좀 해보자
 
         //주문 목록 생성
-        List<LineItem> lineItems = new ArrayList<>();
+        List<SeatItem> seatItems = new ArrayList<>();
         for (Long seatId : requestDto.getSeatIds()) {
             BookSeat seat = bookSeatRepository.findById(new BookSeatId(seatId, requestDto.getSessionId()))
                     .orElseThrow(() -> new BookSeatNotFoundException("스케줄 좌석 정보가 없습니다."));
 
             //좌석을 잠금 상태로 설정
             seat.lock();
-            lineItems.add(new LineItem(new BookSeatId(seatId, session.getId()), seat.getPrice()));
+            seatItems.add(new SeatItem(new BookSeatId(seatId, session.getId()), seat.getPrice()));
         }
 
-        Booking booking = Booking.create(member.getId(), requestDto.getSessionId(),lineItems);
+        Booking booking = Booking.create(member.getId(), requestDto.getSessionId(), seatItems);
         Booking savedBooking = bookingRepository.save(booking);
 
         return savedBooking.getBookingRef();

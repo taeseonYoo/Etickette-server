@@ -13,13 +13,13 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class LineItem {
+public class SeatItem {
     @Embedded
     private BookSeatId seatId;
     @Convert(converter = MoneyConverter.class)
     private Money price;
 
-    public LineItem(BookSeatId seatId, Money price) {
+    public SeatItem(BookSeatId seatId, Money price) {
         this.seatId = seatId;
         this.price = price;
     }

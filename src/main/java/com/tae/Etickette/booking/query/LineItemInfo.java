@@ -1,6 +1,6 @@
 package com.tae.Etickette.booking.query;
 
-import com.tae.Etickette.booking.command.domain.LineItem;
+import com.tae.Etickette.booking.command.domain.SeatItem;
 import com.tae.Etickette.seat.query.SeatData;
 import lombok.Getter;
 
@@ -10,8 +10,8 @@ public class LineItemInfo {
     private int price;
     private String seatInfo;
 
-    public LineItemInfo(LineItem lineItem, SeatData seatData) {
-        this.price = lineItem.getPrice().getValue();
+    public LineItemInfo(SeatItem seatItem, SeatData seatData) {
+        this.price = seatItem.getPrice().getValue();
         this.seatInfo = seatData.getRow() + seatData.getColumn();
     }
 }

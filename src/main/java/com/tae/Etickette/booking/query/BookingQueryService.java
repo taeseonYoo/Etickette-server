@@ -8,7 +8,6 @@ import com.tae.Etickette.member.infra.MemberRepository;
 import com.tae.Etickette.seat.query.SeatData;
 import com.tae.Etickette.seat.query.SeatQueryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,7 +33,7 @@ public class BookingQueryService {
             throw new RuntimeException("예외");
         }
 
-        List<LineItemInfo> lineItems = booking.getLineItems().stream()
+        List<LineItemInfo> lineItems = booking.getSeatItems().stream()
                 .map(lineItem -> {
                     SeatData seatData = seatQueryService.getSeat(lineItem.getSeatId().getSeatId())
                             .orElseThrow(() -> new IllegalArgumentException("좌석을 찾을 수 없습니다."));
