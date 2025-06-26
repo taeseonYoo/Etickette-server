@@ -45,7 +45,7 @@ public class MemberService {
             throw new NoChangeablePermission("회원 정보 수정 권한이 없습니다.");
         }
 
-        member.changePassword(encryptionService, requestDto);
+        member.changePassword(encryptionService, requestDto.getOldPassword(),requestDto.getNewPassword());
     }
 
     @Transactional

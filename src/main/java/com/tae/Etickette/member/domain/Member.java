@@ -50,11 +50,12 @@ public class Member {
     public boolean matchPassword(EncryptionService encryptionService, String password) {
         return encryptionService.matches(password, this.password);
     }
-    public void changePassword(EncryptionService encryptionService, ChangePasswordRequest requestDto) {
-        if (!matchPassword(encryptionService, requestDto.getOldPassword())) {
+
+    public void changePassword(EncryptionService encryptionService, String oldPassword, String newPassword) {
+        if (!matchPassword(encryptionService, oldPassword)) {
             throw new BadPasswordException("비밀번호가 일치하지 않습니다.");
         }
-        this.password = encryptionService.encode(requestDto.getNewPassword());
+        this.password = encryptionService.encode(newPassword);
     }
     public void deleteMember() {
         this.memberStatus = MemberStatus.DELETE;
