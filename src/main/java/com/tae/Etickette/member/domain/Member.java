@@ -1,5 +1,6 @@
 package com.tae.Etickette.member.domain;
 
+import com.tae.Etickette.global.event.Events;
 import com.tae.Etickette.member.application.dto.ChangePasswordRequest;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -47,17 +48,22 @@ public class Member {
         return new Member(name, email, password, role);
     }
 
-    public boolean matchPassword(EncryptionService encryptionService, String password) {
-        return encryptionService.matches(password, this.password);
+    private void matchPassword(EncryptionService encryptionService, String password) {
+        if(!encryptionService.matches(password, this.password)){
+            throw new BadPasswordException("비밀번호가 일치하지 않습니다.");
+        }
     }
 
     public void changePassword(EncryptionService encryptionService, String oldPassword, String newPassword) {
-        if (!matchPassword(encryptionService, oldPassword)) {
-            throw new BadPasswordException("비밀번호가 일치하지 않습니다.");
-        }
+        matchPassword(encryptionService, oldPassword);
         this.password = encryptionService.encode(newPassword);
     }
+
+    /**
+     * 회원 삭제 시, 회원의 refresh token 을 삭제한다.
+     */
     public void deleteMember() {
         this.memberStatus = MemberStatus.DELETE;
+        Events.raise(new MemberDeletedEvent(this.getEmail()));
     }
 }

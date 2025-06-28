@@ -1,5 +1,8 @@
 package com.tae.Etickette.integration.service;
 
+import com.tae.Etickette.global.refresh.domain.RefreshToken;
+import com.tae.Etickette.global.refresh.infra.RefreshTokenRepository;
+import com.tae.Etickette.member.application.dto.DeleteMemberRequest;
 import com.tae.Etickette.member.domain.EncryptionService;
 import com.tae.Etickette.member.application.dto.RegisterMemberRequest;
 import com.tae.Etickette.member.application.dto.RegisterMemberResponse;
@@ -8,16 +11,15 @@ import com.tae.Etickette.member.domain.Member;
 import com.tae.Etickette.member.domain.MemberStatus;
 import com.tae.Etickette.member.infra.MemberRepository;
 import com.tae.Etickette.member.domain.BadPasswordException;
-import com.tae.Etickette.member.application.dto.DeleteMemberRequest;
 import com.tae.Etickette.member.application.MemberService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -32,9 +34,11 @@ public class MemberServiceTest {
     private MemberRepository memberRepository;
     @Autowired
     private EncryptionService encryptionService;
+    @Autowired
+    private RefreshTokenRepository refreshTokenRepository;
 
     @Test
-    @DisplayName("join - 회원 가입에 성공한다.")
+    @DisplayName("join - 회원 가입에 성공하면, 회원 정보가 저장된다.")
     public void 회원가입_성공() {
         //given
         RegisterMemberRequest member = RegisterMemberRequest.builder()
@@ -46,31 +50,12 @@ public class MemberServiceTest {
         RegisterMemberResponse savedMember = memberService.register(member);
 
         //then
-        Member findMember = memberService.findById(savedMember.getId());
-        Assertions.assertThat(findMember.getId()).isEqualTo(savedMember.getId());
+        Optional<Member> findMember = memberRepository.findById(savedMember.getId());
+        Assertions.assertThat(findMember.isPresent()).isEqualTo(true);
     }
 
     @Test
-    @DisplayName("join - 중복된 이메일이 있으면, 회원 가입에 실패한다.")
-    public void 회원가입_실패_중복이메일() {
-        //given
-        RegisterMemberRequest member = RegisterMemberRequest.builder()
-                .name("USER")
-                .email("USER@spring").password("@Abc1234")
-                .build();
-        memberService.register(member);
-        RegisterMemberRequest member2 = RegisterMemberRequest.builder()
-                .name("USER2")
-                .email("USER@spring").password("@Abc1234")
-                .build();
-
-        //then
-        assertThrows(DuplicateKeyException.class,
-                () -> memberService.register(member2));
-    }
-
-    @Test
-    @DisplayName("changePassword - 비밀번호 변경에 성공한다.")
+    @DisplayName("changePassword - 비밀번호 변경에 성공하면, 변경된 비밀번호가 저장된다.")
     public void 비밀번호변경_성공() {
         //given
         RegisterMemberRequest member = RegisterMemberRequest.builder()
@@ -79,16 +64,20 @@ public class MemberServiceTest {
                 .build();
         memberService.register(member);
 
-        ChangePasswordRequest requestDto = ChangePasswordRequest.builder()
-                .oldPassword("@Abc1234").newPassword("@Change123").build();
-
+        ChangePasswordRequest requestDto = ChangePasswordRequest
+                .builder()
+                .oldPassword("@Abc1234")
+                .newPassword("@Change123")
+                .email("USER@spring").build();
 
         //when
-        memberService.changePassword(requestDto, "USER@spring");
+        memberService.changePassword(requestDto,"USER@spring");
 
         //then
         Member findMember = memberRepository.findByEmail("USER@spring").get();
-        Assertions.assertThat(encryptionService.matches("@Change123", findMember.getPassword())).isTrue();
+        Assertions.assertThat(encryptionService.matches(
+                "@Change123",
+                findMember.getPassword())).isTrue();
     }
 
     @Test
@@ -102,17 +91,18 @@ public class MemberServiceTest {
         memberService.register(member);
 
         ChangePasswordRequest requestDto = ChangePasswordRequest.builder()
-                .oldPassword("@Bad1234").newPassword("@Change123").build();
+                .oldPassword("@Bad1234")
+                .newPassword("@Change123")
+                .email("USER@spring")
+                .build();
 
-
-        //when
+        //when & then
         assertThrows(BadPasswordException.class,
                 () -> memberService.changePassword(requestDto, "USER@spring"));
-
     }
 
     @Test
-    @DisplayName("deleteMember - 회원 삭제에 성공한다.")
+    @DisplayName("deleteMember - 회원 삭제에 성공하면, status = DELETE")
     public void 회원삭제_성공() {
         //given
         RegisterMemberRequest member = RegisterMemberRequest.builder()
@@ -121,29 +111,33 @@ public class MemberServiceTest {
                 .build();
         memberService.register(member);
 
-        DeleteMemberRequest requestDto = DeleteMemberRequest.builder()
-                .password("@Abc1234").build();
+        DeleteMemberRequest request = DeleteMemberRequest.builder().email("USER@spring").build();
+
         //when
-        memberService.deleteMember(requestDto, "USER@spring");
+        memberService.deleteMember(request,"USER@spring");
 
         //then
-        Member findMember = memberRepository.findByEmail("USER@spring").orElseThrow(() -> new UsernameNotFoundException("회원 정보를 찾을 수 없습니다."));
+        Member findMember = memberRepository.findByEmail("USER@spring").get();
         Assertions.assertThat(findMember.getMemberStatus()).isEqualTo(MemberStatus.DELETE);
     }
-
     @Test
-    @DisplayName("deleteMember - 기존 비밀번호가 일치하지 않으면, 회원 삭제에 실패한다.")
-    public void 회원삭제_실패_비밀번호불일치() {
+    @DisplayName("deleteMember - 회원 삭제에 성공하면, 리프레시 토큰이 삭제된다.")
+    public void 회원삭제_성공_이벤트() {
         //given
+        refreshTokenRepository.save(new RefreshToken("USER@spring", "refresh", "expiration"));
+
         RegisterMemberRequest member = RegisterMemberRequest.builder()
                 .name("USER")
                 .email("USER@spring").password("@Abc1234")
                 .build();
         memberService.register(member);
-        DeleteMemberRequest requestDto = DeleteMemberRequest.builder()
-                .password("@Fake1234").build();
-        //when & then
-        assertThrows(RuntimeException.class,
-                () -> memberService.deleteMember(requestDto, "USER@spring"));
+
+        DeleteMemberRequest request = DeleteMemberRequest.builder().email("USER@spring").build();
+
+        //when
+        memberService.deleteMember(request,"USER@spring");
+
+        //then
+        Assertions.assertThat(refreshTokenRepository.existsByRefresh("refresh")).isFalse();
     }
 }

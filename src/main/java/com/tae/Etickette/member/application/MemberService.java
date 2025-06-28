@@ -18,6 +18,12 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final EncryptionService encryptionService;
     private final ChangePolicy changePolicy;
+
+    /**
+     * 회원 가입
+     * @param requestDto
+     * @return id, name, email
+     */
     @Transactional
     public RegisterMemberResponse register(RegisterMemberRequest requestDto) {
 
@@ -36,9 +42,14 @@ public class MemberService {
                 .build();
     }
 
+    /**
+     * 비밀번호 변경
+     * @param requestDto
+     */
     @Transactional
-    public void changePassword(ChangePasswordRequest requestDto, String requestEmail) {
-        Member member = memberRepository.findByEmail(requestEmail).orElseThrow(() -> new MemberNotFoundException("회원 정보를 찾을 수 없습니다."));
+    public void changePassword(ChangePasswordRequest requestDto,String requestEmail) {
+        Member member = memberRepository.findByEmail(requestDto.getEmail())
+                .orElseThrow(() -> new MemberNotFoundException("회원 정보를 찾을 수 없습니다."));
 
         //TODO Changer 객체로 전달할까?
         if (!changePolicy.hasUpdatePermission(member, requestEmail)) {
@@ -48,27 +59,21 @@ public class MemberService {
         member.changePassword(encryptionService, requestDto.getOldPassword(),requestDto.getNewPassword());
     }
 
+    /**
+     * 회원 삭제
+     * @param deleteMemberRequest
+     * @param requestEmail
+     */
     @Transactional
-    public void deleteMember(DeleteMemberRequest requestDto, String email) {
+    public void deleteMember(DeleteMemberRequest deleteMemberRequest, String requestEmail) {
 
-        Member member = memberRepository.findByEmail(email)
+        Member member = memberRepository.findByEmail(deleteMemberRequest.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("회원 정보를 찾을 수 없습니다."));
 
-        boolean match = member.matchPassword(encryptionService, requestDto.getPassword());
-        if (!match) {
-            throw new NoChangeablePermission("회원 정보 수정 권한이 없습니다.");
+        if (!changePolicy.hasUpdatePermission(member, requestEmail)) {
+            throw new NoChangeablePermission("회원 정보 삭제 권한이 없습니다.");
         }
-        //TODO 토큰 삭제를 해야한다.
 
         member.deleteMember();
-    }
-
-    public ProfileResponse getProfile(String email) {
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("회원 정보를 찾을 수 없습니다."));
-        return ProfileResponse.builder().name(member.getName()).email(member.getEmail()).build();
-    }
-
-    public Member findById(Long memberId) {
-        return memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException("회원 정보를 찾을 수 없습니다."));
     }
 }
