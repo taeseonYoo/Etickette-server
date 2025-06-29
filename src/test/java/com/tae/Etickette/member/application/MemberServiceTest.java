@@ -46,7 +46,7 @@ public class MemberServiceTest {
                 .email("USER@spring")
                 .password("@Abc1234").build();
 
-        Member member = requestDto.toEntity(encryptionService,requestDto.getPassword());
+        Member member = Member.create(requestDto.getName(), requestDto.getEmail(), encryptionService.encode(requestDto.getPassword()), Role.USER);
         ReflectionTestUtils.setField(member, "id", 1L);
 
         BDDMockito.given(memberRepository.findByEmail(any()))
@@ -74,7 +74,7 @@ public class MemberServiceTest {
                 .willReturn(Optional.of(mock(Member.class)));
 
         //when & then
-        assertThrows(DuplicateKeyException.class,
+        assertThrows(AlreadyExisingEmailException.class,
                 () -> memberService.register(requestDto));
     }
     @Test

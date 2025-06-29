@@ -1,8 +1,5 @@
 package com.tae.Etickette.member.application.dto;
 
-import com.tae.Etickette.member.domain.EncryptionService;
-import com.tae.Etickette.member.domain.Member;
-import com.tae.Etickette.member.domain.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -29,10 +26,6 @@ public class RegisterMemberRequest {
         this.name=name;
         this.email=email;
         this.password = password;
-    }
-
-    public Member toEntity(EncryptionService encryptionService, String rawPassword) {
-        return Member.create(name, email, encryptionService.encode(rawPassword), Role.USER);
     }
 
 }

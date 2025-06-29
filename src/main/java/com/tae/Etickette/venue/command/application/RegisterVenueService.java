@@ -19,7 +19,7 @@ public class RegisterVenueService {
         //중복 검사
         VenueServiceHelper.verifyDuplicateAddress(venueRepository, requestDto.getAddress());
 
-        Venue savedVenue = venueRepository.save(requestDto.toEntity());
+        Venue savedVenue = venueRepository.save(Venue.create(requestDto.getPlace(), requestDto.getCapacity(), requestDto.getAddress()));
 
         return RegisterVenueResponse.builder()
                 .id(savedVenue.getId())

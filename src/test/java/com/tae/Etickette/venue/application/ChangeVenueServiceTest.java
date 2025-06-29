@@ -30,10 +30,6 @@ class ChangeVenueServiceTest {
     private ChangeVenueService changeVenueService;
     private final VenueRepository venueRepository = mock(VenueRepository.class);
 
-    @BeforeEach
-    void setUp() {
-        changeVenueService = new ChangeVenueService(venueRepository);
-    }
 
     @Test
     @DisplayName("changeAddress - 공연장 주소 변경에 성공한다.")
@@ -41,8 +37,9 @@ class ChangeVenueServiceTest {
         //given
         Venue venue = Venue.create("KSPO", 15000, new Address("서울시", "송파구 올림픽로 424", "11111"));
 
+        Address newAddress = new Address("서울시", "관악구 난곡로 242", "22222");
         ChangeAddressRequest requestDto = ChangeAddressRequest.builder()
-                .address(new Address("서울시", "관악구 난곡로 242", "22222"))
+                .address(newAddress)
                 .build();
 
         BDDMockito.given(venueRepository.findById(any())).willReturn(Optional.of(venue));
@@ -52,9 +49,7 @@ class ChangeVenueServiceTest {
         changeVenueService.changeAddress(1L,requestDto);
 
         //then
-        assertThat(venue.getAddress().getCity()).isEqualTo("서울시");
-        assertThat(venue.getAddress().getStreet()).isEqualTo("관악구 난곡로 242");
-        assertThat(venue.getAddress().getZipcode()).isEqualTo("22222");
+        assertThat(venue.getAddress()).isEqualTo(newAddress);
     }
 
     @Test
@@ -73,7 +68,7 @@ class ChangeVenueServiceTest {
     }
 
     @Test
-    @DisplayName("changeAddress - 같은 주소를 사용하는 공연장이 있다면, 공연장 주소 변경에 실패한다.")
+    @DisplayName("changeAddress - 중복된 주소를 사용하는 공연장이 있다면, 공연장 주소 변경에 실패한다.")
     void 주소변경_실패_주소가이미존재함() {
         //given
         ChangeAddressRequest requestDto = ChangeAddressRequest.builder()
@@ -81,10 +76,11 @@ class ChangeVenueServiceTest {
                 .build();
 
         BDDMockito.given(venueRepository.findById(any())).willReturn(Optional.of(mock(Venue.class)));
-        BDDMockito.given(venueRepository.findVenueByAddress(any())).willReturn(Optional.of(mock(Venue.class)));
+        BDDMockito.given(venueRepository.findVenueByAddress(any()))
+                .willReturn(Optional.of(mock(Venue.class)));
 
         //when & then
-        Assertions.assertThrows(DuplicateKeyException.class, () ->
+        Assertions.assertThrows(IllegalArgumentException.class, () ->
                 changeVenueService.changeAddress(1L,requestDto));
     }
 }

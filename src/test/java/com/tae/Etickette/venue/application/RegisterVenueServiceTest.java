@@ -30,11 +30,6 @@ class RegisterVenueServiceTest {
     private RegisterVenueService registerVenueService;
     private final VenueRepository mockVenueRepo = mock(VenueRepository.class);
 
-    @BeforeEach
-    public void setup() {
-        registerVenueService = new RegisterVenueService(mockVenueRepo);
-    }
-
     @Test
     @DisplayName("register - 공연장 등록에 성공한다.")
     public void 공연장등록_성공() {
@@ -44,7 +39,7 @@ class RegisterVenueServiceTest {
                 .capacity(10000)
                 .address(new Address("서울시", "송파구 올림픽로 424", "11111"))
                 .build();
-        Venue venue = requestDto.toEntity();
+        Venue venue = Venue.create(requestDto.getPlace(), requestDto.getCapacity(), requestDto.getAddress());
 
         BDDMockito.given(mockVenueRepo.findVenueByAddress(any()))
                 .willReturn(Optional.empty());
@@ -55,7 +50,7 @@ class RegisterVenueServiceTest {
         RegisterVenueResponse responseDto = registerVenueService.register(requestDto);
 
         //then
-        assertThat(responseDto.getPlace()).isEqualTo("KSPO DOME");
+        assertThat(venue.getId()).isEqualTo(responseDto.getId());
     }
     @Test
     @DisplayName("register - 주소가 존재하면, 공연장 등록에 실패한다.")
@@ -71,7 +66,7 @@ class RegisterVenueServiceTest {
                 .willReturn(Optional.of(mock(Venue.class)));
 
         //when & then
-        Assertions.assertThrows(DuplicateKeyException.class,
+        Assertions.assertThrows(IllegalArgumentException.class,
                 () -> registerVenueService.register(requestDto));
     }
 

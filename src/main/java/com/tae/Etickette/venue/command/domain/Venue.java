@@ -24,44 +24,42 @@ public class Venue {
 
     private Venue(String place, Integer capacity,Address address) {
         this.place = place;
-        this.capacity = capacity;
-        setAddress(address);
+        setCapacity(capacity);
+        this.address = address;
         this.status = VenueStatus.ACTIVE;
     }
     public static Venue create(String place, Integer capacity,Address address) {
         return new Venue(place, capacity,address);
     }
-
     public void changeAddress(Address newAddress) {
         verifyNotYetDelete();
-        setAddress(newAddress);
-    }
-    private void setAddress(Address address) {
-        if (address == null) throw new IllegalArgumentException("no address");
-        this.address = address;
+        this.address = newAddress;
     }
     public void deleteVenue() {
         verifyNotYetDelete();
         this.status = VenueStatus.DELETED;
     }
     private void verifyNotYetDelete() {
-        if (!isActivate()) {
+        if (!isNotDelete()) {
             throw new AlreadyDeletedException("이미 삭제된 공연장 입니다.");
         }
     }
-    public boolean isActivate() {
+    private boolean isNotDelete() {
         return status == VenueStatus.ACTIVE;
     }
 
-
     public void changeCapacity(Integer capacity) {
-        verifyAtLeastOneCapacity();
-        this.capacity = capacity;
+        verifyNotYetDelete();
+        setCapacity(capacity);
     }
-
-    private void verifyAtLeastOneCapacity() {
+    private void verifyCapacityIsNotNegative(Integer capacity) {
         if (capacity < 0) {
             throw new IllegalArgumentException("총 좌석 수는 0보다 작을 수 없습니다.");
         }
+    }
+
+    private void setCapacity(Integer capacity) {
+        verifyCapacityIsNotNegative(capacity);
+        this.capacity = capacity;
     }
 }

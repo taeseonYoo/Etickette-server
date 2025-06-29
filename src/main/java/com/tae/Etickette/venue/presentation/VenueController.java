@@ -7,6 +7,7 @@ import com.tae.Etickette.venue.command.application.Dto.RegisterVenueRequest;
 import com.tae.Etickette.venue.command.application.RegisterVenueService;
 import com.tae.Etickette.venue.query.VenueData;
 import com.tae.Etickette.venue.query.VenueQueryService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,11 +42,10 @@ public class VenueController {
      * @param venueId
      * @return
      */
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{venueId}")
     public ResponseEntity<Void> delete(@PathVariable Long venueId) {
         deleteVenueService.delete(venueId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     /**
@@ -55,11 +55,11 @@ public class VenueController {
      * @return
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PutMapping("/{venueId}/address")
+    @PutMapping("/{venueId}")
     public ResponseEntity<Void> changeAddress(@PathVariable Long venueId,
-                                              @RequestBody ChangeAddressRequest request) {
+                                              @Valid @RequestBody ChangeAddressRequest request) {
         changeVenueService.changeAddress(venueId, request);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     /**

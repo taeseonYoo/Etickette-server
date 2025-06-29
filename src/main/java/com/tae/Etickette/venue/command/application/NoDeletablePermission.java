@@ -1,23 +1,13 @@
 package com.tae.Etickette.venue.command.application;
 
-public class NoDeletablePermission extends RuntimeException {
-    public NoDeletablePermission() {
-        super();
+import org.springframework.security.access.AccessDeniedException;
+
+public class NoDeletablePermission extends AccessDeniedException {
+    public NoDeletablePermission(String msg) {
+        super(msg);
     }
 
-    public NoDeletablePermission(String message) {
-        super(message);
-    }
-
-    public NoDeletablePermission(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public NoDeletablePermission(Throwable cause) {
-        super(cause);
-    }
-
-    protected NoDeletablePermission(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+    public NoDeletablePermission(String msg, Throwable cause) {
+        super(msg, cause);
     }
 }

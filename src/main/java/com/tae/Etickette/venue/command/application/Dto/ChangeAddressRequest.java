@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 public class ChangeAddressRequest {
-    @NotBlank
+
     private Address address;
 
     @Builder

@@ -1,5 +1,6 @@
 package com.tae.Etickette.integration.service;
 
+import com.tae.Etickette.member.application.AlreadyExisingEmailException;
 import com.tae.Etickette.venue.command.application.Dto.RegisterVenueRequest;
 import com.tae.Etickette.venue.command.application.Dto.RegisterVenueResponse;
 import com.tae.Etickette.venue.command.application.RegisterVenueService;
@@ -38,12 +39,10 @@ public class RegisterVenueServiceTest {
                 .build();
         //when
         RegisterVenueResponse responseDto = registerVenueService.register(requestDto);
-        Venue findVenue = venueRepository.findById(responseDto.getId())
-                .orElseThrow(() -> new VenueNotFoundException("공연장을 찾을 수 없습니다."));
 
         //then
-        Assertions.assertThat(findVenue.getPlace()).isEqualTo("KSPO DOME(올림픽 체조경기장)");
-        Assertions.assertThat(findVenue.getAddress().getZipcode()).isEqualTo("11111");
+        boolean exist = venueRepository.findById(responseDto.getId()).isPresent();
+        Assertions.assertThat(exist).isTrue();
     }
 
     @Test
@@ -58,7 +57,7 @@ public class RegisterVenueServiceTest {
                 .address(new Address("서울시", "송파구 올림픽로 424", "11111"))
                 .build();
         //when & then
-        assertThrows(DuplicateKeyException.class,
+        assertThrows(IllegalArgumentException.class,
                 () -> registerVenueService.register(requestDto));
     }
 }

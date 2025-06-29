@@ -12,7 +12,7 @@ public final class VenueServiceHelper {
     public static void verifyDuplicateAddress(VenueRepository repo, Address newAddress) {
         boolean duplicated = repo.findVenueByAddress(newAddress).isPresent();
         if (duplicated) {
-            throw new DuplicateKeyException("이미 등록된 공연장 입니다.");
+            throw new IllegalArgumentException("이미 등록된 공연장 입니다.");
         }
     }
 }

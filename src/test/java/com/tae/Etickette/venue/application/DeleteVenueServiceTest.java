@@ -33,11 +33,6 @@ class DeleteVenueServiceTest {
     private final VenueRepository venueRepository = mock(VenueRepository.class);
     private final DeleteVenuePolicy deleteVenuePolicy = mock(DeleteVenuePolicy.class);
 
-    @BeforeEach
-    void setUp() {
-        deleteVenueService = new DeleteVenueService(venueRepository,deleteVenuePolicy);
-    }
-
     @Test
     @DisplayName("delete - 공연장 삭제에 성공한다.")
     void 삭제_성공() {
@@ -60,31 +55,26 @@ class DeleteVenueServiceTest {
     @DisplayName("delete - 공연장이 없다면, 공연장 삭제에 실패한다.")
     void 삭제_실패_공연장이없음() {
         //given
-        Long venueId = 1L;
-
         BDDMockito.given(venueRepository.findById(any()))
                 .willReturn(Optional.empty());
 
         //when & then
         assertThrows(VenueNotFoundException.class, () ->
-                deleteVenueService.delete(venueId));
+                deleteVenueService.delete(any()));
     }
 
     @Test
     @DisplayName("delete - 권한이 없다면, 공연장 삭제에 실패한다.")
     void 삭제_실패_권한없음() {
         //given
-        Venue venue = Venue.create("KSPO", 15000, new Address("서울시", "송파구 올림픽로 424", "11111"));
-        ReflectionTestUtils.setField(venue,"id",1L);
-
         BDDMockito.given(venueRepository.findById(any()))
-                .willReturn(Optional.of(venue));
+                .willReturn(Optional.of(mock(Venue.class)));
         BDDMockito.given(deleteVenuePolicy.hasDeletePermission()).willReturn(false);
 
         //when & then
         assertThrows(NoDeletablePermission
                 .class, () ->
-                deleteVenueService.delete(1L));
+                deleteVenueService.delete(any()));
     }
 
 }

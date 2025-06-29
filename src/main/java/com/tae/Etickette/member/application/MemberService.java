@@ -4,6 +4,7 @@ import com.tae.Etickette.member.domain.ChangePolicy;
 import com.tae.Etickette.member.domain.EncryptionService;
 import com.tae.Etickette.member.application.dto.*;
 import com.tae.Etickette.member.domain.Member;
+import com.tae.Etickette.member.domain.Role;
 import com.tae.Etickette.member.infra.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
@@ -29,10 +30,12 @@ public class MemberService {
 
         boolean duplicated = memberRepository.findByEmail(requestDto.getEmail()).isPresent();
         if (duplicated) {
-            throw new DuplicateKeyException("이미 사용 중인 이메일입니다.");
+            throw new AlreadyExisingEmailException("이미 사용 중인 이메일입니다.");
         }
 
-        Member member = requestDto.toEntity(encryptionService, requestDto.getPassword());
+        Member member = Member.create(requestDto.getName(), requestDto.getEmail(),
+                encryptionService.encode(requestDto.getPassword()), Role.USER);
+
 
         Member savedMember = memberRepository.save(member);
         return RegisterMemberResponse.builder()

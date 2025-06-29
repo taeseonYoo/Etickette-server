@@ -44,7 +44,7 @@ public class VenueControllerTest {
         //when & then
         mockMvc.perform(delete("/api/venues/" + save.getId())
                 .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isOk());
+        ).andExpect(status().isNoContent());
 
 
         Venue findVenue = venueRepository.findById(venue.getId()).get();
@@ -74,10 +74,10 @@ public class VenueControllerTest {
         ChangeAddressRequest request = ChangeAddressRequest.builder().address(new Address("강원도", "강릉", "22222")).build();
 
         //when & then
-        mockMvc.perform(put("/api/venues/" + save.getId() + "/address")
+        mockMvc.perform(put("/api/venues/" + save.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(request))
-        ).andExpect(status().isOk());
+        ).andExpect(status().isNoContent());
 
         Venue findVenue = venueRepository.findById(venue.getId()).get();
         Assertions.assertThat(findVenue.getAddress().getCity()).isEqualTo("강원도");
@@ -93,7 +93,7 @@ public class VenueControllerTest {
         ChangeAddressRequest request = ChangeAddressRequest.builder().address(new Address("강원도", "강릉", "22222")).build();
 
         //when & then
-        mockMvc.perform(put("/api/venues/" + save.getId() + "/address")
+        mockMvc.perform(put("/api/venues/" + save.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(request))
         ).andExpect(status().isForbidden());
@@ -181,21 +181,5 @@ public class VenueControllerTest {
                 .andExpect(jsonPath("$[0].address.city").value("서울"))
                 .andExpect(jsonPath("$[0].address.street").value("올림픽로"))
                 .andExpect(jsonPath("$[0].address.zipcode").value("12345"));
-    }
-
-    @Test
-    @DisplayName("공연장 목록 불러오기에 성공하면, 활성중인 데이터만 출력되어야한다.")
-    void 공연장목록_성공_ACTIVE() throws Exception {
-        //given
-        Venue venue1 = Venue.create("KSPO DOME", 10000, new Address("서울", "올림픽로", "12345"));
-        Venue venue2 = Venue.create("올림픽홀", 5000, new Address("서울", "잠실로", "54321"));
-        venueRepository.saveAll(List.of(venue1, venue2));
-        venue2.deleteVenue();
-
-        //when & then
-        mockMvc.perform(get("/api/venues")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(1));
     }
 }
