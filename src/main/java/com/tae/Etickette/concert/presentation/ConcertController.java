@@ -12,10 +12,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartRequest;
 
 
 @RestController
@@ -25,10 +27,17 @@ public class ConcertController {
     private final RegisterConcertService registerConcertService;
     private final ConcertSummaryService concertSummaryService;
     private final ConcertDetailService concertDetailService;
+
 //    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PostMapping
-    public ResponseEntity<RegisterConcertResponse> register(@RequestBody RegisterConcertRequest request) {
-        return ResponseEntity.ok(registerConcertService.register(request));
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<RegisterConcertResponse> register(
+            @RequestPart("request") RegisterConcertRequest request,
+            @RequestPart("image") MultipartFile image) {
+
+//        System.out.println("request = " + request);
+//        System.out.println("image = " + image.getOriginalFilename());
+
+        return ResponseEntity.ok(registerConcertService.register(request, image));
     }
 
     /**

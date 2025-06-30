@@ -2,6 +2,8 @@ package com.tae.Etickette.concert.command.application;
 
 import com.tae.Etickette.concert.command.application.dto.RegisterConcertRequest;
 import com.tae.Etickette.concert.command.application.dto.RegisterConcertResponse;
+import com.tae.Etickette.concert.command.domain.Image;
+import com.tae.Etickette.concert.command.domain.ImageUploader;
 import com.tae.Etickette.global.model.Money;
 import com.tae.Etickette.concert.command.domain.Concert;
 import com.tae.Etickette.concert.command.domain.GradePrice;
@@ -11,7 +13,10 @@ import com.tae.Etickette.seat.infra.SeatRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartRequest;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,18 +26,25 @@ import java.util.List;
 public class RegisterConcertService {
     private final ConcertRepository concertRepository;
     private final SeatRepository seatRepository;
-
+    private final ImageUploader imageUploader;
     @Transactional
-    public RegisterConcertResponse register(RegisterConcertRequest requestDto) {
+    public RegisterConcertResponse register(RegisterConcertRequest requestDto, MultipartFile request){
 
         List<GradePrice> gradePrices = requestDto.getGradePrices().stream()
                 .map(info -> new GradePrice(info.getGrade(), new Money(info.getPrice())))
                 .toList();
 
+        String upload = null;
+        try {
+            upload = imageUploader.upload(request);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         Concert concert = Concert.create(requestDto.getTitle(),
                 requestDto.getOverview(),
                 requestDto.getRunningTime(),
-                requestDto.getImgURL(),
+                new Image(upload),
                 gradePrices,
                 requestDto.getVenueId()
         );

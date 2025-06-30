@@ -31,7 +31,7 @@ public class ConcertDetail {
         this.title = concert.getTitle();
         this.overview = concert.getOverview();
         this.runningTime = concert.getRunningTime();
-        this.imgURL = concert.getImgURL();
+        this.imgURL = concert.getImage().getPath();
         this.gradePrices = concert.getGradePrices();
         this.status = concert.getStatus();
 

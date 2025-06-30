@@ -23,8 +23,9 @@ public class Concert {
     private String overview;
     @Column(nullable = false)
     private Integer runningTime;
-    @Column
-    private String imgURL;
+
+    @Embedded
+    private Image image;
 
     @Enumerated(value = EnumType.STRING)
     private ConcertStatus status;
@@ -39,11 +40,11 @@ public class Concert {
      */
     private Long venueId;
 
-    public Concert(String title, String overview, Integer runningTime, String imgURL,  List<GradePrice> gradePrices,Long venueId) {
+    public Concert(String title, String overview, Integer runningTime, Image image,  List<GradePrice> gradePrices,Long venueId) {
         this.title = title;
         this.overview = overview;
         this.runningTime = runningTime;
-        this.imgURL = imgURL;
+        this.image = image;
         this.status = ConcertStatus.BEFORE;
 
         this.gradePrices = gradePrices;
@@ -51,8 +52,8 @@ public class Concert {
         this.venueId = venueId;
     }
 
-    public static Concert create(String title, String overview, Integer runningTime, String imgURL, List<GradePrice> gradePrices,Long venueId) {
-        return new Concert(title, overview, runningTime, imgURL, gradePrices,venueId);
+    public static Concert create(String title, String overview, Integer runningTime, Image image, List<GradePrice> gradePrices,Long venueId) {
+        return new Concert(title, overview, runningTime, image, gradePrices,venueId);
     }
 
 

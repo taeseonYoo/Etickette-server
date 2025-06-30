@@ -14,16 +14,14 @@ public class RegisterConcertRequest {
     private String title;
     private String overview;
     private Integer runningTime;
-    private String imgURL;
     private List<GradePriceInfo> gradePrices;
     private Long venueId;
 
     @Builder
-    public RegisterConcertRequest(String title, String overview, Integer runningTime, String imgURL, List<GradePriceInfo> gradePrices, Long venueId) {
+    public RegisterConcertRequest(String title, String overview, Integer runningTime, List<GradePriceInfo> gradePrices, Long venueId) {
         this.title = title;
         this.overview = overview;
         this.runningTime = runningTime;
-        this.imgURL = imgURL;
         this.gradePrices = gradePrices;
         this.venueId = venueId;
     }
