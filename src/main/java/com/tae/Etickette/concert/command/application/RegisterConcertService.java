@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartRequest;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,23 +27,19 @@ public class RegisterConcertService {
     private final SeatRepository seatRepository;
     private final ImageUploader imageUploader;
     @Transactional
-    public RegisterConcertResponse register(RegisterConcertRequest requestDto, MultipartFile request){
-
+    public RegisterConcertResponse register(RegisterConcertRequest requestDto, MultipartFile imageFile){
+        //가격 정보
         List<GradePrice> gradePrices = requestDto.getGradePrices().stream()
                 .map(info -> new GradePrice(info.getGrade(), new Money(info.getPrice())))
                 .toList();
 
-        String upload = null;
-        try {
-            upload = imageUploader.upload(request);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        //이미지 업로드
+        String uploadedURL = imageUploader.upload(imageFile);
 
         Concert concert = Concert.create(requestDto.getTitle(),
                 requestDto.getOverview(),
                 requestDto.getRunningTime(),
-                new Image(upload),
+                new Image(uploadedURL),
                 gradePrices,
                 requestDto.getVenueId()
         );

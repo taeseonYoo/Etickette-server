@@ -34,10 +34,7 @@ public class ConcertController {
             @RequestPart("request") RegisterConcertRequest request,
             @RequestPart("image") MultipartFile image) {
 
-//        System.out.println("request = " + request);
-//        System.out.println("image = " + image.getOriginalFilename());
-
-        return ResponseEntity.ok(registerConcertService.register(request, image));
+        return new ResponseEntity<>(registerConcertService.register(request, image), HttpStatus.CREATED);
     }
 
     /**

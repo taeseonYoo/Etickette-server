@@ -1,6 +1,8 @@
 package com.tae.Etickette.integration.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tae.Etickette.concert.command.application.RegisterConcertService;
+import com.tae.Etickette.concert.command.application.dto.RegisterConcertRequest;
 import com.tae.Etickette.concert.command.application.dto.RegisterConcertResponse;
 import com.tae.Etickette.session.application.RegisterSessionService;
 import com.tae.Etickette.testhelper.ConcertCreateBuilder;
@@ -8,21 +10,25 @@ import com.tae.Etickette.testhelper.SessionCreateBuilder;
 import com.tae.Etickette.testhelper.VenueCreateBuilder;
 import com.tae.Etickette.venue.command.application.Dto.RegisterVenueResponse;
 import com.tae.Etickette.venue.command.application.RegisterVenueService;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
 import static com.tae.Etickette.session.application.Dto.RegisterSessionRequest.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -46,9 +52,14 @@ public class ConcertControllerTest {
     void 공연요약조회_성공() throws Exception {
         //given
         RegisterVenueResponse venue = venueService.register(VenueCreateBuilder.builder().build());
-
-        RegisterConcertResponse response1 = concertService.register(ConcertCreateBuilder.builder().title("공연 A").venueId(venue.getId()).build());
-        RegisterConcertResponse response2 = concertService.register(ConcertCreateBuilder.builder().title("공연 B").venueId(venue.getId()).build());
+        MockMultipartFile multipartFile = new MockMultipartFile(
+                "image",
+                "testImage.png",
+                "image/png",
+                "이미지데이터".getBytes()
+        );
+        RegisterConcertResponse response1 = concertService.register(ConcertCreateBuilder.builder().title("공연 A").venueId(venue.getId()).build(),multipartFile);
+        RegisterConcertResponse response2 = concertService.register(ConcertCreateBuilder.builder().title("공연 B").venueId(venue.getId()).build(),multipartFile);
 
         sessionService.register(SessionCreateBuilder.builder().concertId(response1.getConcertId()).build());
         sessionService.register(SessionCreateBuilder.builder().concertId(response2.getConcertId())
@@ -67,7 +78,13 @@ public class ConcertControllerTest {
         //given
         RegisterVenueResponse venue = venueService.register(VenueCreateBuilder.builder().place("KSPO").build());
 
-        RegisterConcertResponse response = concertService.register(ConcertCreateBuilder.builder().title("공연 A").imgURL("").venueId(venue.getId()).build());
+        MockMultipartFile multipartFile = new MockMultipartFile(
+                "image",
+                "testImage.png",
+                "image/png",
+                "이미지데이터".getBytes()
+        );
+        RegisterConcertResponse response = concertService.register(ConcertCreateBuilder.builder().title("공연 A").venueId(venue.getId()).build(),multipartFile);
 
         sessionService.register(SessionCreateBuilder.builder().concertId(response.getConcertId()).build());
 
@@ -77,7 +94,7 @@ public class ConcertControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].concertId").value(response.getConcertId()))
                 .andExpect(jsonPath("$.content[0].title").value("공연 A"))
-                .andExpect(jsonPath("$.content[0].imgURL").value(""))
+                .andExpect(jsonPath("$.content[0].image_path").value(Matchers.containsString("amazonaws.com")))
                 .andExpect(jsonPath("$.content[0].place").value("KSPO"))
         ;
     }
@@ -100,7 +117,13 @@ public class ConcertControllerTest {
         //given
         RegisterVenueResponse venue = venueService.register(VenueCreateBuilder.builder().place("KSPO").build());
 
-        RegisterConcertResponse response = concertService.register(ConcertCreateBuilder.builder().title("공연 A").imgURL("").venueId(venue.getId()).build());
+        MockMultipartFile multipartFile = new MockMultipartFile(
+                "image",
+                "testImage.png",
+                "image/png",
+                "이미지데이터".getBytes()
+        );
+        RegisterConcertResponse response = concertService.register(ConcertCreateBuilder.builder().title("공연 A").venueId(venue.getId()).build(),multipartFile);
 
         sessionService.register(SessionCreateBuilder.builder().concertId(response.getConcertId()).build());
 
@@ -110,5 +133,28 @@ public class ConcertControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    @DisplayName("공연 등록 - 공연 등록 성공")
+    void 공연등록_성공() throws Exception {
+        //given
+        RegisterVenueResponse venue = venueService.register(VenueCreateBuilder.builder().place("KSPO").build());
 
+        RegisterConcertRequest request = ConcertCreateBuilder.builder().venueId(venue.getId()).build();
+        String json = new ObjectMapper().writeValueAsString(request);
+
+        MockMultipartFile concertRequestFile = new MockMultipartFile("request", "", "application/json", json.getBytes(StandardCharsets.UTF_8));
+
+        MockMultipartFile imageFile = new MockMultipartFile(
+                "image",
+                "testImage.png",
+                "image/png",
+                "이미지데이터".getBytes()
+        );
+        //when & then
+        mockMvc.perform(multipart("/api/concerts")
+                        .file(imageFile)
+                        .file(concertRequestFile))
+                .andDo(print())
+                .andExpect(status().isCreated());
+    }
 }

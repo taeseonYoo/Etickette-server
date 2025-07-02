@@ -13,7 +13,7 @@ import org.hibernate.annotations.Synchronize;
 
 @Entity
 @Immutable
-@Synchronize({"concert","session","venue"})
+@Synchronize({"concert","venue"})
 @Subselect("""
 SELECT DISTINCT 
     c.concert_id,c.title, c.image_path, v.place

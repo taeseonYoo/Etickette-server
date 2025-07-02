@@ -25,6 +25,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,7 +63,13 @@ public class SessionControllerTest {
         RegisterVenueResponse venueResponse = registerVenueService.register(venueRequest);
 
         RegisterConcertRequest concertRequest = ConcertCreateBuilder.builder().venueId(venueResponse.getId()).build();
-        RegisterConcertResponse response = registerConcertService.register(concertRequest);
+        MockMultipartFile multipartFile = new MockMultipartFile(
+                "image",
+                "testImage.png",
+                "image/png",
+                "이미지데이터".getBytes()
+        );
+        RegisterConcertResponse response = registerConcertService.register(concertRequest,multipartFile);
 
         RegisterSessionRequest sessionRequest = SessionCreateBuilder.builder()
                 .concertId(response.getConcertId())
@@ -82,7 +89,13 @@ public class SessionControllerTest {
         RegisterVenueResponse venueResponse = registerVenueService.register(venueRequest);
 
         RegisterConcertRequest concertRequest = ConcertCreateBuilder.builder().venueId(venueResponse.getId()).build();
-        RegisterConcertResponse response = registerConcertService.register(concertRequest);
+        MockMultipartFile multipartFile = new MockMultipartFile(
+                "image",
+                "testImage.png",
+                "image/png",
+                "이미지데이터".getBytes()
+        );
+        RegisterConcertResponse response = registerConcertService.register(concertRequest,multipartFile);
 
         RegisterSessionRequest sessionRequest = SessionCreateBuilder.builder()
                 .concertId(response.getConcertId())

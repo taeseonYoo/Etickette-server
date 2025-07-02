@@ -1,6 +1,7 @@
 package com.tae.Etickette.concert.query.application;
 
 import com.tae.Etickette.concert.command.domain.Concert;
+import com.tae.Etickette.concert.command.domain.Image;
 import com.tae.Etickette.concert.infra.ConcertRepository;
 import com.tae.Etickette.session.domain.Session;
 import com.tae.Etickette.session.infra.SessionRepository;
@@ -79,7 +80,8 @@ class ConcertDetailServiceTest {
     @DisplayName("상세정보 - 모든 데이터가 존재하면, 상세정보를 반환한다.")
     void 상세정보_반환성공() {
         //given
-        BDDMockito.given(concertRepository.findById(any())).willReturn(Optional.of(mock(Concert.class)));
+        Concert concert = Concert.create("title", "overview", 120, new Image("/imagePath"), List.of(), 1L);
+        BDDMockito.given(concertRepository.findById(any())).willReturn(Optional.of(concert));
         BDDMockito.given(sessionRepository.findAllByConcertId(any())).willReturn(List.of(mock(Session.class)));
         BDDMockito.given(venueQueryService.getVenue(any())).willReturn(Optional.of(mock(VenueData.class)));
         //when

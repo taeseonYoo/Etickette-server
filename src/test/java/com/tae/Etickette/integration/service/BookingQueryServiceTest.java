@@ -25,6 +25,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -61,7 +62,13 @@ class BookingQueryServiceTest {
         RegisterVenueResponse venueResponse = registerVenueService.register(venueRequest);
 
         RegisterConcertRequest concertRequest = ConcertCreateBuilder.builder().venueId(venueResponse.getId()).build();
-        RegisterConcertResponse response = registerConcertService.register(concertRequest);
+        MockMultipartFile multipartFile = new MockMultipartFile(
+                "image",
+                "testImage.png",
+                "image/png",
+                "이미지데이터".getBytes()
+        );
+        RegisterConcertResponse response = registerConcertService.register(concertRequest,multipartFile);
 
         RegisterSessionRequest sessionRequest = SessionCreateBuilder.builder().concertId(response.getConcertId()).sessionInfos(List.of(RegisterSessionRequest.SessionInfo.builder().concertDate(LocalDate.of(2025, 6, 6)).startTime(LocalTime.of(15, 0)).build())).build();
         List<Long> sessions = registerSessionService.register(sessionRequest);

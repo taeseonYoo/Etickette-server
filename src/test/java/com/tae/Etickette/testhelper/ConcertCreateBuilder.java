@@ -26,7 +26,6 @@ public class ConcertCreateBuilder {
                 .title(title)
                 .overview(overview)
                 .runningTime(runningTime)
-                .imgURL(imgURL)
                 .gradePrices(gradePriceInfos)
                 .venueId(venueId)
                 .build();
@@ -42,10 +41,6 @@ public class ConcertCreateBuilder {
     }
     public ConcertCreateBuilder runningTime(Integer runningTime) {
         this.runningTime = runningTime;
-        return this;
-    }
-    public ConcertCreateBuilder imgURL(String imgURL) {
-        this.imgURL = imgURL;
         return this;
     }
     public ConcertCreateBuilder gradePrices(List<GradePriceInfo> gradePriceInfos) {

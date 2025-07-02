@@ -27,13 +27,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Comparator;
 import java.util.List;
 
 import static com.tae.Etickette.concert.command.application.dto.RegisterConcertRequest.*;
@@ -73,7 +73,13 @@ class BookingServiceTest {
         );
         //공연 등록
         RegisterConcertRequest concertDto = ConcertCreateBuilder.builder().gradePrices(gradePriceInfos).venueId(venue.getId()).build();
-        RegisterConcertResponse response = registerConcertService.register(concertDto);
+        MockMultipartFile multipartFile = new MockMultipartFile(
+                "image",
+                "testImage.png",
+                "image/png",
+                "이미지데이터".getBytes()
+        );
+        RegisterConcertResponse response = registerConcertService.register(concertDto,multipartFile);
 
         //공연 일정 등록
         List<SessionInfo> sessionInfos = List.of(
