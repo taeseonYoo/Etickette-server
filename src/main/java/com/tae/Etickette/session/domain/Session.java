@@ -51,14 +51,19 @@ public class Session {
         this.endTime = startTime.plusMinutes(runningTime);
     }
 
-
-    public boolean isActive() {
-        return this.status == SessionStatus.BEFORE || this.status == SessionStatus.OPEN;
-    }
-
-    public void openSchedule() {
+    public void open() {
+        verifyNotYetOpened();
         this.status = SessionStatus.OPEN;
     }
+    private void verifyNotYetOpened() {
+        if (!isNotOpened()) {
+            throw new AlreadySessionOpenedException();
+        }
+    }
+    private boolean isNotOpened() {
+        return this.status == SessionStatus.BEFORE;
+    }
+
     public void cancel() {
         verifyNotYetStarted();
         this.status = SessionStatus.CANCELED;

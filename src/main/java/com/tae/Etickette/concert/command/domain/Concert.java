@@ -1,5 +1,6 @@
 package com.tae.Etickette.concert.command.domain;
 
+import com.tae.Etickette.global.event.Events;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -46,7 +47,6 @@ public class Concert {
         this.runningTime = runningTime;
         this.image = image;
         this.status = ConcertStatus.BEFORE;
-
         this.gradePrices = gradePrices;
         //연관관계 설정
         this.venueId = venueId;
@@ -65,6 +65,18 @@ public class Concert {
         this.overview = overview;
     }
 
-
+    public void open() {
+        verifyNotYetOpened();
+        this.status = ConcertStatus.OPEN;
+        Events.raise(new ConcertOpenedEvent(this.getId()));
+    }
+    private void verifyNotYetOpened() {
+        if (!isNotOpened()) {
+            throw new AlreadyConcertOpenedException("이미 공연이 오픈되었습니다.");
+        }
+    }
+    private boolean isNotOpened() {
+        return this.status == ConcertStatus.BEFORE;
+    }
 
 }
