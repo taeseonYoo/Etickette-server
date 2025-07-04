@@ -43,17 +43,15 @@ public class BookingService {
         //주문 목록 생성
         List<SeatItem> seatItems = new ArrayList<>();
         for (Long seatId : requestDto.getSeatIds()) {
-            BookSeat seat = bookSeatRepository.findById(new BookSeatId(seatId, requestDto.getSessionId()))
+            BookSeat seat = bookSeatRepository.findByIdWithLock(seatId, requestDto.getSessionId())
                     .orElseThrow(() -> new BookSeatNotFoundException("스케줄 좌석 정보가 없습니다."));
-
             //좌석을 잠금 상태로 설정
             seat.lock();
             seatItems.add(new SeatItem(new BookSeatId(seatId, session.getId()), seat.getPrice()));
         }
 
         Booking booking = Booking.create(member.getId(), requestDto.getSessionId(), seatItems);
-        Booking savedBooking = bookingRepository.save(booking);
 
-        return savedBooking.getBookingRef();
+        return bookingRepository.save(booking).getBookingRef();
     }
 }
