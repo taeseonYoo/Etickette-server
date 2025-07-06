@@ -46,7 +46,7 @@ public class Concert {
         this.overview = overview;
         this.runningTime = runningTime;
         this.image = image;
-        this.status = ConcertStatus.BEFORE;
+        this.status = ConcertStatus.READY;
         this.gradePrices = gradePrices;
         //연관관계 설정
         this.venueId = venueId;
@@ -56,27 +56,50 @@ public class Concert {
         return new Concert(title, overview, runningTime, image, gradePrices,venueId);
     }
 
-
-    public void updateTitle(String title) {
-        this.title = title;
-    }
-
-    public void updateOverview(String overview) {
-        this.overview = overview;
-    }
-
     public void open() {
-        verifyNotYetOpened();
+        verifyReady();
         this.status = ConcertStatus.OPEN;
         Events.raise(new ConcertOpenedEvent(this.getId()));
     }
-    private void verifyNotYetOpened() {
-        if (!isNotOpened()) {
-            throw new AlreadyConcertOpenedException("이미 공연이 오픈되었습니다.");
+    //예매 완료
+    public void close() {
+        verifyOpened();
+        this.status = ConcertStatus.CLOSED;
+    }
+    public void cancel() {
+        verifyNotCancellable();
+        this.status = ConcertStatus.CANCELED;
+        //공연이 취소되면 스케줄 취소
+    }
+    public void finish() {
+        verifyClosed();
+        this.status = ConcertStatus.FINISHED;
+    }
+
+    private void verifyReady() {
+        if (this.status != ConcertStatus.READY) {
+            throw new ConcertNotReadyException("공연 오픈 준비가 되지 않았습니다.");
         }
     }
-    private boolean isNotOpened() {
-        return this.status == ConcertStatus.BEFORE;
+    private void verifyOpened() {
+        if (this.status != ConcertStatus.OPEN) {
+            throw new ConcertNotOpenException("공연이 아직 오픈되지 않았습니다.");
+        }
     }
+
+    private void verifyClosed() {
+        if (this.status != ConcertStatus.CLOSED) {
+            throw new ConcertNotCloseException("공연 예매가 종료되지 않았습니다.");
+        }
+    }
+    private void verifyNotCancellable() {
+        if (!isActive()) {
+            throw new ConcertNotActiveException("취소할 수 없는 공연입니다.");
+        }
+    }
+    private boolean isActive() {
+        return this.status == ConcertStatus.READY || this.status == ConcertStatus.OPEN || this.status == ConcertStatus.CLOSED;
+    }
+
 
 }
