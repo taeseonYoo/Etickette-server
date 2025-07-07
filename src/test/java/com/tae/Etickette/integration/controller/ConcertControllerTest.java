@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tae.Etickette.concert.command.application.RegisterConcertService;
 import com.tae.Etickette.concert.command.application.dto.RegisterConcertRequest;
 import com.tae.Etickette.concert.command.application.dto.RegisterConcertResponse;
+import com.tae.Etickette.concert.command.domain.ImageUploader;
 import com.tae.Etickette.session.application.RegisterSessionService;
 import com.tae.Etickette.testhelper.ConcertCreateBuilder;
 import com.tae.Etickette.testhelper.SessionCreateBuilder;
@@ -13,11 +14,13 @@ import com.tae.Etickette.venue.command.application.RegisterVenueService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +30,8 @@ import java.time.LocalTime;
 import java.util.List;
 
 import static com.tae.Etickette.session.application.Dto.RegisterSessionRequest.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -45,7 +50,9 @@ public class ConcertControllerTest {
     @Autowired
     MockMvc mockMvc;
 
-
+    //이미지 업로드가 실제로 일어나지 않도록 한다.
+    @MockitoBean
+    ImageUploader imageUploader;
 
     @Test
     @DisplayName("공연 요약 조회에 성공한다.")
@@ -58,6 +65,7 @@ public class ConcertControllerTest {
                 "image/png",
                 "이미지데이터".getBytes()
         );
+        BDDMockito.given(imageUploader.upload(multipartFile)).willReturn("/upload");
         RegisterConcertResponse response1 = concertService.register(ConcertCreateBuilder.builder().title("공연 A").venueId(venue.getId()).build(),multipartFile);
         RegisterConcertResponse response2 = concertService.register(ConcertCreateBuilder.builder().title("공연 B").venueId(venue.getId()).build(),multipartFile);
 

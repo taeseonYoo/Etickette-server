@@ -17,12 +17,5 @@ public class ManagementSessionService {
      * 공연에 등록된 스케줄을 오픈한다.
      * @param concertId
      */
-    @Transactional
-    public void open(Long concertId) {
-        List<Session> sessionList = sessionRepository.findAllByConcertId(concertId);
 
-        for (Session session : sessionList) {
-            session.open();
-        }
-    }
 }

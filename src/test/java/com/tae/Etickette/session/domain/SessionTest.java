@@ -57,7 +57,7 @@ class SessionTest {
         //when
         session.cancel();
         //then
-        assertThrows(AlreadyStartedException.class, () ->
+        assertThrows(AlreadyCanceledException.class, () ->
                 session.cancel());
     }
 }

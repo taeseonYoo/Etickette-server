@@ -59,17 +59,17 @@ public class Concert {
     public void open() {
         verifyReady();
         this.status = ConcertStatus.OPEN;
-        Events.raise(new ConcertOpenedEvent(this.getId()));
     }
     //예매 완료
     public void close() {
         verifyOpened();
-        this.status = ConcertStatus.CLOSED;
+        this.status = ConcertStatus.SALE_CLOSED;
     }
     public void cancel() {
         verifyNotCancellable();
         this.status = ConcertStatus.CANCELED;
         //공연이 취소되면 스케줄 취소
+        Events.raise(new ConcertCanceledEvent(this.getId()));
     }
     public void finish() {
         verifyClosed();
@@ -88,17 +88,17 @@ public class Concert {
     }
 
     private void verifyClosed() {
-        if (this.status != ConcertStatus.CLOSED) {
+        if (this.status != ConcertStatus.SALE_CLOSED) {
             throw new ConcertNotCloseException("공연 예매가 종료되지 않았습니다.");
         }
     }
     private void verifyNotCancellable() {
-        if (!isActive()) {
+        if (!isCancellable()) {
             throw new ConcertNotActiveException("취소할 수 없는 공연입니다.");
         }
     }
-    private boolean isActive() {
-        return this.status == ConcertStatus.READY || this.status == ConcertStatus.OPEN || this.status == ConcertStatus.CLOSED;
+    private boolean isCancellable() {
+        return this.status == ConcertStatus.READY || this.status == ConcertStatus.OPEN || this.status == ConcertStatus.SALE_CLOSED;
     }
 
 

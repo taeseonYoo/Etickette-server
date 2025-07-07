@@ -4,9 +4,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum SessionStatus {
-    BEFORE("BEFORE"),
-    OPEN("OPEN"),
-    COMPLETED("COMPLETED"),
+    AVAILABLE("AVAILABLE"),
     CANCELED("CANCELED");
 
     private final String value;

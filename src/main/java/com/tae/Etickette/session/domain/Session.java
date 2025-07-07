@@ -38,7 +38,7 @@ public class Session {
         this.concertDate = concertDate;
         this.startTime = startTime;
         calculateEndTime(startTime, runningTime);
-        this.status = SessionStatus.BEFORE;
+        this.status = SessionStatus.AVAILABLE;
         this.concertId = concertId;
     }
 
@@ -51,32 +51,15 @@ public class Session {
         this.endTime = startTime.plusMinutes(runningTime);
     }
 
-    public void open() {
-        verifyNotYetOpened();
-        this.status = SessionStatus.OPEN;
-    }
-    private void verifyNotYetOpened() {
-        if (!isNotOpened()) {
-            throw new AlreadySessionOpenedException();
-        }
-    }
-    private boolean isNotOpened() {
-        return this.status == SessionStatus.BEFORE;
-    }
-
     public void cancel() {
-        verifyNotYetStarted();
+        verifyCanceled();
         this.status = SessionStatus.CANCELED;
         Events.raise(new SessionCanceledEvent(this.getId()));
     }
 
-    private void verifyNotYetStarted() {
-        if (!isNotYetStarted())
-            throw new AlreadyStartedException("이미 시작 된 공연입니다.");
-    }
-
-    private boolean isNotYetStarted() {
-        return status ==  SessionStatus.BEFORE || status ==  SessionStatus.OPEN || status ==  SessionStatus.COMPLETED;
+    private void verifyCanceled() {
+        if (this.status == SessionStatus.CANCELED)
+            throw new AlreadyCanceledException("이미 취소 된 공연입니다.");
     }
 
 

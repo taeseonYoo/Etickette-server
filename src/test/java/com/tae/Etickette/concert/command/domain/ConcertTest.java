@@ -37,18 +37,7 @@ class ConcertTest {
     /**
      * 공연 오픈
      */
-    @Test
-    @DisplayName("공연 예매 오픈에 성공하면, 세션 오픈 이벤트가 발행된다.")
-    void 공연오픈_성공_이벤트발행() {
-        //given
-        Concert concert = Concert.create("공연A", "공연A입니다.", 120, new Image(""), List.of(new GradePrice("VIP", new Money(100000))), 1L);
 
-        //when
-        concert.open();
-
-        //then
-        verify(publisher).publishEvent(any(ConcertOpenedEvent.class));
-    }
     @Test
     @DisplayName("예매 준비 공연은 예매 오픈할 수 있다.")
     void 공연오픈_성공() {
@@ -123,7 +112,7 @@ class ConcertTest {
         concert.close();
 
         //then
-        Assertions.assertThat(concert.getStatus()).isEqualTo(ConcertStatus.CLOSED);
+        Assertions.assertThat(concert.getStatus()).isEqualTo(ConcertStatus.SALE_CLOSED);
     }
     @Test
     @DisplayName("예매 준비 공연은, 예매 마감에 실패한다.")
@@ -231,8 +220,18 @@ class ConcertTest {
     }
 
     /**
-     * 예매 취소
+     * 공연 취소
      */
+    @Test
+    @DisplayName("공연 취소에 성공하면, ConcertCanceledEvent 가 발행된다.")
+    void 공연취소_성공_이벤트발행() {
+        //given
+        Concert concert = Concert.create("공연A", "공연A입니다.", 120, new Image(""), List.of(new GradePrice("VIP", new Money(100000))), 1L);
+        //when
+        concert.cancel();
+        //then
+        verify(publisher).publishEvent(any(ConcertCanceledEvent.class));
+    }
     @Test
     @DisplayName("준비 상태의 공연은 공연을 취소할 수 있다.")
     void 공연취소_성공_READY() {
