@@ -4,6 +4,7 @@ import com.tae.Etickette.booking.command.application.BookingNotFoundException;
 import com.tae.Etickette.booking.command.application.CancelBookingService;
 import com.tae.Etickette.booking.command.application.NoCancellablePermission;
 import com.tae.Etickette.booking.command.domain.Booking;
+import com.tae.Etickette.booking.command.domain.BookingRef;
 import com.tae.Etickette.booking.command.domain.CancelPolicy;
 import com.tae.Etickette.booking.command.domain.SeatItem;
 import com.tae.Etickette.booking.infra.BookingRepository;
@@ -43,13 +44,11 @@ class CancelBookingServiceTest {
     @DisplayName("cancelAll - 취소에 성공하면, 상태는 CANCELED_BOOKING 으로 변경된다.")
     void 전체취소_성공() {
         //given
-        List<Booking> bookings = List.of(new Booking(1L, 1L,
-                        List.of(new SeatItem(new BookSeatId(1L, 1L), new Money(150000)))),
-                new Booking(1L, 1L,
-                        List.of(new SeatItem(new BookSeatId(2L, 1L), new Money(150000)))));
+        Booking booking = new Booking(1L, 1L, List.of(new SeatItem(new BookSeatId(1L, 1L), new Money(150000))));
+        List<Booking> bookings = List.of(booking);
         BDDMockito.given(bookingRepository.findBySessionId(any())).willReturn(bookings);
         BDDMockito.given(cancelPolicy.hasEntireCancelPermission()).willReturn(true);
-        BDDMockito.given(bookingRepository.findById(any())).willReturn(Optional.ofNullable(mock(Booking.class)));
+        BDDMockito.given(bookingRepository.findById(booking.getBookingRef())).willReturn(Optional.of(booking));
         BDDMockito.doNothing().when(eventPublisher).publishEvent(any());
 
         //when
