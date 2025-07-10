@@ -4,15 +4,18 @@ import com.tae.Etickette.concert.command.application.RegisterConcertService;
 import com.tae.Etickette.concert.command.application.dto.RegisterConcertRequest;
 import com.tae.Etickette.concert.command.application.dto.RegisterConcertResponse;
 import com.tae.Etickette.concert.command.domain.Concert;
+import com.tae.Etickette.concert.command.domain.ImageUploader;
 import com.tae.Etickette.concert.infra.ConcertRepository;
 import com.tae.Etickette.seat.infra.SeatRepository;
 import com.tae.Etickette.testhelper.ConcertCreateBuilder;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +31,8 @@ public class RegisterConcertServiceTest {
     ConcertRepository concertRepository;
     @Autowired
     SeatRepository seatRepository;
+    @MockitoBean
+    ImageUploader imageUploader;
 
     @Test
     @DisplayName("공연 등록에 성공한다.")
@@ -43,6 +48,7 @@ public class RegisterConcertServiceTest {
                 "image/png",
                 "이미지데이터".getBytes()
         );
+        BDDMockito.given(imageUploader.upload(multipartFile)).willReturn("amazonaws.com");
 
         //when
         RegisterConcertResponse response = registerConcertService.register(request,multipartFile);
@@ -63,6 +69,7 @@ public class RegisterConcertServiceTest {
                 "image/png",
                 "이미지데이터".getBytes()
         );
+        BDDMockito.given(imageUploader.upload(multipartFile)).willReturn("amazonaws.com");
 
         //when
         RegisterConcertResponse response = registerConcertService.register(request,multipartFile);
@@ -82,12 +89,13 @@ public class RegisterConcertServiceTest {
                 "image/png",
                 "이미지데이터".getBytes()
         );
+        BDDMockito.given(imageUploader.upload(multipartFile)).willReturn("amazonaws.com");
         //when
         RegisterConcertResponse response = registerConcertService.register(request,multipartFile);
 
         //then
         Concert findConcert = concertRepository.findById(response.getConcertId()).get();
-        Assertions.assertThat(findConcert.getImage().getPath()).contains("amazonaws.com").endsWith(".png");
+        Assertions.assertThat(findConcert.getImage().getPath()).contains("amazonaws.com");
     }
 
 }

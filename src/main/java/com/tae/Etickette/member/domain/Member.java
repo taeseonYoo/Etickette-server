@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
 
 
 @Entity
@@ -62,6 +63,7 @@ public class Member {
     /**
      * 회원 삭제 시, 회원의 refresh token 을 삭제한다.
      */
+    @Async
     public void deleteMember() {
         this.memberStatus = MemberStatus.DELETE;
         Events.raise(new MemberDeletedEvent(this.getEmail()));

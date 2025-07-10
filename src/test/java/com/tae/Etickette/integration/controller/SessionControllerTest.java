@@ -3,6 +3,7 @@ package com.tae.Etickette.integration.controller;
 import com.tae.Etickette.concert.command.application.RegisterConcertService;
 import com.tae.Etickette.concert.command.application.dto.RegisterConcertRequest;
 import com.tae.Etickette.concert.command.application.dto.RegisterConcertResponse;
+import com.tae.Etickette.concert.command.domain.ImageUploader;
 import com.tae.Etickette.global.event.Events;
 import com.tae.Etickette.session.application.Dto.RegisterSessionRequest;
 import com.tae.Etickette.session.application.RegisterSessionService;
@@ -19,6 +20,7 @@ import com.tae.Etickette.venue.command.application.RegisterVenueService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -27,6 +29,7 @@ import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,6 +57,8 @@ public class SessionControllerTest {
     SessionRepository sessionRepository;
     @Autowired
     MockMvc mockMvc;
+    @MockitoBean
+    ImageUploader imageUploader;
     @Autowired
     private JacksonTester<RegisterSessionRequest> json;
 
@@ -69,6 +74,7 @@ public class SessionControllerTest {
                 "image/png",
                 "이미지데이터".getBytes()
         );
+        BDDMockito.given(imageUploader.upload(multipartFile)).willReturn("amazonaws.com");
         RegisterConcertResponse response = registerConcertService.register(concertRequest,multipartFile);
 
         RegisterSessionRequest sessionRequest = SessionCreateBuilder.builder()
@@ -95,6 +101,7 @@ public class SessionControllerTest {
                 "image/png",
                 "이미지데이터".getBytes()
         );
+        BDDMockito.given(imageUploader.upload(multipartFile)).willReturn("amazonaws.com");
         RegisterConcertResponse response = registerConcertService.register(concertRequest,multipartFile);
 
         RegisterSessionRequest sessionRequest = SessionCreateBuilder.builder()

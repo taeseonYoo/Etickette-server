@@ -9,6 +9,7 @@ import com.tae.Etickette.bookseat.infra.BookSeatRepository;
 import com.tae.Etickette.concert.command.application.dto.RegisterConcertRequest;
 import com.tae.Etickette.concert.command.application.RegisterConcertService;
 import com.tae.Etickette.concert.command.application.dto.RegisterConcertResponse;
+import com.tae.Etickette.concert.command.domain.ImageUploader;
 import com.tae.Etickette.member.domain.Member;
 import com.tae.Etickette.member.domain.Role;
 import com.tae.Etickette.member.infra.MemberRepository;
@@ -25,11 +26,13 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -57,6 +60,8 @@ class BookingServiceTest {
     private SeatRepository seatRepository;
     @Autowired
     private MemberRepository memberRepository;
+    @MockitoBean
+    ImageUploader imageUploader;
 
     List<Long> sessionIds;
     List<Long> idByConcertId;
@@ -79,6 +84,7 @@ class BookingServiceTest {
                 "image/png",
                 "이미지데이터".getBytes()
         );
+        BDDMockito.given(imageUploader.upload(multipartFile)).willReturn("amazonaws.com");
         RegisterConcertResponse response = registerConcertService.register(concertDto,multipartFile);
 
         //공연 일정 등록

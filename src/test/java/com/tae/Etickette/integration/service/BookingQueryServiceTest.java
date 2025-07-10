@@ -8,6 +8,7 @@ import com.tae.Etickette.booking.query.BookingQueryService;
 import com.tae.Etickette.concert.command.application.RegisterConcertService;
 import com.tae.Etickette.concert.command.application.dto.RegisterConcertRequest;
 import com.tae.Etickette.concert.command.application.dto.RegisterConcertResponse;
+import com.tae.Etickette.concert.command.domain.ImageUploader;
 import com.tae.Etickette.member.domain.Member;
 import com.tae.Etickette.member.domain.Role;
 import com.tae.Etickette.member.infra.MemberRepository;
@@ -23,9 +24,11 @@ import com.tae.Etickette.venue.command.application.RegisterVenueService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -52,6 +55,8 @@ class BookingQueryServiceTest {
     BookingService bookingService;
     @Autowired
     SeatRepository seatRepository;
+    @MockitoBean
+    ImageUploader imageUploader;
 
     @Test
     @DisplayName("Booking후에 결제 해야하는 정보를 가져온다.")
@@ -68,6 +73,7 @@ class BookingQueryServiceTest {
                 "image/png",
                 "이미지데이터".getBytes()
         );
+        BDDMockito.given(imageUploader.upload(multipartFile)).willReturn("amazonaws.com");
         RegisterConcertResponse response = registerConcertService.register(concertRequest,multipartFile);
 
         RegisterSessionRequest sessionRequest = SessionCreateBuilder.builder().concertId(response.getConcertId()).sessionInfos(List.of(RegisterSessionRequest.SessionInfo.builder().concertDate(LocalDate.of(2025, 6, 6)).startTime(LocalTime.of(15, 0)).build())).build();

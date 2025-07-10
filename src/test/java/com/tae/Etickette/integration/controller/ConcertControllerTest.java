@@ -12,6 +12,7 @@ import com.tae.Etickette.testhelper.VenueCreateBuilder;
 import com.tae.Etickette.venue.command.application.Dto.RegisterVenueResponse;
 import com.tae.Etickette.venue.command.application.RegisterVenueService;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
@@ -54,18 +55,18 @@ public class ConcertControllerTest {
     @MockitoBean
     ImageUploader imageUploader;
 
+    MockMultipartFile multipartFile;
+    @BeforeEach
+    void setUp() {
+        multipartFile = new MockMultipartFile("image", "testImage.png", "image/png", "이미지데이터".getBytes());
+        BDDMockito.given(imageUploader.upload(multipartFile)).willReturn("amazonaws.com");
+    }
+
     @Test
     @DisplayName("공연 요약 조회에 성공한다.")
     void 공연요약조회_성공() throws Exception {
         //given
         RegisterVenueResponse venue = venueService.register(VenueCreateBuilder.builder().build());
-        MockMultipartFile multipartFile = new MockMultipartFile(
-                "image",
-                "testImage.png",
-                "image/png",
-                "이미지데이터".getBytes()
-        );
-        BDDMockito.given(imageUploader.upload(multipartFile)).willReturn("/upload");
         RegisterConcertResponse response1 = concertService.register(ConcertCreateBuilder.builder().title("공연 A").venueId(venue.getId()).build(),multipartFile);
         RegisterConcertResponse response2 = concertService.register(ConcertCreateBuilder.builder().title("공연 B").venueId(venue.getId()).build(),multipartFile);
 
@@ -86,12 +87,6 @@ public class ConcertControllerTest {
         //given
         RegisterVenueResponse venue = venueService.register(VenueCreateBuilder.builder().place("KSPO").build());
 
-        MockMultipartFile multipartFile = new MockMultipartFile(
-                "image",
-                "testImage.png",
-                "image/png",
-                "이미지데이터".getBytes()
-        );
         RegisterConcertResponse response = concertService.register(ConcertCreateBuilder.builder().title("공연 A").venueId(venue.getId()).build(),multipartFile);
 
         sessionService.register(SessionCreateBuilder.builder().concertId(response.getConcertId()).build());
@@ -125,12 +120,6 @@ public class ConcertControllerTest {
         //given
         RegisterVenueResponse venue = venueService.register(VenueCreateBuilder.builder().place("KSPO").build());
 
-        MockMultipartFile multipartFile = new MockMultipartFile(
-                "image",
-                "testImage.png",
-                "image/png",
-                "이미지데이터".getBytes()
-        );
         RegisterConcertResponse response = concertService.register(ConcertCreateBuilder.builder().title("공연 A").venueId(venue.getId()).build(),multipartFile);
 
         sessionService.register(SessionCreateBuilder.builder().concertId(response.getConcertId()).build());
@@ -152,15 +141,9 @@ public class ConcertControllerTest {
 
         MockMultipartFile concertRequestFile = new MockMultipartFile("request", "", "application/json", json.getBytes(StandardCharsets.UTF_8));
 
-        MockMultipartFile imageFile = new MockMultipartFile(
-                "image",
-                "testImage.png",
-                "image/png",
-                "이미지데이터".getBytes()
-        );
         //when & then
         mockMvc.perform(multipart("/api/concerts")
-                        .file(imageFile)
+                        .file(multipartFile)
                         .file(concertRequestFile))
                 .andDo(print())
                 .andExpect(status().isCreated());
