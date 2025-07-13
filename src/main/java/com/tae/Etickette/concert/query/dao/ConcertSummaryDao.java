@@ -10,6 +10,6 @@ import java.util.List;
 public interface ConcertSummaryDao extends Repository<ConcertSummary, Long> {
     List<ConcertSummary> findAll();
 
-    Page<ConcertSummary> findAll(Pageable pageable);
+    List<ConcertSummary> findAll(Pageable pageable);
 
 }

@@ -10,6 +10,8 @@ import org.hibernate.annotations.Immutable;
 import org.hibernate.annotations.Subselect;
 import org.hibernate.annotations.Synchronize;
 
+import java.io.Serializable;
+
 
 @Entity
 @Immutable
@@ -21,7 +23,7 @@ FROM concert c join venue v on v.venue_id = c.venue_id
 """)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ConcertSummary {
+public class ConcertSummary implements Serializable {
     @Id
     private Long concertId;
     private String title;

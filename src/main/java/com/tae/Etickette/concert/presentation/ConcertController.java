@@ -10,6 +10,7 @@ import com.tae.Etickette.concert.query.dto.ConcertSummary;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,6 +19,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartRequest;
+
+import java.util.List;
 
 
 @RestController
@@ -43,9 +46,9 @@ public class ConcertController {
      * @return
      */
     @GetMapping
-    public ResponseEntity<PagedModel<ConcertSummary>> getConcertSummaries(Pageable pageable) {
-        Page<ConcertSummary> summaries = concertSummaryService.getPageList(pageable);
-        return ResponseEntity.ok(new PagedModel<>(summaries));
+    public ResponseEntity<List<ConcertSummary>> getConcertSummaries(@PageableDefault(size = 10) Pageable pageable) {
+        List<ConcertSummary> summaries = concertSummaryService.getPageList(pageable);
+        return ResponseEntity.ok(summaries);
     }
 
     /**
