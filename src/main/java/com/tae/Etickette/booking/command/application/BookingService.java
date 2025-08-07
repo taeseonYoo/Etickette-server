@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -38,7 +39,8 @@ public class BookingService {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberNotFoundException("회원 정보를 찾을 수 없습니다."));
 
-        //TODO 회원이 이미 예약한 좌석의 갯수가 몇개인지 확인해야 한다. -> 고민 좀 해보자
+        //데드락 방지를 위해 좌석의 ID를 오름차순 정렬한다.
+        requestDto.getSeatIds().sort(Comparator.naturalOrder());
 
         //주문 목록 생성
         List<SeatItem> seatItems = new ArrayList<>();

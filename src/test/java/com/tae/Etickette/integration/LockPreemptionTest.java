@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.PessimisticLockingFailureException;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.support.TransactionTemplate;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -40,7 +41,7 @@ public class LockPreemptionTest {
                     bookSeatRepository.findByIdWithLock(1L, 1L);
                     System.out.println("A: 락 획득");
                     latch.countDown(); // 락을 획득했음을 B에게 알린다.
-                    Thread.sleep(5000); // 락 유지
+                    Thread.sleep(11000); // 락 유지
                     System.out.println("A: 작업 완료");
                 } catch (Exception e) {
                     System.out.println("A: 실패 - " + e.getClass().getName());
@@ -64,7 +65,7 @@ public class LockPreemptionTest {
         });
 
         executorService.shutdown();
-        executorService.awaitTermination(10, TimeUnit.SECONDS);
+        executorService.awaitTermination(15, TimeUnit.SECONDS);
 
         Assertions.assertThat(error.get()).isInstanceOf(PessimisticLockingFailureException.class);
     }

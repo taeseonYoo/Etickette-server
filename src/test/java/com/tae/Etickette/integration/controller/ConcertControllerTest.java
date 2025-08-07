@@ -7,10 +7,10 @@ import com.tae.Etickette.concert.command.application.dto.RegisterConcertResponse
 import com.tae.Etickette.concert.command.domain.ImageUploader;
 import com.tae.Etickette.session.application.RegisterSessionService;
 import com.tae.Etickette.testhelper.ConcertCreateBuilder;
-import com.tae.Etickette.testhelper.SessionCreateBuilder;
 import com.tae.Etickette.testhelper.VenueCreateBuilder;
 import com.tae.Etickette.venue.command.application.Dto.RegisterVenueResponse;
 import com.tae.Etickette.venue.command.application.RegisterVenueService;
+import jakarta.persistence.EntityManager;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,6 +19,7 @@ import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cache.CacheManager;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -26,13 +27,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.List;
-
-import static com.tae.Etickette.session.application.Dto.RegisterSessionRequest.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -51,15 +45,22 @@ public class ConcertControllerTest {
     @Autowired
     MockMvc mockMvc;
 
+    @Autowired
+    EntityManager entityManager;
     //이미지 업로드가 실제로 일어나지 않도록 한다.
     @MockitoBean
     ImageUploader imageUploader;
 
     MockMultipartFile multipartFile;
+    @Autowired
+    CacheManager cacheManager;
+
     @BeforeEach
     void setUp() {
         multipartFile = new MockMultipartFile("image", "testImage.png", "image/png", "이미지데이터".getBytes());
         BDDMockito.given(imageUploader.upload(multipartFile)).willReturn("amazonaws.com");
+        //공연 요약 정보의 캐시를 삭제한다.
+        cacheManager.getCache("concerts").clear();
     }
 
     @Test
@@ -70,15 +71,12 @@ public class ConcertControllerTest {
         RegisterConcertResponse response1 = concertService.register(ConcertCreateBuilder.builder().title("공연 A").venueId(venue.getId()).build(),multipartFile);
         RegisterConcertResponse response2 = concertService.register(ConcertCreateBuilder.builder().title("공연 B").venueId(venue.getId()).build(),multipartFile);
 
-        sessionService.register(SessionCreateBuilder.builder().concertId(response1.getConcertId()).build());
-        sessionService.register(SessionCreateBuilder.builder().concertId(response2.getConcertId())
-                .sessionInfos(List.of(SessionInfo.builder().concertDate(LocalDate.of(2025, 5, 10)).startTime(LocalTime.of(15, 0)).build())).build());
-
         //when & then
         mockMvc.perform(get("/api/concerts")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2));
+                .andExpect(jsonPath("$.length()").value(2))
+                .andDo(print());
     }
 
     @Test
@@ -87,18 +85,16 @@ public class ConcertControllerTest {
         //given
         RegisterVenueResponse venue = venueService.register(VenueCreateBuilder.builder().place("KSPO").build());
 
-        RegisterConcertResponse response = concertService.register(ConcertCreateBuilder.builder().title("공연 A").venueId(venue.getId()).build(),multipartFile);
-
-        sessionService.register(SessionCreateBuilder.builder().concertId(response.getConcertId()).build());
+        RegisterConcertResponse response = concertService.register(ConcertCreateBuilder.builder().title("공연 C").venueId(venue.getId()).build(), multipartFile);
 
         //when & then
         mockMvc.perform(get("/api/concerts")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content[0].concertId").value(response.getConcertId()))
-                .andExpect(jsonPath("$.content[0].title").value("공연 A"))
-                .andExpect(jsonPath("$.content[0].image_path").value(Matchers.containsString("amazonaws.com")))
-                .andExpect(jsonPath("$.content[0].place").value("KSPO"))
+                .andExpect(jsonPath("$[0].concertId").value(response.getConcertId()))
+                .andExpect(jsonPath("$[0].title").value("공연 C"))
+                .andExpect(jsonPath("$[0].image_path").value(Matchers.containsString("amazonaws.com")))
+                .andExpect(jsonPath("$[0].place").value("KSPO"))
         ;
     }
 
@@ -120,14 +116,13 @@ public class ConcertControllerTest {
         //given
         RegisterVenueResponse venue = venueService.register(VenueCreateBuilder.builder().place("KSPO").build());
 
-        RegisterConcertResponse response = concertService.register(ConcertCreateBuilder.builder().title("공연 A").venueId(venue.getId()).build(),multipartFile);
-
-        sessionService.register(SessionCreateBuilder.builder().concertId(response.getConcertId()).build());
+        RegisterConcertResponse response = concertService.register(ConcertCreateBuilder.builder().title("공연 D").venueId(venue.getId()).build(),multipartFile);
 
         //when & then
         mockMvc.perform(get("/api/concerts/" + response.getConcertId())
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andDo(print());
     }
 
     @Test

@@ -12,6 +12,7 @@ import com.tae.Etickette.member.domain.MemberStatus;
 import com.tae.Etickette.member.infra.MemberRepository;
 import com.tae.Etickette.member.domain.BadPasswordException;
 import com.tae.Etickette.member.application.MemberService;
+import jakarta.persistence.EntityManager;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,6 +37,9 @@ public class MemberServiceTest {
     private EncryptionService encryptionService;
     @Autowired
     private RefreshTokenRepository refreshTokenRepository;
+
+    @Autowired
+    EntityManager entityManager;
 
     @Test
     @DisplayName("join - 회원 가입에 성공하면, 회원 정보가 저장된다.")
@@ -131,6 +135,8 @@ public class MemberServiceTest {
                 .email("USER@spring").password("@Abc1234")
                 .build();
         memberService.register(member);
+
+
 
         DeleteMemberRequest request = DeleteMemberRequest.builder().email("USER@spring").build();
 
