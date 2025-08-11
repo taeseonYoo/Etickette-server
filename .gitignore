@@ -37,4 +37,6 @@ out/
 .vscode/
 
 application-local.yml
-application-test.yml
+
+# 테스트 환경용 application.yml 무시
+/src/test/resources/application.yml
