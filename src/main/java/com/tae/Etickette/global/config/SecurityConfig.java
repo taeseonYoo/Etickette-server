@@ -107,11 +107,10 @@ public class SecurityConfig {
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-//                        .requestMatchers("/", "/api/members/login", "/api/members/logout", "/api/members/signup", "/oauth2-jwt-header", "/reissue").permitAll()
+                        .requestMatchers("/", "/api/members/login", "/api/members/logout", "/api/members/signup", "/oauth2-jwt-header", "/reissue").permitAll()
 //                        .requestMatchers(HttpMethod.POST, "/api/payments/**").permitAll()
 //                        .requestMatchers("/admin").hasRole(Role.ADMIN.value())
-//                        .anyRequest().authenticated()
-                                .anyRequest().permitAll()
+                        .anyRequest().authenticated()
                 );
 
         //인가되지 않은 사용자에 대한 exception -> 프론트엔드 응답

@@ -79,4 +79,11 @@ public class MemberService {
 
         member.deleteMember();
     }
+
+    @Transactional
+    public void adminRegister(String email){
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("회원 정보를 찾을 수 없습니다."));
+
+        member.grantAdminRole();
+    }
 }

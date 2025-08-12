@@ -67,4 +67,8 @@ public class Member {
         this.memberStatus = MemberStatus.DELETE;
         Events.raise(new MemberDeletedEvent(this.getEmail()));
     }
+    //어드민 계정으로 변경
+    public void grantAdminRole() {
+        this.role = Role.ADMIN;
+    }
 }

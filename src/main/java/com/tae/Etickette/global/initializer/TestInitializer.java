@@ -7,6 +7,12 @@ import com.tae.Etickette.concert.command.domain.GradePrice;
 import com.tae.Etickette.concert.command.domain.Image;
 import com.tae.Etickette.concert.infra.ConcertRepository;
 import com.tae.Etickette.global.model.Money;
+import com.tae.Etickette.member.application.MemberService;
+import com.tae.Etickette.member.application.dto.RegisterMemberRequest;
+import com.tae.Etickette.member.application.dto.RegisterMemberResponse;
+import com.tae.Etickette.member.domain.Member;
+import com.tae.Etickette.member.domain.Role;
+import com.tae.Etickette.member.infra.MemberRepository;
 import com.tae.Etickette.session.domain.Session;
 import com.tae.Etickette.session.infra.SessionRepository;
 import com.tae.Etickette.venue.command.domain.Venue;
@@ -29,6 +35,7 @@ public class TestInitializer {
     private final VenueRepository venueRepository;
     private final ConcertRepository concertRepository;
     private final SessionRepository sessionRepository;
+    private final MemberService memberService;
 
     List<String> title = new ArrayList<>();
     @PostConstruct
@@ -59,6 +66,11 @@ public class TestInitializer {
                 sessionRepository.save(session);
             }
         }
+
+        RegisterMemberRequest admin = RegisterMemberRequest.builder().name("관리자").password("#ACb1234").email("admin@spring").build();
+        memberService.register(admin);
+        memberService.adminRegister("admin@spring");
+
 
     }
 

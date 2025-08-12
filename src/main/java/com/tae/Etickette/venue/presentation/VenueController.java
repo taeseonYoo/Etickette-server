@@ -30,7 +30,7 @@ public class VenueController {
      * @param request
      * @return
      */
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
     public ResponseEntity<Void> register(@RequestBody RegisterVenueRequest request) {
         registerVenueService.register(request);
@@ -54,7 +54,7 @@ public class VenueController {
      * @param request
      * @return
      */
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/{venueId}")
     public ResponseEntity<Void> changeAddress(@PathVariable Long venueId,
                                               @Valid @RequestBody ChangeAddressRequest request) {
@@ -66,7 +66,8 @@ public class VenueController {
      * 사용 가능한 공연장 리스트를 반환한다.
      * @return
      */
-    @GetMapping("")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping
     public ResponseEntity<List<VenueData>> getActivateVenueList() {
         return ResponseEntity.ok(venueQueryService.getActivateVenueList());
     }
