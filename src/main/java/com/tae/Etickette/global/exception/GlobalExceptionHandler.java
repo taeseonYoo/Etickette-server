@@ -1,6 +1,5 @@
 package com.tae.Etickette.global.exception;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,14 +13,34 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @RestControllerAdvice
-@RequiredArgsConstructor
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<String> handle(RuntimeException e) {
-        log.error("RuntimeException : {}", e.getMessage());
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException e) {
+        log.error("ResourceNotFoundException : {}", e.getMessage());
+        final ErrorResponse response = new ErrorResponse(e.getErrorCode().getCode(), e.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
+    /**
+     * 커스텀 예외 처리
+     */
+//    @ExceptionHandler(BusinessException.class)
+//    public ResponseEntity<?> customExHandle(BusinessException e) {
+//        log.error("BusinessException : {}", e.getMessage());
+//        final ErrorResponse response = new ErrorResponse(e.getErrorCode(), e.getMessage());
+//        return ResponseResult.fail(e);
+//    }
+//
+//    /**
+//     * RuntimeException
+//     */
+//    @ExceptionHandler(RuntimeException.class)
+//    public ResponseEntity<?> runtimeExHandle(RuntimeException e) {
+//        log.error("RuntimeException : {}", e.getMessage());
+//        return ResponseResult.fail(ErrorCode.INTERNAL_SERVER_ERROR, e.getMessage());
+//    }
+
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<String> handle(MethodArgumentNotValidException e) {
         log.error("MethodArgumentNotValidException : {}", e.getMessage());
