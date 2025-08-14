@@ -4,8 +4,9 @@ import com.tae.Etickette.booking.command.domain.Booking;
 import com.tae.Etickette.booking.command.domain.BookingRef;
 import com.tae.Etickette.booking.command.domain.CancelPolicy;
 import com.tae.Etickette.booking.infra.BookingRepository;
+import com.tae.Etickette.global.exception.ErrorCode;
+import com.tae.Etickette.global.exception.ResourceNotFoundException;
 import com.tae.Etickette.global.model.Canceller;
-import com.tae.Etickette.member.application.MemberNotFoundException;
 import com.tae.Etickette.member.domain.Member;
 import com.tae.Etickette.member.infra.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,7 @@ public class CancelBookingService {
                 .orElseThrow(() -> new BookingNotFoundException("예약 내역을 찾을 수 없습니다."));
 
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new MemberNotFoundException("회원 정보를 찾을 수 없습니다."));
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND,"회원 정보를 찾을 수 없습니다."));
 
         if (!cancelPolicy.hasCancellationPermission(booking, new Canceller(member.getId()))) {
             throw new NoCancellablePermission("취소 권한이 없습니다.");

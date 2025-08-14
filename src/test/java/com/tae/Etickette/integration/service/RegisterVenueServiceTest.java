@@ -1,11 +1,9 @@
 package com.tae.Etickette.integration.service;
 
-import com.tae.Etickette.member.application.AlreadyExisingEmailException;
 import com.tae.Etickette.venue.command.application.Dto.RegisterVenueRequest;
 import com.tae.Etickette.venue.command.application.Dto.RegisterVenueResponse;
 import com.tae.Etickette.venue.command.application.RegisterVenueService;
 import com.tae.Etickette.concert.command.domain.Address;
-import com.tae.Etickette.venue.command.application.VenueNotFoundException;
 import com.tae.Etickette.venue.command.domain.Venue;
 import com.tae.Etickette.venue.infra.VenueRepository;
 import org.assertj.core.api.Assertions;
@@ -13,7 +11,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.tae.Etickette.venue.command.application.Dto.RegisterVenueRequest.builder;

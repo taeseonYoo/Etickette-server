@@ -117,7 +117,7 @@ public class MemberControllerTest {
         mockMvc.perform(put("/api/members/profile")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(passwordRequest)))
-                .andExpect(status().isInternalServerError());
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -180,6 +180,6 @@ public class MemberControllerTest {
         mockMvc.perform(delete("/api/members")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(deleteRequest)))
-                .andExpect(status().isInternalServerError());
+                .andExpect(status().isForbidden());
     }
 }

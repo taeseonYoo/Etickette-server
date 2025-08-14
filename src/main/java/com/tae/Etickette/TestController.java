@@ -2,7 +2,6 @@ package com.tae.Etickette;
 
 import com.tae.Etickette.global.exception.ErrorCode;
 import com.tae.Etickette.global.exception.ResourceNotFoundException;
-import com.tae.Etickette.member.application.MemberNotFoundException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 

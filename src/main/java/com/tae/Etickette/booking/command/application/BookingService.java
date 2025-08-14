@@ -8,7 +8,8 @@ import com.tae.Etickette.booking.command.application.dto.BookingRequest;
 import com.tae.Etickette.bookseat.command.domain.BookSeat;
 import com.tae.Etickette.bookseat.command.domain.BookSeatId;
 import com.tae.Etickette.bookseat.infra.BookSeatRepository;
-import com.tae.Etickette.member.application.MemberNotFoundException;
+import com.tae.Etickette.global.exception.ErrorCode;
+import com.tae.Etickette.global.exception.ResourceNotFoundException;
 import com.tae.Etickette.member.domain.Member;
 import com.tae.Etickette.member.infra.MemberRepository;
 import com.tae.Etickette.session.domain.Session;
@@ -37,7 +38,7 @@ public class BookingService {
                 new SessionNotFoundException("세션을 찾을 수 없습니다."));
 
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new MemberNotFoundException("회원 정보를 찾을 수 없습니다."));
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND,"회원 정보를 찾을 수 없습니다."));
 
         //데드락 방지를 위해 좌석의 ID를 오름차순 정렬한다.
         requestDto.getSeatIds().sort(Comparator.naturalOrder());

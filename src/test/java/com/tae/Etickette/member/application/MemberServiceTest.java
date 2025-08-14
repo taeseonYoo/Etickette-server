@@ -1,5 +1,8 @@
 package com.tae.Etickette.member.application;
 
+import com.tae.Etickette.global.exception.BadRequestException;
+import com.tae.Etickette.global.exception.ForbiddenException;
+import com.tae.Etickette.global.exception.ResourceNotFoundException;
 import com.tae.Etickette.member.application.dto.DeleteMemberRequest;
 import com.tae.Etickette.member.domain.*;
 import com.tae.Etickette.member.infra.EncryptionServiceImpl;
@@ -74,7 +77,7 @@ public class MemberServiceTest {
                 .willReturn(Optional.of(mock(Member.class)));
 
         //when & then
-        assertThrows(AlreadyExisingEmailException.class,
+        assertThrows(BadRequestException.class,
                 () -> memberService.register(requestDto));
     }
     @Test
@@ -157,7 +160,7 @@ public class MemberServiceTest {
         BDDMockito.given(memberRepository.findByEmail(any())).willReturn(Optional.empty());
 
         //when & then
-        assertThrows(MemberNotFoundException.class,
+        assertThrows(ResourceNotFoundException.class,
                 () -> memberService.changePassword(requestDto, "USER@spring")
         );
     }
@@ -172,7 +175,7 @@ public class MemberServiceTest {
         BDDMockito.given(changePolicy.hasUpdatePermission(any(), any())).willReturn(false);
 
         //when & then
-        assertThrows(NoChangeablePermission.class,
+        assertThrows(ForbiddenException.class,
                 () -> memberService.changePassword(requestDto, "hacker@spring")
         );
     }
@@ -208,7 +211,7 @@ public class MemberServiceTest {
         DeleteMemberRequest request = DeleteMemberRequest.builder().email("USER@spring").build();
 
         //when
-        assertThrows(UsernameNotFoundException.class,
+        assertThrows(ResourceNotFoundException.class,
                 ()->memberService.deleteMember(request, "USER@spring"));
     }
 
@@ -224,7 +227,7 @@ public class MemberServiceTest {
         DeleteMemberRequest request = DeleteMemberRequest.builder().email("USER@spring").build();
 
         //when & then
-        assertThrows(NoChangeablePermission.class,
+        assertThrows(ForbiddenException.class,
                 () -> memberService.deleteMember(request,"hacker@spring"));
     }
 

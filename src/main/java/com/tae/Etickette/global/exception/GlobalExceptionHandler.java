@@ -14,47 +14,51 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+//    @ExceptionHandler(MethodArgumentNotValidException.class)
+//    public ResponseEntity<String> handle(MethodArgumentNotValidException e) {
+//        log.error("MethodArgumentNotValidException : {}", e.getMessage());
+//        String errorMessage = e.getBindingResult()
+//                .getFieldErrors()
+//                .stream()
+//                .map(error -> error.getDefaultMessage())
+//                .collect(Collectors.joining(", "));
+//        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+//    }
+//    @ExceptionHandler(AccessDeniedException.class)
+//    public ResponseEntity<String> handleAccessDeniedException(AccessDeniedException ex) {
+//        return ResponseEntity
+//                .status(403)
+//                .body("접근 권한이 없습니다.");
+//    }
 
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<ErrorResponse> handleForbiddenException(ForbiddenException e) {
+        log.error("ForbiddenException : {}", e.getMessage());
+        final ErrorResponse response = new ErrorResponse(e.getErrorCode().getCode(), e.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+    }
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ErrorResponse> handleBadRequestException(BadRequestException e) {
+        log.error("BadRequestException : {}", e.getMessage());
+        final ErrorResponse response = new ErrorResponse(e.getErrorCode().getCode(), e.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException e) {
+    public ResponseEntity<ErrorResponse> handleResourceNotFoundException(ResourceNotFoundException e) {
         log.error("ResourceNotFoundException : {}", e.getMessage());
         final ErrorResponse response = new ErrorResponse(e.getErrorCode().getCode(), e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
-    /**
-     * 커스텀 예외 처리
-     */
-//    @ExceptionHandler(BusinessException.class)
-//    public ResponseEntity<?> customExHandle(BusinessException e) {
-//        log.error("BusinessException : {}", e.getMessage());
-//        final ErrorResponse response = new ErrorResponse(e.getErrorCode(), e.getMessage());
-//        return ResponseResult.fail(e);
-//    }
-//
-//    /**
-//     * RuntimeException
-//     */
-//    @ExceptionHandler(RuntimeException.class)
-//    public ResponseEntity<?> runtimeExHandle(RuntimeException e) {
-//        log.error("RuntimeException : {}", e.getMessage());
-//        return ResponseResult.fail(ErrorCode.INTERNAL_SERVER_ERROR, e.getMessage());
-//    }
-
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<String> handle(MethodArgumentNotValidException e) {
-        log.error("MethodArgumentNotValidException : {}", e.getMessage());
-        String errorMessage = e.getBindingResult()
-                .getFieldErrors()
-                .stream()
-                .map(error -> error.getDefaultMessage())
-                .collect(Collectors.joining(", "));
-        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<ErrorResponse> handleBusinessException(BusinessException e) {
+        log.error("Undefined Business Exception : {}", e.getMessage());
+        final ErrorResponse response = new ErrorResponse(e.getErrorCode().getCode(), e.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<String> handleAccessDeniedException(AccessDeniedException ex) {
-        return ResponseEntity
-                .status(403)
-                .body("접근 권한이 없습니다.");
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleException(Exception e) {
+        log.error("handle not business exception", e);
+        ErrorResponse response = ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
