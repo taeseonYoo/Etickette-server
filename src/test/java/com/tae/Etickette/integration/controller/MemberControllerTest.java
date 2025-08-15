@@ -72,7 +72,7 @@ public class MemberControllerTest {
 
     @Test
     @DisplayName("어드민은 비밀번호를 수정할 수 있다.")
-    @WithMockUser(roles = "ADMIN",username = "admin@spring")
+    @WithMockUser(authorities = "ADMIN",username = "admin@spring")
     void 비밀번호수정_성공_어드민() throws Exception {
         //given
         RegisterMemberRequest request = RegisterMemberRequest.builder()
@@ -143,7 +143,7 @@ public class MemberControllerTest {
 
     @Test
     @DisplayName("어드민은 회원을 삭제할 수 있다.")
-    @WithMockUser(roles = "ADMIN")
+    @WithMockUser(authorities = "ADMIN")
     void 회원삭제_성공_어드민() throws Exception {
         //given
         RegisterMemberRequest request = RegisterMemberRequest.builder()
