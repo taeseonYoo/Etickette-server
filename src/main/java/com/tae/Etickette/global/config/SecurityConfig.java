@@ -111,8 +111,9 @@ public class SecurityConfig {
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/", "/api/members/login", "/api/members/logout", "/api/members/signup", "/oauth2-jwt-header", "/reissue").permitAll()
-//                        .requestMatchers(HttpMethod.POST, "/api/payments/**").permitAll()
+                        .requestMatchers("/", "/api/members/login", "/api/members/logout", "/api/members/signup",
+                                "/oauth2-jwt-header", "/reissue").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api/concerts","/api/concerts/**").permitAll()
                         .anyRequest().authenticated()
                 );
 

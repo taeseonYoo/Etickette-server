@@ -31,7 +31,7 @@ public class ConcertController {
     private final ConcertSummaryService concertSummaryService;
     private final ConcertDetailService concertDetailService;
 
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<RegisterConcertResponse> register(
             @RequestPart("request") RegisterConcertRequest request,
