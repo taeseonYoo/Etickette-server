@@ -1,6 +1,8 @@
 package com.tae.Etickette.venue.command.application;
 
 import com.tae.Etickette.concert.command.domain.Address;
+import com.tae.Etickette.global.exception.ErrorCode;
+import com.tae.Etickette.global.exception.ResourceNotFoundException;
 import com.tae.Etickette.venue.command.application.Dto.ChangeAddressRequest;
 import com.tae.Etickette.venue.command.domain.Venue;
 import com.tae.Etickette.venue.infra.VenueRepository;
@@ -16,7 +18,7 @@ public class ChangeVenueService {
     @Transactional
     public void changeAddress(Long venueId,ChangeAddressRequest requestDto) {
         Venue venue = venueRepository.findById(venueId)
-                .orElseThrow(() -> new VenueNotFoundException("공연장을 찾을 수 없습니다."));
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.VENUE_NOT_FOUND,"공연장을 찾을 수 없습니다."));
 
         Address newAddress = requestDto.getAddress();
 

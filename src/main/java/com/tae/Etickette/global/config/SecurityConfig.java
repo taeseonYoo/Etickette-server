@@ -21,7 +21,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -46,6 +48,8 @@ public class SecurityConfig {
     private final JWTUtil jwtUtil;
     private final RefreshTokenService refreshTokenService;
 
+    private final AccessDeniedHandler accessDeniedHandler;
+    private final AuthenticationEntryPoint authenticationEntryPoint;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -109,15 +113,15 @@ public class SecurityConfig {
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/", "/api/members/login", "/api/members/logout", "/api/members/signup", "/oauth2-jwt-header", "/reissue").permitAll()
 //                        .requestMatchers(HttpMethod.POST, "/api/payments/**").permitAll()
-//                        .requestMatchers("/admin").hasRole(Role.ADMIN.value())
                         .anyRequest().authenticated()
                 );
 
-        //인가되지 않은 사용자에 대한 exception -> 프론트엔드 응답
-        http.exceptionHandling((exception) ->
-                exception.authenticationEntryPoint(((request, response, authException) -> {
-                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                })));
+        // - 인증되지 않은 사용자는 authenticationEntryPoint가 처리 (401 Unauthorized)
+        // - 권한이 부족한 사용자는 accessDeniedHandler가 처리 (403 Forbidden)
+        http.exceptionHandling(exceptions -> {
+            exceptions.accessDeniedHandler(accessDeniedHandler);
+            exceptions.authenticationEntryPoint(authenticationEntryPoint);
+        });
 
         //custom logout filter 등록
         http

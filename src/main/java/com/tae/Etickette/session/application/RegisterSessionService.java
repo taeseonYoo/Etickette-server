@@ -2,6 +2,8 @@ package com.tae.Etickette.session.application;
 
 import com.tae.Etickette.bookseat.command.domain.BookSeat;
 import com.tae.Etickette.bookseat.infra.BookSeatRepository;
+import com.tae.Etickette.global.exception.ErrorCode;
+import com.tae.Etickette.global.exception.ResourceNotFoundException;
 import com.tae.Etickette.seat.infra.SeatRepository;
 import com.tae.Etickette.concert.command.domain.Concert;
 import com.tae.Etickette.concert.infra.ConcertRepository;
@@ -9,7 +11,6 @@ import com.tae.Etickette.session.application.Dto.RegisterSessionRequest;
 import com.tae.Etickette.session.domain.Session;
 import com.tae.Etickette.session.domain.SettingSeatService;
 import com.tae.Etickette.session.infra.SessionRepository;
-import com.tae.Etickette.venue.command.application.VenueNotFoundException;
 import com.tae.Etickette.venue.infra.VenueRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,7 +39,7 @@ public class RegisterSessionService {
                 new ConcertNotFoundException("공연을 찾을 수 없습니다."));
         //공연장 확인
         venueRepository.findById(concert.getVenueId())
-                .orElseThrow(() -> new VenueNotFoundException("공연장을 찾을 수 없습니다."));
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.VENUE_NOT_FOUND,"공연장을 찾을 수 없습니다."));
         //공연에 등록된 좌석 id를 가져온다.
         List<Long> seatIds = seatRepository.findIdByConcertId(concert.getId());
         if (seatIds.isEmpty()) {

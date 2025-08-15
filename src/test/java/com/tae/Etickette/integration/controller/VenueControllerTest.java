@@ -52,8 +52,8 @@ public class VenueControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = "USER")
-    void 공연장삭제_실패_권한이없음() throws Exception {
+    @WithMockUser(authorities = "USER")
+    void 공연장삭제_실패_권한없음() throws Exception {
         //given
         Venue venue = Venue.create("KSPO", 10000, new Address("서울", "잠실", "11111"));
         Venue save = venueRepository.save(venue);
@@ -65,7 +65,7 @@ public class VenueControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = "ADMIN")
+    @WithMockUser(authorities = "ADMIN")
     void 주소변경_성공() throws Exception {
         //given
         Venue venue = Venue.create("KSPO", 10000, new Address("서울", "잠실", "11111"));
@@ -100,7 +100,7 @@ public class VenueControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = "ADMIN")
+    @WithMockUser(authorities = "ADMIN")
     void 공연장생성_성공() throws Exception {
         //given
         RegisterVenueRequest request = RegisterVenueRequest.builder()
@@ -116,7 +116,7 @@ public class VenueControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = "USER")
+    @WithMockUser(authorities = "USER")
     void 공연장생성_실패_권한() throws Exception {
         //given
         RegisterVenueRequest request = RegisterVenueRequest.builder()
@@ -133,6 +133,7 @@ public class VenueControllerTest {
 
     @Test
     @DisplayName("공연장 검색에 성공한다.")
+    @WithMockUser(authorities = "USER")
     void 공연장검색_성공() throws Exception {
         //given
         Venue venue1 = Venue.create("KSPO DOME", 10000, new Address("서울", "올림픽로", "12345"));
@@ -148,6 +149,7 @@ public class VenueControllerTest {
 
     @Test
     @DisplayName("공연장 검색 , 삭제된 공연장은 제외해야한다.")
+    @WithMockUser(authorities = "ADMIN")
     void 공연장검색_성공_삭제된공연장은제외() throws Exception {
         //given
         Venue venue1 = Venue.create("KSPO DOME", 10000, new Address("서울", "올림픽로", "12345"));
@@ -164,6 +166,7 @@ public class VenueControllerTest {
 
     @Test
     @DisplayName("공연장 검색에 성공하면, [id,장소명,관객수,주소]가 제대로 반환되어야한다.")
+    @WithMockUser(authorities = "ADMIN")
     void 공연장검색_성공_데이터검증() throws Exception {
         //given
         Venue venue1 = Venue.create("KSPO DOME", 10000, new Address("서울", "올림픽로", "12345"));

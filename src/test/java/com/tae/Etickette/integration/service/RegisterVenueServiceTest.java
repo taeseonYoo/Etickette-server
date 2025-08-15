@@ -1,5 +1,6 @@
 package com.tae.Etickette.integration.service;
 
+import com.tae.Etickette.global.exception.BadRequestException;
 import com.tae.Etickette.venue.command.application.Dto.RegisterVenueRequest;
 import com.tae.Etickette.venue.command.application.Dto.RegisterVenueResponse;
 import com.tae.Etickette.venue.command.application.RegisterVenueService;
@@ -54,7 +55,7 @@ public class RegisterVenueServiceTest {
                 .address(new Address("서울시", "송파구 올림픽로 424", "11111"))
                 .build();
         //when & then
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(BadRequestException.class,
                 () -> registerVenueService.register(requestDto));
     }
 }

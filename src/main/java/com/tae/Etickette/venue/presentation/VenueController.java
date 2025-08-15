@@ -66,7 +66,6 @@ public class VenueController {
      * 사용 가능한 공연장 리스트를 반환한다.
      * @return
      */
-    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
     public ResponseEntity<List<VenueData>> getActivateVenueList() {
         return ResponseEntity.ok(venueQueryService.getActivateVenueList());

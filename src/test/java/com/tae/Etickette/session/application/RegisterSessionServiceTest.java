@@ -1,5 +1,6 @@
 package com.tae.Etickette.session.application;
 
+import com.tae.Etickette.global.exception.ResourceNotFoundException;
 import com.tae.Etickette.seat.infra.SeatRepository;
 import com.tae.Etickette.bookseat.infra.BookSeatRepository;
 import com.tae.Etickette.concert.command.domain.Concert;
@@ -8,7 +9,6 @@ import com.tae.Etickette.session.application.Dto.RegisterSessionRequest;
 import com.tae.Etickette.session.domain.Session;
 import com.tae.Etickette.session.domain.SettingSeatService;
 import com.tae.Etickette.session.infra.SessionRepository;
-import com.tae.Etickette.venue.command.application.VenueNotFoundException;
 import com.tae.Etickette.venue.command.domain.Venue;
 import com.tae.Etickette.venue.infra.VenueRepository;
 import org.junit.jupiter.api.Assertions;
@@ -80,7 +80,7 @@ class RegisterSessionServiceTest {
         BDDMockito.given(venueRepository.findById(any())).willReturn(Optional.empty());
 
         //when & then
-        Assertions.assertThrows(VenueNotFoundException.class, () ->
+        Assertions.assertThrows(ResourceNotFoundException.class, () ->
                 registerSessionService.register(requestDto));
     }
 

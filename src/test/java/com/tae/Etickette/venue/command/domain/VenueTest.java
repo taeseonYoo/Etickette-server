@@ -1,6 +1,8 @@
 package com.tae.Etickette.venue.command.domain;
 
 import com.tae.Etickette.concert.command.domain.Address;
+import com.tae.Etickette.global.exception.BadRequestException;
+import com.tae.Etickette.global.exception.ResourceNotFoundException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,7 +46,7 @@ class VenueTest {
         venue.deleteVenue();
 
         //when & then
-        assertThrows(AlreadyDeletedException.class,
+        assertThrows(ResourceNotFoundException.class,
                 () -> venue.changeAddress(new Address("서울시", "송파구 올림픽로 424", "22222")));
     }
 
@@ -70,7 +72,7 @@ class VenueTest {
         venue.deleteVenue();
 
         //when & then
-        assertThrows(AlreadyDeletedException.class,
+        assertThrows(ResourceNotFoundException.class,
                 () -> venue.changeCapacity(22222));
     }
     @Test
@@ -81,7 +83,7 @@ class VenueTest {
                 new Address("서울시", "송파구 올림픽로 424", "11111"));
 
         //when & then
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(BadRequestException.class,
                 () -> venue.changeCapacity(-1));
     }
 
@@ -107,7 +109,7 @@ class VenueTest {
         venue.deleteVenue();
 
         //when & then
-        assertThrows(AlreadyDeletedException.class,
+        assertThrows(ResourceNotFoundException.class,
                 () -> venue.deleteVenue());
     }
 }

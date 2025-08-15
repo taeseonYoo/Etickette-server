@@ -1,9 +1,9 @@
 package com.tae.Etickette.venue.application;
 
 import com.tae.Etickette.concert.command.domain.Address;
+import com.tae.Etickette.global.exception.ForbiddenException;
+import com.tae.Etickette.global.exception.ResourceNotFoundException;
 import com.tae.Etickette.venue.command.application.DeleteVenueService;
-import com.tae.Etickette.venue.command.application.NoDeletablePermission;
-import com.tae.Etickette.venue.command.application.VenueNotFoundException;
 import com.tae.Etickette.venue.command.domain.DeleteVenuePolicy;
 import com.tae.Etickette.venue.command.domain.Venue;
 import com.tae.Etickette.venue.command.domain.VenueStatus;
@@ -59,7 +59,7 @@ class DeleteVenueServiceTest {
                 .willReturn(Optional.empty());
 
         //when & then
-        assertThrows(VenueNotFoundException.class, () ->
+        assertThrows(ResourceNotFoundException.class, () ->
                 deleteVenueService.delete(any()));
     }
 
@@ -72,7 +72,7 @@ class DeleteVenueServiceTest {
         BDDMockito.given(deleteVenuePolicy.hasDeletePermission()).willReturn(false);
 
         //when & then
-        assertThrows(NoDeletablePermission
+        assertThrows(ForbiddenException
                 .class, () ->
                 deleteVenueService.delete(any()));
     }

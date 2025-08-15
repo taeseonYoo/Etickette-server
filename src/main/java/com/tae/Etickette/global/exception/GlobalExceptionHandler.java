@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -55,5 +56,12 @@ public class GlobalExceptionHandler {
         log.error("handle not business exception", e);
         ErrorResponse response = ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR);
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleException(AuthorizationDeniedException e) {
+        log.error("AuthorizationDeniedException : {}", e.getMessage());
+        ErrorResponse response = ErrorResponse.of(ErrorCode.NO_PERMISSION);
+        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     }
 }

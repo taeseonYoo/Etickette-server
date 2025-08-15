@@ -1,6 +1,9 @@
 package com.tae.Etickette.venue.command.domain;
 
 import com.tae.Etickette.concert.command.domain.Address;
+import com.tae.Etickette.global.exception.BadRequestException;
+import com.tae.Etickette.global.exception.ErrorCode;
+import com.tae.Etickette.global.exception.ResourceNotFoundException;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -41,7 +44,7 @@ public class Venue {
     }
     private void verifyNotYetDelete() {
         if (!isNotDelete()) {
-            throw new AlreadyDeletedException("이미 삭제된 공연장 입니다.");
+            throw new ResourceNotFoundException(ErrorCode.VENUE_NOT_FOUND,"이미 삭제된 공연장 입니다.");
         }
     }
     private boolean isNotDelete() {
@@ -54,7 +57,7 @@ public class Venue {
     }
     private void verifyCapacityIsNotNegative(Integer capacity) {
         if (capacity < 0) {
-            throw new IllegalArgumentException("총 좌석 수는 0보다 작을 수 없습니다.");
+            throw new BadRequestException(ErrorCode.CAPACITY_CANNOT_BE_NEGATIVE,"총 좌석 수는 0보다 작을 수 없습니다.");
         }
     }
 

@@ -1,20 +1,19 @@
 package com.tae.Etickette.venue.application;
 
 import com.tae.Etickette.concert.command.domain.Address;
+import com.tae.Etickette.global.exception.BadRequestException;
+import com.tae.Etickette.global.exception.ResourceNotFoundException;
 import com.tae.Etickette.venue.command.application.ChangeVenueService;
 import com.tae.Etickette.venue.command.application.Dto.ChangeAddressRequest;
-import com.tae.Etickette.venue.command.application.VenueNotFoundException;
 import com.tae.Etickette.venue.command.domain.Venue;
 import com.tae.Etickette.venue.infra.VenueRepository;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.dao.DuplicateKeyException;
 
 import java.util.Optional;
 
@@ -63,7 +62,7 @@ class ChangeVenueServiceTest {
         BDDMockito.given(venueRepository.findById(any())).willReturn(Optional.empty());
 
         //when & then
-        Assertions.assertThrows(VenueNotFoundException.class, () ->
+        Assertions.assertThrows(ResourceNotFoundException.class, () ->
                 changeVenueService.changeAddress(1L,requestDto));
     }
 
@@ -80,7 +79,7 @@ class ChangeVenueServiceTest {
                 .willReturn(Optional.of(mock(Venue.class)));
 
         //when & then
-        Assertions.assertThrows(IllegalArgumentException.class, () ->
+        Assertions.assertThrows(BadRequestException.class, () ->
                 changeVenueService.changeAddress(1L,requestDto));
     }
 }
