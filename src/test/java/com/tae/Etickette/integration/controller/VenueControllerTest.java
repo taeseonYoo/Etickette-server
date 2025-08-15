@@ -35,7 +35,7 @@ public class VenueControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    @WithMockUser(roles = "ADMIN")
+    @WithMockUser(authorities = "ADMIN")
     void 공연장삭제_성공() throws Exception {
         //given
         Venue venue = Venue.create("KSPO", 10000, new Address("서울", "잠실", "11111"));

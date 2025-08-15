@@ -8,4 +8,8 @@ public class ErrorCodeView {
     public ErrorCodeView(Map<String, String> errorCodes) {
         this.errorCodes = errorCodes;
     }
+
+    public Map<String, String> getErrorCodes() {
+        return errorCodes;
+    }
 }

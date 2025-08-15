@@ -4,7 +4,7 @@ import com.tae.Etickette.concert.command.application.dto.RegisterConcertRequest;
 import com.tae.Etickette.concert.command.domain.Concert;
 import com.tae.Etickette.concert.command.domain.ImageUploader;
 import com.tae.Etickette.concert.infra.ConcertRepository;
-import com.tae.Etickette.concert.infra.ImageUploadException;
+import com.tae.Etickette.global.exception.ServerProcessException;
 import com.tae.Etickette.seat.infra.SeatRepository;
 import com.tae.Etickette.testhelper.ConcertCreateBuilder;
 import org.junit.jupiter.api.Assertions;
@@ -43,10 +43,10 @@ class RegisterConcertServiceTest {
                 "image/png",
                 "이미지데이터".getBytes()
         );
-        BDDMockito.given(imageUploader.upload(any())).willThrow(ImageUploadException.class);
+        BDDMockito.given(imageUploader.upload(any())).willThrow(ServerProcessException.class);
 
         //when & then
-        Assertions.assertThrows(ImageUploadException.class,
+        Assertions.assertThrows(ServerProcessException.class,
                 () -> registerConcertService.register(request, multipartFile));
     }
 

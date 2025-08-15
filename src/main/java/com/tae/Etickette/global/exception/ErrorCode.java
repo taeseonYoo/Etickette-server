@@ -18,6 +18,16 @@ public enum ErrorCode {
     CAPACITY_CANNOT_BE_NEGATIVE(400,"VENUE-002","수용량이 0보다 작은 경우"),
     DUPLICATE_ADDRESS(400,"VENUE-003","주소가 중복되는 경우"),
 
+    //공연 오류
+    CONCERT_NOT_FOUND(404,"CONCERT-001","공연 정보를 찾을 수 없는 경우"),
+    CONCERT_NOT_READY(409,"CONCERT-002","공연이 준비되지 않은 경우"),
+    CONCERT_NOT_OPEN(409,"CONCERT-003","공연이 오픈되지 않은 경우"),
+    CONCERT_NOT_CLOSED(409,"CONCERT-004","공연이 종료되지 않은 경우"),
+    CONCERT_NOT_ACTIVATE(409,"CONCERT-005","공연이 활성화 되지 않은 경우"),
+
+    //이미지 업로드
+    S3_UPLOAD_ERROR(500,"IMAGE-001","이미지 업로드 중 오류가 발생한 경우"),
+
     //서버 오류
     INTERNAL_SERVER_ERROR(500,"SERVER-001" ,"서버가 요청을 처리할 수 없는 경우"),
 

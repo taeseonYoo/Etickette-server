@@ -4,6 +4,8 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.tae.Etickette.concert.command.domain.ImageUploader;
 import com.tae.Etickette.global.config.S3Config;
+import com.tae.Etickette.global.exception.ErrorCode;
+import com.tae.Etickette.global.exception.ServerProcessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -46,7 +48,7 @@ public class S3ImageUploader implements ImageUploader {
 
             return s3Config.amazonS3Client().getUrl(bucket, uuidFileName).toString();
         } catch (IOException e) {
-            throw new ImageUploadException("이미지 업로드 실패", e);
+            throw new ServerProcessException(ErrorCode.S3_UPLOAD_ERROR, "이미지 업로드에 실패하였습니다.");
         }finally {
             //로컬환경의 이미지를 삭제한다.
             localFile.delete();

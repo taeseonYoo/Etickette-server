@@ -25,7 +25,20 @@ public class GlobalExceptionHandler {
                 .collect(Collectors.joining(", "));
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
-
+    //내부 서버 오류, 500 에러
+    @ExceptionHandler(ServerProcessException.class)
+    public ResponseEntity<ErrorResponse> handleServerProcessException(ServerProcessException e) {
+        log.error("ServerProcessException : {}", e.getMessage());
+        final ErrorResponse response = new ErrorResponse(e.getErrorCode().getCode(), e.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    //요청 처리 중 비즈니스 로직상 불가능하거나 모순이 생긴 경우, 409 에러
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<ErrorResponse> handleConflictException(ConflictException e) {
+        log.error("ConflictException : {}", e.getMessage());
+        final ErrorResponse response = new ErrorResponse(e.getErrorCode().getCode(), e.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    }
     //권한 오류가 발생하면, 403에러가 발생
     @ExceptionHandler(ForbiddenException.class)
     public ResponseEntity<ErrorResponse> handleForbiddenException(ForbiddenException e) {

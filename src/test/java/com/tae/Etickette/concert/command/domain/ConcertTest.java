@@ -1,6 +1,7 @@
 package com.tae.Etickette.concert.command.domain;
 
 import com.tae.Etickette.global.event.Events;
+import com.tae.Etickette.global.exception.ConflictException;
 import com.tae.Etickette.global.model.Money;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -58,7 +59,7 @@ class ConcertTest {
         concert.open();
 
         //when & then
-        assertThrows(ConcertNotReadyException.class,
+        assertThrows(ConflictException.class,
                 () -> concert.open());
     }
     @Test
@@ -70,7 +71,7 @@ class ConcertTest {
         concert.close();
 
         //when & then
-        assertThrows(ConcertNotReadyException.class,
+        assertThrows(ConflictException.class,
                 () -> concert.open());
     }
     @Test
@@ -81,7 +82,7 @@ class ConcertTest {
         concert.cancel();
 
         //when & then
-        assertThrows(ConcertNotReadyException.class,
+        assertThrows(ConflictException.class,
                 () -> concert.open());
     }
     @Test
@@ -94,7 +95,7 @@ class ConcertTest {
         concert.finish();
 
         //when & then
-        assertThrows(ConcertNotReadyException.class,
+        assertThrows(ConflictException.class,
                 () -> concert.open());
     }
 
@@ -121,7 +122,7 @@ class ConcertTest {
         Concert concert = Concert.create("공연A", "공연A입니다.", 120, new Image(""), List.of(new GradePrice("VIP", new Money(100000))), 1L);
 
         //when
-        assertThrows(ConcertNotOpenException.class,
+        assertThrows(ConflictException.class,
                 ()->concert.close());
     }
     @Test
@@ -132,7 +133,7 @@ class ConcertTest {
         concert.open();
         concert.close();
         //when
-        assertThrows(ConcertNotOpenException.class,
+        assertThrows(ConflictException.class,
                 ()->concert.close());
     }
     @Test
@@ -142,7 +143,7 @@ class ConcertTest {
         Concert concert = Concert.create("공연A", "공연A입니다.", 120, new Image(""), List.of(new GradePrice("VIP", new Money(100000))), 1L);
         concert.cancel();
         //when
-        assertThrows(ConcertNotOpenException.class,
+        assertThrows(ConflictException.class,
                 ()->concert.close());
     }
     @Test
@@ -154,7 +155,7 @@ class ConcertTest {
         concert.close();
         concert.finish();
         //when
-        assertThrows(ConcertNotOpenException.class,
+        assertThrows(ConflictException.class,
                 ()->concert.close());
     }
 
@@ -183,7 +184,7 @@ class ConcertTest {
         Concert concert = Concert.create("공연A", "공연A입니다.", 120, new Image(""), List.of(new GradePrice("VIP", new Money(100000))), 1L);
 
         //when
-        assertThrows(ConcertNotCloseException.class,
+        assertThrows(ConflictException.class,
                 ()->concert.finish());
     }
     @Test
@@ -193,7 +194,7 @@ class ConcertTest {
         Concert concert = Concert.create("공연A", "공연A입니다.", 120, new Image(""), List.of(new GradePrice("VIP", new Money(100000))), 1L);
         concert.open();
         //when
-        assertThrows(ConcertNotCloseException.class,
+        assertThrows(ConflictException.class,
                 ()->concert.finish());
     }
     @Test
@@ -203,7 +204,7 @@ class ConcertTest {
         Concert concert = Concert.create("공연A", "공연A입니다.", 120, new Image(""), List.of(new GradePrice("VIP", new Money(100000))), 1L);
         concert.cancel();
         //when
-        assertThrows(ConcertNotCloseException.class,
+        assertThrows(ConflictException.class,
                 ()->concert.finish());
     }
     @Test
@@ -215,7 +216,7 @@ class ConcertTest {
         concert.close();
         concert.finish();
         //when
-        assertThrows(ConcertNotCloseException.class,
+        assertThrows(ConflictException.class,
                 ()->concert.finish());
     }
 
@@ -272,7 +273,7 @@ class ConcertTest {
         Concert concert = Concert.create("공연A", "공연A입니다.", 120, new Image(""), List.of(new GradePrice("VIP", new Money(100000))), 1L);
         concert.cancel();
         //when
-        assertThrows(ConcertNotActiveException.class,
+        assertThrows(ConflictException.class,
                 () -> concert.cancel());
     }
     @Test
@@ -284,7 +285,7 @@ class ConcertTest {
         concert.close();
         concert.finish();
         //when
-        assertThrows(ConcertNotActiveException.class,
+        assertThrows(ConflictException.class,
                 () -> concert.cancel());
     }
 }

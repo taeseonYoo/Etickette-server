@@ -1,6 +1,8 @@
 package com.tae.Etickette.concert.command.domain;
 
 import com.tae.Etickette.global.event.Events;
+import com.tae.Etickette.global.exception.ConflictException;
+import com.tae.Etickette.global.exception.ErrorCode;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -78,23 +80,23 @@ public class Concert {
 
     private void verifyReady() {
         if (this.status != ConcertStatus.READY) {
-            throw new ConcertNotReadyException("공연 오픈 준비가 되지 않았습니다.");
+            throw new ConflictException(ErrorCode.CONCERT_NOT_READY, "공연이 준비되지 않았습니다.");
         }
     }
     private void verifyOpened() {
         if (this.status != ConcertStatus.OPEN) {
-            throw new ConcertNotOpenException("공연이 아직 오픈되지 않았습니다.");
+            throw new ConflictException(ErrorCode.CONCERT_NOT_OPEN, "오픈되지 않은 공연입니다.");
         }
     }
 
     private void verifyClosed() {
         if (this.status != ConcertStatus.SALE_CLOSED) {
-            throw new ConcertNotCloseException("공연 예매가 종료되지 않았습니다.");
+            throw new ConflictException(ErrorCode.CONCERT_NOT_CLOSED, "공연 예매가 종료되지 않았습니다.");
         }
     }
     private void verifyNotCancellable() {
         if (!isCancellable()) {
-            throw new ConcertNotActiveException("취소할 수 없는 공연입니다.");
+            throw new ConflictException(ErrorCode.CONCERT_NOT_ACTIVATE, "취소할 수 없는 공연입니다.");
         }
     }
     private boolean isCancellable() {
