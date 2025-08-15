@@ -1,4 +1,4 @@
-package com.tae.Etickette.global.config;
+package com.tae.Etickette.global.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tae.Etickette.global.exception.ErrorCode;
