@@ -6,7 +6,6 @@ import com.tae.Etickette.global.exception.ResourceNotFoundException;
 import com.tae.Etickette.member.application.dto.DeleteMemberRequest;
 import com.tae.Etickette.member.domain.*;
 import com.tae.Etickette.member.infra.EncryptionServiceImpl;
-import com.tae.Etickette.member.domain.BadPasswordException;
 import com.tae.Etickette.member.application.dto.RegisterMemberRequest;
 import com.tae.Etickette.member.application.dto.RegisterMemberResponse;
 import com.tae.Etickette.member.application.dto.ChangePasswordRequest;
@@ -146,7 +145,7 @@ public class MemberServiceTest {
         BDDMockito.given(changePolicy.hasUpdatePermission(any(), any())).willReturn(true);
 
         //when & then
-        assertThrows(BadPasswordException.class,
+        assertThrows(BadRequestException.class,
                 () -> memberService.changePassword(requestDto,"USER@spring")
         );
     }

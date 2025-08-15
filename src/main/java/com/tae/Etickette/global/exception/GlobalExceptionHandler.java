@@ -14,23 +14,18 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-//    @ExceptionHandler(MethodArgumentNotValidException.class)
-//    public ResponseEntity<String> handle(MethodArgumentNotValidException e) {
-//        log.error("MethodArgumentNotValidException : {}", e.getMessage());
-//        String errorMessage = e.getBindingResult()
-//                .getFieldErrors()
-//                .stream()
-//                .map(error -> error.getDefaultMessage())
-//                .collect(Collectors.joining(", "));
-//        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
-//    }
-//    @ExceptionHandler(AccessDeniedException.class)
-//    public ResponseEntity<String> handleAccessDeniedException(AccessDeniedException ex) {
-//        return ResponseEntity
-//                .status(403)
-//                .body("접근 권한이 없습니다.");
-//    }
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<String> handle(MethodArgumentNotValidException e) {
+        log.error("MethodArgumentNotValidException : {}", e.getMessage());
+        String errorMessage = e.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(error -> error.getDefaultMessage())
+                .collect(Collectors.joining(", "));
+        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+    }
 
+    //권한 오류가 발생하면, 403에러가 발생
     @ExceptionHandler(ForbiddenException.class)
     public ResponseEntity<ErrorResponse> handleForbiddenException(ForbiddenException e) {
         log.error("ForbiddenException : {}", e.getMessage());

@@ -1,5 +1,6 @@
 package com.tae.Etickette.integration.service;
 
+import com.tae.Etickette.global.exception.BadRequestException;
 import com.tae.Etickette.global.refresh.domain.RefreshToken;
 import com.tae.Etickette.global.refresh.infra.RefreshTokenRepository;
 import com.tae.Etickette.member.application.dto.DeleteMemberRequest;
@@ -10,7 +11,6 @@ import com.tae.Etickette.member.application.dto.ChangePasswordRequest;
 import com.tae.Etickette.member.domain.Member;
 import com.tae.Etickette.member.domain.MemberStatus;
 import com.tae.Etickette.member.infra.MemberRepository;
-import com.tae.Etickette.member.domain.BadPasswordException;
 import com.tae.Etickette.member.application.MemberService;
 import jakarta.persistence.EntityManager;
 import org.assertj.core.api.Assertions;
@@ -101,7 +101,7 @@ public class MemberServiceTest {
                 .build();
 
         //when & then
-        assertThrows(BadPasswordException.class,
+        assertThrows(BadRequestException.class,
                 () -> memberService.changePassword(requestDto, "USER@spring"));
     }
 

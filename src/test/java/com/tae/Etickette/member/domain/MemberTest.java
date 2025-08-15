@@ -1,6 +1,7 @@
 package com.tae.Etickette.member.domain;
 
 import com.tae.Etickette.global.event.Events;
+import com.tae.Etickette.global.exception.BadRequestException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -77,7 +78,7 @@ class MemberTest {
         BDDMockito.given(encryptionService.matches(any(), any())).willReturn(false);
 
         //when & then
-        assertThrows(BadPasswordException.class,
+        assertThrows(BadRequestException.class,
                 () -> member.changePassword(encryptionService
                         , "@OldPW123",
                         "@NewPW123"));
