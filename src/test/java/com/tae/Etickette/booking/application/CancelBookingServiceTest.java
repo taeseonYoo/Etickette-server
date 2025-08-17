@@ -2,12 +2,12 @@ package com.tae.Etickette.booking.application;
 
 import com.tae.Etickette.booking.command.application.BookingNotFoundException;
 import com.tae.Etickette.booking.command.application.CancelBookingService;
-import com.tae.Etickette.booking.command.application.NoCancellablePermission;
 import com.tae.Etickette.booking.command.domain.Booking;
 import com.tae.Etickette.booking.command.domain.BookingRef;
 import com.tae.Etickette.booking.command.domain.CancelPolicy;
 import com.tae.Etickette.booking.command.domain.SeatItem;
 import com.tae.Etickette.booking.infra.BookingRepository;
+import com.tae.Etickette.global.exception.ForbiddenException;
 import com.tae.Etickette.global.model.Money;
 import com.tae.Etickette.bookseat.command.domain.BookSeatId;
 import com.tae.Etickette.member.domain.Member;
@@ -71,7 +71,7 @@ class CancelBookingServiceTest {
         BDDMockito.given(cancelPolicy.hasEntireCancelPermission()).willReturn(false);
 
         //when & then
-        assertThrows(NoCancellablePermission.class, () ->
+        assertThrows(ForbiddenException.class, () ->
                 cancelBookingService.cancelAll(1L));
     }
 
@@ -116,7 +116,7 @@ class CancelBookingServiceTest {
         BDDMockito.given(memberRepository.findByEmail(any())).willReturn(Optional.of(mock(Member.class)));
 
         //when & then
-        assertThrows(NoCancellablePermission.class, () ->
+        assertThrows(ForbiddenException.class, () ->
                 cancelBookingService.cancel(any(),"test@test"));
     }
 

@@ -63,7 +63,7 @@ public class SessionControllerTest {
     private JacksonTester<RegisterSessionRequest> json;
 
     @Test
-    @WithMockUser
+    @WithMockUser(authorities = "ADMIN")
     void 세션등록_성공() throws Exception {
         RegisterVenueRequest venueRequest = VenueCreateBuilder.builder().build();
         RegisterVenueResponse venueResponse = registerVenueService.register(venueRequest);
@@ -90,7 +90,7 @@ public class SessionControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = "ADMIN")
+    @WithMockUser(authorities = "ADMIN")
     void 세션취소_성공() throws Exception {
         RegisterVenueRequest venueRequest = VenueCreateBuilder.builder().build();
         RegisterVenueResponse venueResponse = registerVenueService.register(venueRequest);

@@ -1,5 +1,7 @@
 package com.tae.Etickette.bookseat.command.domain;
 
+import com.tae.Etickette.global.exception.ConflictException;
+import com.tae.Etickette.global.exception.ErrorCode;
 import com.tae.Etickette.global.jpa.MoneyConverter;
 import com.tae.Etickette.global.model.Money;
 import jakarta.persistence.*;
@@ -46,7 +48,7 @@ public class BookSeat {
         this.status = SeatStatus.BOOKED;
     }
     private void verifySeatNotLocked() {
-        if (!isLocked()) throw new RuntimeException("");
+        if (!isLocked()) throw new ConflictException(ErrorCode.BOOKSEAT_NOT_LOCKED, "예매 할 수 없는 좌석입니다.");
     }
     private boolean isLocked() {
         return this.status == SeatStatus.LOCKED;
@@ -57,7 +59,7 @@ public class BookSeat {
         this.status = SeatStatus.LOCKED;
     }
     private void verifySeatAvailable() {
-        if (isPreempted()) throw new RuntimeException("선점 불가능");
+        if (isPreempted()) throw new ConflictException(ErrorCode.BOOKSEAT_ALREADY_RESERVED, "이미 예약된 좌석입니다.");
     }
 
     //좌석 취소
@@ -66,7 +68,7 @@ public class BookSeat {
         this.status = SeatStatus.AVAILABLE;
     }
     private void verifySeatPreempt(){
-        if (!isPreempted()) throw new RuntimeException("취소할 수 없음.");
+        if (!isPreempted()) throw new ConflictException(ErrorCode.BOOKSEAT_CANNOT_BE_CANCELED, "해당 좌석은 취소할 수 없습니다.");
     }
 
     private boolean isPreempted() {

@@ -30,6 +30,18 @@ public enum ErrorCode {
     SESSION_NOT_CLOSED(409,"SESSION-002","세션이 이미 취소된 경우"),
     DUPLICATE_DATE(409, "SESSION-003", "해당 스케줄이 이미 존재하여 세션을 등록할 수 없는 경우"),
 
+    //예매 오류
+    BOOKING_NOT_FOUND(404,"BOOKING-001","예매 정보를 찾을 수 없는 경우"),
+
+
+    //좌석 오류
+    SEAT_NOT_FOUND(404,"SEAT-001","좌석을 찾을 수 없는 경우"),
+
+    //예약 좌석 오류
+    BOOKSEAT_NOT_FOUND(404,"BOOKSEAT-001","예약 좌석을 찾을 수 없는 경우"),
+    BOOKSEAT_NOT_LOCKED(409,"BOOKSEAT-002","예약 좌석이 예매가 불가능한 경우"),
+    BOOKSEAT_CANNOT_BE_CANCELED(409,"BOOKSEAT-003","예약 좌석이 취소가 불가능한 경우"),
+    BOOKSEAT_ALREADY_RESERVED(409,"BOOKSEAT-004","예약 좌석이 이미 예약된 경우"),
 
     //이미지 업로드
     S3_UPLOAD_ERROR(500,"IMAGE-001","이미지 업로드 중 오류가 발생한 경우"),

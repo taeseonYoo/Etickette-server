@@ -29,6 +29,6 @@ public class SecurityCancelSeatPolicy implements CancelSeatPolicy {
         if (authentication == null) return false;
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         if (authorities == null) return false;
-        return authorities.stream().anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
+        return authorities.stream().anyMatch(authority -> authority.getAuthority().equals("ADMIN"));
     }
 }

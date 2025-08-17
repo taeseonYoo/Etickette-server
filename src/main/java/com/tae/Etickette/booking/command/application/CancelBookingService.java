@@ -5,6 +5,7 @@ import com.tae.Etickette.booking.command.domain.BookingRef;
 import com.tae.Etickette.booking.command.domain.CancelPolicy;
 import com.tae.Etickette.booking.infra.BookingRepository;
 import com.tae.Etickette.global.exception.ErrorCode;
+import com.tae.Etickette.global.exception.ForbiddenException;
 import com.tae.Etickette.global.exception.ResourceNotFoundException;
 import com.tae.Etickette.global.model.Canceller;
 import com.tae.Etickette.member.domain.Member;
@@ -33,7 +34,7 @@ public class CancelBookingService {
                 .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND,"회원 정보를 찾을 수 없습니다."));
 
         if (!cancelPolicy.hasCancellationPermission(booking, new Canceller(member.getId()))) {
-            throw new NoCancellablePermission("취소 권한이 없습니다.");
+            throw new ForbiddenException(ErrorCode.NO_PERMISSION, "예매 취소 권한이 없습니다. 예매 번호:" + bookingRef);
         }
 
         booking.cancel();
@@ -43,7 +44,7 @@ public class CancelBookingService {
         List<Booking> bookings = bookingRepository.findBySessionId(sessionId);
 
         if (!cancelPolicy.hasEntireCancelPermission()) {
-            throw new NoCancellablePermission("관리자만 예약을 전체 취소 할 수 있습니다.");
+            throw new ForbiddenException(ErrorCode.NO_PERMISSION, "예매를 취소할 권한이 없습니다.");
         }
 
         for (Booking booking : bookings) {
