@@ -1,6 +1,5 @@
 package com.tae.Etickette.session.application;
 
-import com.tae.Etickette.booking.command.application.SessionNotFoundException;
 import com.tae.Etickette.global.exception.ErrorCode;
 import com.tae.Etickette.global.exception.ResourceNotFoundException;
 import com.tae.Etickette.session.domain.Session;

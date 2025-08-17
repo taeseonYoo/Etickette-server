@@ -1,9 +1,10 @@
 package com.tae.Etickette.payment.application;
 
-import com.tae.Etickette.booking.command.application.BookingNotFoundException;
 import com.tae.Etickette.booking.command.domain.Booking;
 import com.tae.Etickette.booking.command.domain.BookingRef;
 import com.tae.Etickette.booking.infra.BookingRepository;
+import com.tae.Etickette.global.exception.ErrorCode;
+import com.tae.Etickette.global.exception.ResourceNotFoundException;
 import com.tae.Etickette.payment.domain.TossPaymentsVariables;
 import com.tae.Etickette.payment.domain.PayMethod;
 import com.tae.Etickette.payment.domain.Payment;
@@ -68,11 +69,12 @@ public class TossPaymentService {
         paymentRepository.save(payment);
 
         //예약 상태를 결제완료로 변경한다.
+        BookingRef bookingRef = new BookingRef(payment.getOrderId());
         Booking booking = bookingRepository
-                .findById(new BookingRef(payment.getOrderId())).orElseThrow(() -> new BookingNotFoundException("예약이 없음"));
+                .findById(bookingRef)
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.BOOKING_NOT_FOUND, "예약 내역을 찾을 수 없습니다. 예매 번호:" + bookingRef));
 
         booking.confirmPayment(payment.getId());
-
     }
 
     private void fail(JSONObject tossResult) {

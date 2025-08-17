@@ -1,5 +1,7 @@
 package com.tae.Etickette.payment.domain;
 
+import com.tae.Etickette.global.exception.BadRequestException;
+import com.tae.Etickette.global.exception.ErrorCode;
 import lombok.Getter;
 
 import java.util.Arrays;
@@ -22,6 +24,6 @@ public enum PayMethod {
         return Arrays.stream(values())
                 .filter(pm -> pm.getValue().equals(value))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Unknown PayMethod: " + value));
+                .orElseThrow(() -> new BadRequestException(ErrorCode.PAYMETHOD_NOT_SUPPOERTED, "Unknown PayMethod: " + value));
     }
 }

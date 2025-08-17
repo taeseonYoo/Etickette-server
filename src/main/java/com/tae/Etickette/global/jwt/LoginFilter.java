@@ -1,6 +1,8 @@
 package com.tae.Etickette.global.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tae.Etickette.global.exception.ErrorCode;
+import com.tae.Etickette.global.exception.UnauthorizedException;
 import com.tae.Etickette.global.refresh.application.RefreshTokenService;
 import com.tae.Etickette.global.auth.CustomUserDetails;
 import com.tae.Etickette.global.util.CookieUtil;
@@ -49,7 +51,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             String messageBody = StreamUtils.copyToString(inputStream, StandardCharsets.UTF_8);
             loginRequest = objectMapper.readValue(messageBody, LoginRequest.class);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new UnauthorizedException(ErrorCode.UNAUTHORIZED, e.getMessage());
         }
 
         String email = loginRequest.getEmail();

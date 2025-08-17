@@ -25,6 +25,13 @@ public class GlobalExceptionHandler {
                 .collect(Collectors.joining(", "));
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
+    //인증 오류, 401 에러
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ErrorResponse> handleUnauthorizedException(UnauthorizedException e) {
+        log.error("UnauthorizedException : {}", e.getMessage());
+        final ErrorResponse response = ErrorResponse.of(e.getErrorCode(), e.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
     //내부 서버 오류, 500 에러
     @ExceptionHandler(ServerProcessException.class)
     public ResponseEntity<ErrorResponse> handleServerProcessException(ServerProcessException e) {

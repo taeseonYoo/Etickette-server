@@ -2,6 +2,8 @@ package com.tae.Etickette.booking.command.domain;
 
 import com.tae.Etickette.bookseat.command.domain.BookSeatId;
 import com.tae.Etickette.global.event.Events;
+import com.tae.Etickette.global.exception.ConflictException;
+import com.tae.Etickette.global.exception.ErrorCode;
 import com.tae.Etickette.global.jpa.MoneyConverter;
 import com.tae.Etickette.global.model.Money;
 import jakarta.persistence.*;
@@ -53,8 +55,8 @@ public class Booking {
     }
     //예매 가능한 좌석의 최대 개수는 4개
     private void verifySelectedSeatCount(int count){
-        if (count > 4 || count ==0) {
-            throw new InvalidMaxSeatCountException("좌석은 최대 4개까지 선택 가능합니다.");
+        if (count > 4 || count == 0) {
+            throw new ConflictException(ErrorCode.QUANTITY_EXCEEDS_LIMIT, "좌석은 최소 1개 또는 최대 4개를 선택할 수 있습니다. 현재:" + count + "개");
         }
     }
     //좌석의 총금액을 계산한다.
@@ -67,14 +69,14 @@ public class Booking {
      * 예매를 취소하면, 좌석을 취소하는 이벤트가 발행된다.
      */
     public void cancel() {
-        verifyNotCanceled();
+        verifyCancellable();
         this.status = BookingStatus.CANCELED_BOOKING;
         //좌석을 취소한다.
         Events.raise(new BookingCanceledEvent(seatItems.stream().map(SeatItem::getSeatId).toList(), memberId, bookingRef));
     }
-    private void verifyNotCanceled() {
+    private void verifyCancellable() {
         if (!isNotCanceled())
-            throw new AlreadyCanceledException();
+            throw new ConflictException(ErrorCode.BOOKING_CANNOT_BE_CANCELED, "취소할 수 없는 예매입니다.");
     }
     private boolean isNotCanceled() {
         return status == BookingStatus.COMPLETED_BOOKING || status == BookingStatus.BEFORE_PAY;
@@ -95,7 +97,7 @@ public class Booking {
     }
     private void verifyNotYetPaid() {
         if (!isNotYetPaid())
-            throw new BookingCompletionFailedException("예매를 완료할 수 없습니다.");
+            throw new ConflictException(ErrorCode.BOOKING_ALREADY_PAID, "이미 결제된 예약입니다.");
     }
     private boolean isNotYetPaid() {
         return status == BookingStatus.BEFORE_PAY;

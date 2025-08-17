@@ -35,7 +35,7 @@ public class BookingService {
     public BookingRef booking(BookingRequest requestDto, String email) {
 
         Session session = sessionRepository.findById(requestDto.getSessionId()).orElseThrow(() ->
-                new SessionNotFoundException("세션을 찾을 수 없습니다."));
+                new ResourceNotFoundException(ErrorCode.SESSION_NOT_FOUND, "세션을 찾을 수 없습니다. 세션 번호:" + requestDto.getSessionId()));
 
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND,"회원 정보를 찾을 수 없습니다."));
@@ -47,7 +47,7 @@ public class BookingService {
         List<SeatItem> seatItems = new ArrayList<>();
         for (Long seatId : requestDto.getSeatIds()) {
             BookSeat seat = bookSeatRepository.findByIdWithLock(seatId, requestDto.getSessionId())
-                    .orElseThrow(() -> new BookSeatNotFoundException("스케줄 좌석 정보가 없습니다."));
+                    .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.BOOKSEAT_NOT_FOUND, "좌석 정보를 찾을 수 없습니다."));
             //좌석을 잠금 상태로 설정
             seat.lock();
             seatItems.add(new SeatItem(new BookSeatId(seatId, session.getId()), seat.getPrice()));

@@ -43,7 +43,7 @@ public class RegisterSessionService {
         //공연에 등록된 좌석 id를 가져온다.
         List<Long> seatIds = seatRepository.findIdByConcertId(concert.getId());
         if (seatIds.isEmpty()) {
-            throw new RuntimeException("임시");
+            throw new ResourceNotFoundException(ErrorCode.SEAT_NOT_FOUND, "좌석 정보를 찾을 수 없습니다.");
         }
 
         //시간 중복 확인

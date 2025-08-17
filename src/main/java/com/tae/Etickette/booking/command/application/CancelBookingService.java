@@ -28,7 +28,7 @@ public class CancelBookingService {
     public void cancel(BookingRef bookingRef, String email) {
 
         Booking booking = bookingRepository.findById(bookingRef)
-                .orElseThrow(() -> new BookingNotFoundException("예약 내역을 찾을 수 없습니다."));
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.BOOKING_NOT_FOUND, "예약 내역을 찾을 수 없습니다. 예매 번호:" + bookingRef));
 
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND,"회원 정보를 찾을 수 없습니다."));

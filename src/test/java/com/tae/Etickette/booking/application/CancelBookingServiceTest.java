@@ -1,13 +1,12 @@
 package com.tae.Etickette.booking.application;
 
-import com.tae.Etickette.booking.command.application.BookingNotFoundException;
 import com.tae.Etickette.booking.command.application.CancelBookingService;
 import com.tae.Etickette.booking.command.domain.Booking;
-import com.tae.Etickette.booking.command.domain.BookingRef;
 import com.tae.Etickette.booking.command.domain.CancelPolicy;
 import com.tae.Etickette.booking.command.domain.SeatItem;
 import com.tae.Etickette.booking.infra.BookingRepository;
 import com.tae.Etickette.global.exception.ForbiddenException;
+import com.tae.Etickette.global.exception.ResourceNotFoundException;
 import com.tae.Etickette.global.model.Money;
 import com.tae.Etickette.bookseat.command.domain.BookSeatId;
 import com.tae.Etickette.member.domain.Member;
@@ -101,7 +100,7 @@ class CancelBookingServiceTest {
         BDDMockito.given(bookingRepository.findById(any()))
                 .willReturn(Optional.empty());
         //when & then
-        assertThrows(BookingNotFoundException.class, () ->
+        assertThrows(ResourceNotFoundException.class, () ->
                 cancelBookingService.cancel(any(),"test@test"));
     }
 

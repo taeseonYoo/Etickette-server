@@ -3,6 +3,9 @@ package com.tae.Etickette.booking.query;
 import com.tae.Etickette.booking.command.domain.Booking;
 import com.tae.Etickette.booking.command.domain.BookingRef;
 import com.tae.Etickette.booking.infra.BookingRepository;
+import com.tae.Etickette.global.exception.ErrorCode;
+import com.tae.Etickette.global.exception.ResourceNotFoundException;
+import com.tae.Etickette.global.exception.UnauthorizedException;
 import com.tae.Etickette.member.domain.Member;
 import com.tae.Etickette.member.infra.MemberRepository;
 import com.tae.Etickette.seat.query.SeatData;
@@ -24,19 +27,19 @@ public class BookingQueryService {
 
     public PaymentInfo getPaymentInfo(BookingRef bookingRef,String email) {
         Booking booking = bookingRepository.findById(bookingRef)
-                .orElseThrow(() -> new IllegalArgumentException("잘못된 예약 번호입니다."));
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.BOOKING_NOT_FOUND, "예약 정보를 찾을 수 없습니다."));
 
         Member member = memberRepository
-                .findByEmail(email).orElseThrow(() -> new IllegalArgumentException("회원 정보가 없음."));
+                .findByEmail(email).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND, "회원 정보를 찾을 수 없습니다."));
 
         if (!member.getId().equals(booking.getMemberId())) {
-            throw new RuntimeException("예외");
+            throw new UnauthorizedException(ErrorCode.UNAUTHORIZED, "예약 정보와 회원 정보가 일치하지 않습니다.");
         }
 
         List<LineItemInfo> lineItems = booking.getSeatItems().stream()
                 .map(lineItem -> {
                     SeatData seatData = seatQueryService.getSeat(lineItem.getSeatId().getSeatId())
-                            .orElseThrow(() -> new IllegalArgumentException("좌석을 찾을 수 없습니다."));
+                            .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.SEAT_NOT_FOUND, "좌석을 찾을 수 없습니다."));
                     return new LineItemInfo(lineItem, seatData);
                 }).toList();
 

@@ -1,10 +1,10 @@
 package com.tae.Etickette.booking.application;
 
 import com.tae.Etickette.booking.command.application.BookingService;
-import com.tae.Etickette.booking.command.application.SessionNotFoundException;
 import com.tae.Etickette.booking.command.application.dto.BookingRequest;
 import com.tae.Etickette.booking.infra.BookingRepository;
 import com.tae.Etickette.bookseat.infra.BookSeatRepository;
+import com.tae.Etickette.global.exception.ResourceNotFoundException;
 import com.tae.Etickette.member.infra.MemberRepository;
 import com.tae.Etickette.session.infra.SessionRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,7 +44,7 @@ class BookingServiceTest {
         BDDMockito.given(sessionRepository.findById(any())).willReturn(Optional.empty());
 
         //when & then
-        assertThrows(SessionNotFoundException.class,
+        assertThrows(ResourceNotFoundException.class,
                 () -> bookingService.booking(request,"abc@abc"));
     }
 
@@ -56,7 +56,7 @@ class BookingServiceTest {
         BDDMockito.given(sessionRepository.findById(any())).willReturn(Optional.empty());
 
         //when & then
-        assertThrows(SessionNotFoundException.class,
+        assertThrows(ResourceNotFoundException.class,
                 () -> bookingService.booking(request,"abc@abc"));
     }
 }
