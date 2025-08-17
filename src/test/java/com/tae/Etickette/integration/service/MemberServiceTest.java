@@ -128,22 +128,22 @@ public class MemberServiceTest {
     @DisplayName("deleteMember - 회원 삭제에 성공하면, 리프레시 토큰이 삭제된다.")
     public void 회원삭제_성공_이벤트() {
         //given
-        refreshTokenRepository.save(new RefreshToken("USER@spring", "refresh.token", "expiration"));
+        refreshTokenRepository.save(new RefreshToken("event@spring", "refresh.token.event", "expiration"));
 
         RegisterMemberRequest member = RegisterMemberRequest.builder()
                 .name("USER")
-                .email("USER@spring").password("@Abc1234")
+                .email("event@spring").password("@Abc1234")
                 .build();
         memberService.register(member);
 
 
 
-        DeleteMemberRequest request = DeleteMemberRequest.builder().email("USER@spring").build();
+        DeleteMemberRequest request = DeleteMemberRequest.builder().email("event@spring").build();
 
         //when
-        memberService.deleteMember(request,"USER@spring");
+        memberService.deleteMember(request,"event@spring");
 
         //then
-        Assertions.assertThat(refreshTokenRepository.existsByRefresh("refresh.token")).isFalse();
+        Assertions.assertThat(refreshTokenRepository.existsByRefresh("refresh.token.event")).isFalse();
     }
 }
