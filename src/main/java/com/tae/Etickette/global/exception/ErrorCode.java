@@ -25,6 +25,12 @@ public enum ErrorCode {
     CONCERT_NOT_CLOSED(409,"CONCERT-004","공연이 종료되지 않은 경우"),
     CONCERT_NOT_ACTIVATE(409,"CONCERT-005","공연이 활성화 되지 않은 경우"),
 
+    //세션 오류
+    SESSION_NOT_FOUND(404,"SESSION-001","세션 정보를 찾을 수 없는 경우"),
+    SESSION_NOT_CLOSED(409,"SESSION-002","세션이 이미 취소된 경우"),
+    DUPLICATE_DATE(409, "SESSION-003", "해당 스케줄이 이미 존재하여 세션을 등록할 수 없는 경우"),
+
+
     //이미지 업로드
     S3_UPLOAD_ERROR(500,"IMAGE-001","이미지 업로드 중 오류가 발생한 경우"),
 

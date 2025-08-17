@@ -1,6 +1,8 @@
 package com.tae.Etickette.session.domain;
 
 import com.tae.Etickette.global.event.Events;
+import com.tae.Etickette.global.exception.ConflictException;
+import com.tae.Etickette.global.exception.ErrorCode;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -59,7 +61,7 @@ public class Session {
 
     private void verifyCanceled() {
         if (this.status == SessionStatus.CANCELED)
-            throw new AlreadyCanceledException("이미 취소 된 공연입니다.");
+            throw new ConflictException(ErrorCode.SESSION_NOT_CLOSED, "이미 취소 된 공연입니다.");
     }
 
 

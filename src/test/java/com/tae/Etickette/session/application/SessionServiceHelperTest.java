@@ -1,5 +1,6 @@
 package com.tae.Etickette.session.application;
 
+import com.tae.Etickette.global.exception.ConflictException;
 import com.tae.Etickette.session.domain.Session;
 import com.tae.Etickette.session.infra.SessionRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -56,7 +57,7 @@ class SessionServiceHelperTest {
         BDDMockito.given(sessionRepository.findAllByVenueId(any())).willReturn(savedSessions);
 
         //when & then
-        assertThrows(AlreadyExistingDate.class,
+        assertThrows(ConflictException.class,
                 ()->SessionServiceHelper.findExistingDate(sessionRepository,1L,requestDates));
     }
 

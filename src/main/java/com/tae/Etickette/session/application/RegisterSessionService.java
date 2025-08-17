@@ -36,7 +36,7 @@ public class RegisterSessionService {
     public List<Long> register(RegisterSessionRequest requestDto) {
         //공연 확인
         Concert concert = concertRepository.findById(requestDto.getConcertId()).orElseThrow(() ->
-                new ConcertNotFoundException("공연을 찾을 수 없습니다."));
+                new ResourceNotFoundException(ErrorCode.CONCERT_NOT_FOUND, "공연을 찾을 수 없습니다."));
         //공연장 확인
         venueRepository.findById(concert.getVenueId())
                 .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.VENUE_NOT_FOUND,"공연장을 찾을 수 없습니다."));
@@ -59,7 +59,6 @@ public class RegisterSessionService {
             Session savedSession = sessionRepository.save(session);
             sessionIds.add(savedSession.getId());
 
-            //TODO 현재 ID를 Embedded 키로 관리중이라 SELECT + MERGE로 처리된다.
             List<BookSeat> bookSeats = settingSeatService.setting(seatIds, concert.getGradePrices(), savedSession.getId());
             bookSeatRepository.saveAll(bookSeats);
         }

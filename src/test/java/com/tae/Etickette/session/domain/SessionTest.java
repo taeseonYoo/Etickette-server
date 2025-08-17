@@ -1,6 +1,7 @@
 package com.tae.Etickette.session.domain;
 
 import com.tae.Etickette.global.event.Events;
+import com.tae.Etickette.global.exception.ConflictException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -57,7 +58,7 @@ class SessionTest {
         //when
         session.cancel();
         //then
-        assertThrows(AlreadyCanceledException.class, () ->
+        assertThrows(ConflictException.class, () ->
                 session.cancel());
     }
 }

@@ -1,5 +1,7 @@
 package com.tae.Etickette.session.application;
 
+import com.tae.Etickette.global.exception.ConflictException;
+import com.tae.Etickette.global.exception.ErrorCode;
 import com.tae.Etickette.session.domain.Session;
 import com.tae.Etickette.session.infra.SessionRepository;
 
@@ -19,7 +21,7 @@ public final class SessionServiceHelper {
 
         for (LocalDate date : requestDates) {
             if (existingDates.contains(date)) {
-                throw new AlreadyExistingDate("이미 스케줄이 존재합니다.");
+                throw new ConflictException(ErrorCode.DUPLICATE_DATE, "이미 스케줄이 존재합니다." + date);
             }
         }
     }

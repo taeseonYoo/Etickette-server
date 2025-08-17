@@ -9,7 +9,10 @@ public class ErrorResponse {
     private final String code;
     private final String message;
 
+    static ErrorResponse of(ErrorCode errorCode,String message){
+        return new ErrorResponse(errorCode.getCode(), message);
+    }
     static ErrorResponse of(ErrorCode errorCode){
-        return new ErrorResponse(errorCode.getCode(), errorCode.getDescription());
+        return new ErrorResponse(errorCode.getCode(),errorCode.getDescription());
     }
 }

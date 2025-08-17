@@ -91,7 +91,7 @@ class RegisterSessionServiceTest {
         BDDMockito.given(concertRepository.findById(any())).willReturn(Optional.empty());
 
         //when & then
-        Assertions.assertThrows(ConcertNotFoundException.class, () ->
+        Assertions.assertThrows(ResourceNotFoundException.class, () ->
                 registerSessionService.register(requestDto));
     }
 

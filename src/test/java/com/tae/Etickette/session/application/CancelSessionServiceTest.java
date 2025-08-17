@@ -1,6 +1,7 @@
 package com.tae.Etickette.session.application;
 
 import com.tae.Etickette.booking.command.application.SessionNotFoundException;
+import com.tae.Etickette.global.exception.ResourceNotFoundException;
 import com.tae.Etickette.session.domain.Session;
 import com.tae.Etickette.session.infra.SessionRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -33,7 +34,7 @@ class CancelSessionServiceTest {
         BDDMockito.given(sessionRepository.findById(any())).willReturn(Optional.empty());
 
         //when & then
-        assertThrows(SessionNotFoundException.class, () ->
+        assertThrows(ResourceNotFoundException.class, () ->
                 cancelSessionService.cancel(1L));
     }
 

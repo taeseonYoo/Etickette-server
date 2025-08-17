@@ -29,39 +29,39 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ServerProcessException.class)
     public ResponseEntity<ErrorResponse> handleServerProcessException(ServerProcessException e) {
         log.error("ServerProcessException : {}", e.getMessage());
-        final ErrorResponse response = new ErrorResponse(e.getErrorCode().getCode(), e.getMessage());
+        final ErrorResponse response = ErrorResponse.of(e.getErrorCode(), e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
     //요청 처리 중 비즈니스 로직상 불가능하거나 모순이 생긴 경우, 409 에러
     @ExceptionHandler(ConflictException.class)
     public ResponseEntity<ErrorResponse> handleConflictException(ConflictException e) {
         log.error("ConflictException : {}", e.getMessage());
-        final ErrorResponse response = new ErrorResponse(e.getErrorCode().getCode(), e.getMessage());
+        final ErrorResponse response = ErrorResponse.of(e.getErrorCode(), e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
     //권한 오류가 발생하면, 403에러가 발생
     @ExceptionHandler(ForbiddenException.class)
     public ResponseEntity<ErrorResponse> handleForbiddenException(ForbiddenException e) {
         log.error("ForbiddenException : {}", e.getMessage());
-        final ErrorResponse response = new ErrorResponse(e.getErrorCode().getCode(), e.getMessage());
+        final ErrorResponse response = ErrorResponse.of(e.getErrorCode(), e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     }
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ErrorResponse> handleBadRequestException(BadRequestException e) {
         log.error("BadRequestException : {}", e.getMessage());
-        final ErrorResponse response = new ErrorResponse(e.getErrorCode().getCode(), e.getMessage());
+        final ErrorResponse response = ErrorResponse.of(e.getErrorCode(), e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleResourceNotFoundException(ResourceNotFoundException e) {
         log.error("ResourceNotFoundException : {}", e.getMessage());
-        final ErrorResponse response = new ErrorResponse(e.getErrorCode().getCode(), e.getMessage());
+        final ErrorResponse response = ErrorResponse.of(e.getErrorCode(), e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ErrorResponse> handleBusinessException(BusinessException e) {
         log.error("Undefined Business Exception : {}", e.getMessage());
-        final ErrorResponse response = new ErrorResponse(e.getErrorCode().getCode(), e.getMessage());
+        final ErrorResponse response = ErrorResponse.of(e.getErrorCode(), e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
     @ExceptionHandler(Exception.class)
@@ -74,7 +74,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AuthorizationDeniedException.class)
     public ResponseEntity<ErrorResponse> handleException(AuthorizationDeniedException e) {
         log.error("AuthorizationDeniedException : {}", e.getMessage());
-        ErrorResponse response = ErrorResponse.of(ErrorCode.NO_PERMISSION);
+        ErrorResponse response = ErrorResponse.of(ErrorCode.NO_PERMISSION,e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     }
 }
