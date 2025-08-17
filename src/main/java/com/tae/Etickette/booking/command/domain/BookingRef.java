@@ -1,5 +1,6 @@
 package com.tae.Etickette.booking.command.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -15,8 +16,8 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BookingRef implements Serializable {
+    @Column(name = "booking_ref")
     private String value;
-
 
     public static BookingRef generate() {
         LocalDate today = LocalDate.now();
