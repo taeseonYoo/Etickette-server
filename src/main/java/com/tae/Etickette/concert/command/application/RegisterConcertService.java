@@ -61,6 +61,9 @@ public class RegisterConcertService {
         for (int i = 1; i <= 50; i++) {
             seats.add(Seat.create(String.valueOf((char) ('F' + (i - 1) / 10)), String.valueOf((char) ((i - 1) % 10) + 1), concertId));
         }
+        for (int i = 1; i <= 50; i++) {
+            seats.add(Seat.create(String.valueOf((char) ('K' + (i - 1) / 10)), String.valueOf((char) ((i - 1) % 10) + 1), concertId));
+        }
         return seats;
     }
 }
