@@ -24,7 +24,6 @@ public class BookSeatData {
 
     private String grade;
 
-
     @Enumerated(EnumType.STRING)
     private SeatStatus status;
 }
