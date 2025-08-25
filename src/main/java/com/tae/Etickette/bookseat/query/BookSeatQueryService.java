@@ -12,7 +12,7 @@ import java.util.List;
 public class BookSeatQueryService {
     private final BookSeatDataDao bookSeatDataDao;
 
-    @Transactional(readOnly = true, propagation = Propagation.NOT_SUPPORTED)
+    @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     public List<BookSeatData> getAllSeat(Long sessionId) {
         return bookSeatDataDao.findBySessionId(sessionId);
     }
