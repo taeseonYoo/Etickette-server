@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @IdClass(BookSeatId.class)
-@Table(name = "book_seat")
+@Table(name = "book_seat",indexes = @Index(name = "idx_book_seat",columnList = "session_id"))
 public class BookSeatData {
     @Id
     @Column(name = "seat_id")
@@ -23,9 +23,6 @@ public class BookSeatData {
     private Long sessionId;
 
     private String grade;
-
-    @Convert(converter = MoneyConverter.class)
-    private Money price;
 
     @Enumerated(EnumType.STRING)
     private SeatStatus status;

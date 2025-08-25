@@ -14,7 +14,12 @@ import java.util.List;
 public class BookSeatController {
     private final BookSeatQueryService bookSeatQueryService;
 
-    //TODO 쿼리 튜닝 대상, 현재는 많은 데이터를 포함하지만, 좌석 id와 상태면 충분하다.
+    /**
+     * 좌석 정보 조회 요청
+     * 좌석 정보 요청만 사용하고 트랜잭션을 사용하지 않으므로 Repo에서 직접 호출하는 방식의 개선이 가능하다.
+     * @param sessionId
+     * @return
+     */
     @GetMapping("/{sessionId}")
     public ResponseEntity<List<BookSeatData>> getSeatInfo(@PathVariable Long sessionId) {
         return ResponseEntity.ok(bookSeatQueryService.getAllSeat(sessionId));

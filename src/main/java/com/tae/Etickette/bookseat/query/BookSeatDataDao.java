@@ -7,5 +7,4 @@ import java.util.List;
 
 public interface BookSeatDataDao extends Repository<BookSeatData, BookSeatId> {
     List<BookSeatData> findBySessionId(Long sessionId);
-
 }
