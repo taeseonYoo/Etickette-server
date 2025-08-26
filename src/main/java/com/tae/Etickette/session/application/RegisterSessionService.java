@@ -60,7 +60,7 @@ public class RegisterSessionService {
             sessionIds.add(savedSession.getId());
 
             List<BookSeat> bookSeats = settingSeatService.setting(seatIds, concert.getGradePrices(), savedSession.getId());
-            bookSeatRepository.saveAll(bookSeats);
+            bookSeatRepository.saveAllInBulk(bookSeats);
         }
         return sessionIds;
     }
