@@ -1,4 +1,4 @@
-package com.tae.Etickette.booking.query;
+package com.tae.Etickette.booking.query.application;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -3,8 +3,8 @@ package com.tae.Etickette.integration.service;
 import com.tae.Etickette.booking.command.application.BookingService;
 import com.tae.Etickette.booking.command.application.dto.BookingRequest;
 import com.tae.Etickette.booking.command.domain.BookingRef;
-import com.tae.Etickette.booking.query.PaymentInfo;
-import com.tae.Etickette.booking.query.BookingQueryService;
+import com.tae.Etickette.booking.query.application.PaymentInfo;
+import com.tae.Etickette.booking.query.application.BookingQueryService;
 import com.tae.Etickette.concert.command.application.RegisterConcertService;
 import com.tae.Etickette.concert.command.application.dto.RegisterConcertRequest;
 import com.tae.Etickette.concert.command.application.dto.RegisterConcertResponse;
@@ -33,7 +33,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Comparator;
 import java.util.List;
 
 

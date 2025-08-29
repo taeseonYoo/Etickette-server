@@ -111,11 +111,11 @@ public class SecurityConfig {
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-//                        .anyRequest().permitAll()
-                        .requestMatchers("/", "/api/members/login", "/api/members/logout", "/api/members/signup",
-                                "/oauth2-jwt-header", "/reissue").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/api/concerts","/api/concerts/**").permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
+//                        .requestMatchers("/", "/api/members/login", "/api/members/logout", "/api/members/signup",
+//                                "/oauth2-jwt-header", "/reissue").permitAll()
+//                        .requestMatchers(HttpMethod.GET,"/api/concerts","/api/concerts/**").permitAll()
+//                        .anyRequest().authenticated()
                 );
 
         // - 인증되지 않은 사용자는 authenticationEntryPoint가 처리 (401 Unauthorized)

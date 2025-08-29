@@ -1,4 +1,4 @@
-package com.tae.Etickette.booking.query;
+package com.tae.Etickette.booking.query.application;
 
 import com.tae.Etickette.booking.command.domain.Booking;
 import com.tae.Etickette.booking.command.domain.BookingRef;
