@@ -3,6 +3,8 @@ package com.tae.Etickette.booking.query.application;
 import com.tae.Etickette.booking.command.domain.Booking;
 import com.tae.Etickette.booking.command.domain.BookingRef;
 import com.tae.Etickette.booking.infra.BookingRepository;
+import com.tae.Etickette.booking.query.BookingSummary;
+import com.tae.Etickette.booking.query.BookingSummaryDao;
 import com.tae.Etickette.global.exception.ErrorCode;
 import com.tae.Etickette.global.exception.ResourceNotFoundException;
 import com.tae.Etickette.global.exception.UnauthorizedException;
@@ -11,20 +13,21 @@ import com.tae.Etickette.member.infra.MemberRepository;
 import com.tae.Etickette.seat.query.SeatData;
 import com.tae.Etickette.seat.query.SeatQueryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class BookingQueryService {
     private final BookingRepository bookingRepository;
     private final SeatQueryService seatQueryService;
-
     private final MemberRepository memberRepository;
+    private final BookingSummaryDao bookingSummaryDao;
 
+    @Transactional(readOnly = true)
     public PaymentInfo getPaymentInfo(BookingRef bookingRef,String email) {
         Booking booking = bookingRepository.findById(bookingRef)
                 .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.BOOKING_NOT_FOUND, "예약 정보를 찾을 수 없습니다."));
@@ -44,5 +47,11 @@ public class BookingQueryService {
                 }).toList();
 
         return new PaymentInfo(booking, lineItems, new Booker(member.getName(), email));
+    }
+
+    public List<BookingSummary> getBookingList(String email) {
+        Member member = memberRepository.findByEmail(email).orElseThrow(() ->
+                new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND, "회원 정보 없음"));
+        return bookingSummaryDao.findBookingSummariesByMemberId(member.getId());
     }
 }

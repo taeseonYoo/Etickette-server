@@ -5,7 +5,6 @@ import com.tae.Etickette.booking.command.application.CancelBookingService;
 import com.tae.Etickette.booking.command.application.dto.BookingRequest;
 import com.tae.Etickette.booking.command.domain.BookingRef;
 import com.tae.Etickette.booking.query.BookingSummary;
-import com.tae.Etickette.booking.query.BookingSummaryDao;
 import com.tae.Etickette.booking.query.application.BookingQueryService;
 import com.tae.Etickette.booking.query.application.PaymentInfo;
 import lombok.RequiredArgsConstructor;
@@ -18,13 +17,22 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/booking")
+@RequestMapping("/api/bookings")
 public class BookingController {
 
     private final BookingService bookingService;
     private final CancelBookingService cancelBookingService;
     private final BookingQueryService bookingQueryService;
-    private final BookingSummaryDao bookingSummaryDao;
+
+    /**
+     * 회원 별 예매 내역 조회
+     * @return
+     */
+    @GetMapping("")
+    public ResponseEntity<List<BookingSummary>> getTicket() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return ResponseEntity.ok(bookingQueryService.getBookingList(email));
+    }
 
     @PostMapping
     public ResponseEntity<String> booking(@RequestBody BookingRequest request) {
@@ -34,7 +42,7 @@ public class BookingController {
         return ResponseEntity.ok(booking.getValue());
     }
 
-    @PostMapping("/{bookingRef}/cancel")
+    @PatchMapping("/{bookingRef}/cancel")
     public ResponseEntity<Void> cancel(@PathVariable("bookingRef") String bookingRef) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
@@ -42,15 +50,14 @@ public class BookingController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    /**
+     * 결제를 위한 예매 내역 정보 제공
+     * @param bookingRef
+     * @return
+     */
     @GetMapping("/{bookingRef}")
     public ResponseEntity<PaymentInfo> getPaymentInfo(@PathVariable("bookingRef") String bookingRef) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-
         return ResponseEntity.ok(bookingQueryService.getPaymentInfo(new BookingRef(bookingRef),email));
     }
-    @GetMapping("/ticket/{memberId}")
-    public ResponseEntity<List<BookingSummary>> getTicket(@PathVariable("memberId") Long memberId) {
-        return ResponseEntity.ok(bookingSummaryDao.findBookingSummariesByMemberId(memberId));
-    }
-
 }
