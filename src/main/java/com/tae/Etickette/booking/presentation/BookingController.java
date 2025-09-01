@@ -8,6 +8,7 @@ import com.tae.Etickette.booking.query.BookingSummary;
 import com.tae.Etickette.booking.query.application.BookingQueryService;
 import com.tae.Etickette.booking.query.application.PaymentInfo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,9 +30,9 @@ public class BookingController {
      * @return
      */
     @GetMapping("")
-    public ResponseEntity<List<BookingSummary>> getTicket() {
+    public ResponseEntity<List<BookingSummary>> getTicket(@RequestParam(required = false) String status) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        return ResponseEntity.ok(bookingQueryService.getBookingList(email));
+        return ResponseEntity.ok(bookingQueryService.getBookingList(email, status));
     }
 
     @PostMapping

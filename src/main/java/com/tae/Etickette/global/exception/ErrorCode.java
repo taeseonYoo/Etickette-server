@@ -35,6 +35,7 @@ public enum ErrorCode {
     BOOKING_CANNOT_BE_CANCELED(409,"BOOKING-002","예매 취소가 불가능한 경우"),
     BOOKING_ALREADY_PAID(409,"BOOKING-003","예매가 이미 결제된 경우"),
     QUANTITY_EXCEEDS_LIMIT(409,"BOOKING-004","좌석의 구매 수량 한도 초과"),
+    BOOKING_QUERY_INVALID_STATUS(400,"BOOKING-005","예매 상태 오류"),
 
     //좌석 오류
     SEAT_NOT_FOUND(404,"SEAT-001","좌석을 찾을 수 없는 경우"),

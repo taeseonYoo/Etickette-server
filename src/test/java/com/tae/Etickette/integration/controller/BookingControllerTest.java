@@ -38,8 +38,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -103,7 +102,7 @@ class BookingControllerTest {
         BookingRef bookingRef = bookingService.booking(request, savedMember.getEmail());
 
         //when
-        mockMvc.perform(post("/api/booking/"+bookingRef.getValue()+"/cancel")
+        mockMvc.perform(patch("/api/bookings/"+bookingRef.getValue()+"/cancel")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }

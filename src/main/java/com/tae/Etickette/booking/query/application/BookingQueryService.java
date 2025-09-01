@@ -2,9 +2,11 @@ package com.tae.Etickette.booking.query.application;
 
 import com.tae.Etickette.booking.command.domain.Booking;
 import com.tae.Etickette.booking.command.domain.BookingRef;
+import com.tae.Etickette.booking.command.domain.BookingStatus;
 import com.tae.Etickette.booking.infra.BookingRepository;
 import com.tae.Etickette.booking.query.BookingSummary;
 import com.tae.Etickette.booking.query.BookingSummaryDao;
+import com.tae.Etickette.global.exception.BadRequestException;
 import com.tae.Etickette.global.exception.ErrorCode;
 import com.tae.Etickette.global.exception.ResourceNotFoundException;
 import com.tae.Etickette.global.exception.UnauthorizedException;
@@ -49,9 +51,18 @@ public class BookingQueryService {
         return new PaymentInfo(booking, lineItems, new Booker(member.getName(), email));
     }
 
-    public List<BookingSummary> getBookingList(String email) {
+    public List<BookingSummary> getBookingList(String email,String bookingStatus) {
         Member member = memberRepository.findByEmail(email).orElseThrow(() ->
                 new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND, "회원 정보를 찾을 수 없습니다."));
-        return bookingSummaryDao.findBookingSummariesByMemberId(member.getId());
+
+        if (bookingStatus == null) {
+            return bookingSummaryDao.findBookingSummariesByMemberId(member.getId());
+        } else {
+            try {
+                return bookingSummaryDao.findBookingSummariesByMemberIdAndStatus(member.getId(), BookingStatus.valueOf(bookingStatus));
+            } catch (IllegalArgumentException e) {
+                throw new BadRequestException(ErrorCode.BOOKING_QUERY_INVALID_STATUS, "조회 할 수 없는 티켓입니다.");
+            }
+        }
     }
 }
