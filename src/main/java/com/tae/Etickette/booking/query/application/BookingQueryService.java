@@ -51,7 +51,7 @@ public class BookingQueryService {
 
     public List<BookingSummary> getBookingList(String email) {
         Member member = memberRepository.findByEmail(email).orElseThrow(() ->
-                new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND, "회원 정보 없음"));
+                new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND, "회원 정보를 찾을 수 없습니다."));
         return bookingSummaryDao.findBookingSummariesByMemberId(member.getId());
     }
 }
