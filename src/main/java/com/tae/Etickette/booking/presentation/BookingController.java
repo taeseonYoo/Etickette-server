@@ -4,26 +4,36 @@ import com.tae.Etickette.booking.command.application.BookingService;
 import com.tae.Etickette.booking.command.application.CancelBookingService;
 import com.tae.Etickette.booking.command.application.dto.BookingRequest;
 import com.tae.Etickette.booking.command.domain.BookingRef;
-import com.tae.Etickette.booking.query.BookingQueryService;
-import com.tae.Etickette.booking.query.PaymentInfo;
-import com.tae.Etickette.global.auth.CustomUserDetails;
-import com.tae.Etickette.global.model.Canceller;
+import com.tae.Etickette.booking.query.BookingSummary;
+import com.tae.Etickette.booking.query.application.BookingQueryService;
+import com.tae.Etickette.booking.query.application.PaymentInfo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/booking")
+@RequestMapping("/api/bookings")
 public class BookingController {
 
     private final BookingService bookingService;
     private final CancelBookingService cancelBookingService;
     private final BookingQueryService bookingQueryService;
+
+    /**
+     * 회원 별 예매 내역 조회
+     * @return
+     */
+    @GetMapping("")
+    public ResponseEntity<List<BookingSummary>> getTicket(@RequestParam(required = false) String status) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return ResponseEntity.ok(bookingQueryService.getBookingList(email, status));
+    }
 
     @PostMapping
     public ResponseEntity<String> booking(@RequestBody BookingRequest request) {
@@ -33,7 +43,7 @@ public class BookingController {
         return ResponseEntity.ok(booking.getValue());
     }
 
-    @PostMapping("/{bookingRef}/cancel")
+    @PatchMapping("/{bookingRef}/cancel")
     public ResponseEntity<Void> cancel(@PathVariable("bookingRef") String bookingRef) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
@@ -41,10 +51,14 @@ public class BookingController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    /**
+     * 결제를 위한 예매 내역 정보 제공
+     * @param bookingRef
+     * @return
+     */
     @GetMapping("/{bookingRef}")
     public ResponseEntity<PaymentInfo> getPaymentInfo(@PathVariable("bookingRef") String bookingRef) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-
         return ResponseEntity.ok(bookingQueryService.getPaymentInfo(new BookingRef(bookingRef),email));
     }
 }

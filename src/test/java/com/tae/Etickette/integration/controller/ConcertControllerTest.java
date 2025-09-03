@@ -22,6 +22,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.CacheManager;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
@@ -127,6 +128,7 @@ public class ConcertControllerTest {
 
     @Test
     @DisplayName("공연 등록 - 공연 등록 성공")
+    @WithMockUser(authorities = "ADMIN")
     void 공연등록_성공() throws Exception {
         //given
         RegisterVenueResponse venue = venueService.register(VenueCreateBuilder.builder().place("KSPO").build());
