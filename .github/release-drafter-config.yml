@@ -13,6 +13,7 @@ categories:
     labels:
       - 'docs'
       - 'chore'
+      - 'refactor'
 change-template: '- $TITLE #$NUMBER @$AUTHOR '
 template: |
   ## 이번 버전의 변경사항은 아래와 같아요
