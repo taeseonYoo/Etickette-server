@@ -17,9 +17,9 @@ import java.io.Serializable;
 @Immutable
 @Synchronize({"concert","venue"})
 @Subselect("""
-SELECT DISTINCT 
+SELECT
     c.concert_id,c.title, c.image_path, v.place
-FROM concert c join venue v on v.venue_id = c.venue_id
+FROM venue v join concert c on v.venue_id = c.venue_id
 """)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
