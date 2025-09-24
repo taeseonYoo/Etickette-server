@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @IdClass(BookSeatId.class)
-@Table(name = "book_seat",indexes = @Index(name = "idx_book_seat",columnList = "session_id"))
+@Table(name = "book_seat", indexes = @Index(name = "covering_idx", columnList = "session_id,seat_id,grade,status"))
 public class BookSeatData {
     @Id
     @Column(name = "seat_id")
