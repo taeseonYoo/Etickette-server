@@ -47,9 +47,7 @@ public class CancelBookingService {
             throw new ForbiddenException(ErrorCode.NO_PERMISSION, "예매를 취소할 권한이 없습니다.");
         }
 
-        for (Booking booking : bookings) {
-            booking.cancel();
-        }
+        bookings.forEach(Booking::cancel);
     }
 
 }

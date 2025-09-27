@@ -26,8 +26,6 @@ public class CancelSessionService {
     public void cancelByConcertId(Long concertId) {
         List<Session> sessions = sessionRepository.findAllByConcertId(concertId);
 
-        for (Session session : sessions) {
-            session.cancel();
-        }
+        sessions.forEach(Session::cancel);
     }
 }
