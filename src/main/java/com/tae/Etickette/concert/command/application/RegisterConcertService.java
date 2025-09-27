@@ -46,6 +46,7 @@ public class RegisterConcertService {
 
         Concert savedConcert = concertRepository.save(concert);
 
+        //TODO 좌석을 이벤트로 생성하도록 수정해야 할 것 같다.
         List<Seat> seats = initSeat(savedConcert.getId());
         seatRepository.saveAllInBulk(seats);
 
