@@ -18,6 +18,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
@@ -126,6 +127,7 @@ public class MemberServiceTest {
     }
     @Test
     @DisplayName("deleteMember - 회원 삭제에 성공하면, 리프레시 토큰이 삭제된다.")
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public void 회원삭제_성공_이벤트() {
         //given
         refreshTokenRepository.save(new RefreshToken("event@spring", "refresh.token.event", "expiration"));
@@ -136,12 +138,11 @@ public class MemberServiceTest {
                 .build();
         memberService.register(member);
 
-
-
         DeleteMemberRequest request = DeleteMemberRequest.builder().email("event@spring").build();
 
         //when
         memberService.deleteMember(request,"event@spring");
+        refreshTokenRepository.flush();
 
         //then
         Assertions.assertThat(refreshTokenRepository.existsByRefresh("refresh.token.event")).isFalse();
