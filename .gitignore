@@ -36,7 +36,9 @@ out/
 ### VS Code ###
 .vscode/
 
+# application.yml 무시
 application-local.yml
+application-ec2.yml
 
 # 테스트 환경용 application.yml 무시
 /src/test/resources/application.yml
