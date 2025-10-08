@@ -1,37 +1,73 @@
-# 🎟️ Etickette
+# Etickette
 
 <img width="400" height="300" alt="Image" src="https://github.com/user-attachments/assets/4af4bc7b-86c1-4194-960b-d18c9d0d4b51" />
 <br>
 
-### 🎩 Etiquette + 🎫 Ticket = Etickette
-### 매너있는 티켓팅 문화를 제공하는 서비스
+### Etiquette + Ticket = Etickette
+> 콘서트 티켓을 안정적으로 예매할 수 있는 서비스
 
-<br>
+## 목차
+- [소개](#소개)
+- [담당 역할](#담당-역할)
+- [기능](#기능)
+- [실행 화면](#실행-화면)
+- [기술 스택](#기술-스택)
+- [문서](#문서)
 
-## 🖥️ 티켓팅 실행 화면
+## 소개
+- 콘서트 티켓 예매는 **짧은 시간에 대규모 사용자가 몰리는 서비스**로, 서버 과부하와 좌석 중복 예약 같은 문제가 자주 발생합니다.
+- 이 프로젝트는 이러한 문제를 해결하고, **안정적이고 빠른 티켓 예매 경험**을 제공하기 위해 개발되었습니다.
 
-![Image](https://github.com/user-attachments/assets/71dee4ea-3a39-4264-bbc2-4af9c120a031)
+## 담당 역할
+개인 프로젝트로, 기획부터 개발·배포까지 전 과정을 직접 수행했습니다.
 
-## 👨🏻‍💻 담당 역할
-
-- 사용자 회원 가입/ 로그인
-    - JWT 기반 인증으로 서버의 부하를 감소시켰습니다.
-- 콘서트 좌석 예매 시스템
-- 핵심 도메인 로직 단위 테스트 및 통합 테스트 작성
+### Backend
+- Spring Boot 기반 REST API 설계 및 구현
+- JPA + MySQL로 좌석 예매 트랜잭션 처리
+- 부하테스트(nGrinder)로 조회 성능 측정 및 개선
+    - **쿼리 최적화**로 평균 응답 시간을 `1,728.59ms`→`1,555.07ms`로 약 10% 감소
+    - **인덱스 적용**으로 평균 응답 시간을 `1,555.07ms`→`335.32ms`로 약 78% 감소
+    - 쿼리에서 불필요한 DISTINCT 명령어를 제거하여 쿼리 실행 시간을 `1.6ms` -> `0.9ms`로 약 44% 감소
+- 테스트 코드 작성
     - Line Coverage 약 75%,  Method Coverage 80% 달성
-- 토스 페이먼츠 API를 연동하여 외부 결제 기능 구현
-- nGrinder를 사용하여 부하 테스트를 진행 → 병목 지점을 발견하고 성능을 개선
-- React 기반 프론트엔드와 REST API를 통해 데이터 연동
+ ### Frontend
+- React 기반 좌석 선택 UI, API 연동
 
-## ⚒️ 사용 기술
+### 기획 및 설계
+- DB ERD 설계
+- ErrorCode 문서(REST Docs) 작성
+- Github README, API 문서(Postman) 작성
 
-- Spring Security + JWT : 서버 부하를 줄이기 위해 JWT 기반 인증/인가 방식을 도입했습니다. 보안을 위해 Refresh/Access 구조로 설계했습니다.
-- OAuth2 인증 : 소셜 로그인 연동을 위해 OAuth2 기반 인증 방식을 도입했습니다.
-- MySQL + JPA : 주요 도메인의 CRUD 및 연관관계 매핑을 위해 사용했습니다.
-- AWS S3: 정적 파일을 서버와 분리해 확장성과 안정성을 확보하기 위해 사용했습니다.
+## 기능
+- [x] **회원가입 / 로그인** – JWT 기반 인증 및 토큰 갱신
+- [x] **공연 생성 및 관리** - 공연장별 공연 등록 시스템
+- [x] **좌석 선택 및 예약** – Pessimistic Lock으로 중복 예약 방지
+- [x] **결제 연동** – 토스 페이먼츠 API 연동
+- [ ] (예정) **대기열 시스템** – 트래픽 급증 시 사용자 순차 처리
 
 
-## 📖 문서
+
+## 실행 화면
+
+|  |  |
+| :---: | :---: |
+| <img width="500" height="400" src="https://github.com/user-attachments/assets/6c90cafb-b617-4a79-87f5-c7dabe6f38be"/><br>메인 화면 | <img width="500" height="400" src="https://github.com/user-attachments/assets/71dee4ea-3a39-4264-bbc2-4af9c120a031"/><br>예매 |
+
+
+
+
+## 기술 스택
+
+| 분야            | 기술                 |
+|----------------|---------------------|
+| Backend        | Spring Boot, JPA, Redis |
+| Frontend       | React, TailwindCSS  |
+| Database       | MySQL, Redis        |
+| Infra          | AWS EC2, S3, Docker |
+
+---
+
+## 문서
 ### ERD
 <details>
   <summary>ERD 구조 확인하기</summary>
