@@ -11,10 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class BookSeatService {
     private final BookSeatRepository bookSeatRepository;
-
+    @Transactional
     public void book(BookSeatId id) {
         BookSeat bookSeat = bookSeatRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.BOOKSEAT_NOT_FOUND, "예매 좌석을 찾을 수 없습니다."));
