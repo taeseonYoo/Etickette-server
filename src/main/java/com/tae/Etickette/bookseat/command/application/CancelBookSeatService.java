@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class CancelBookSeatService {
     private final BookSeatRepository bookSeatRepository;
     private final BookingRepository bookingRepository;
-
     private final CancelSeatPolicy cancelSeatPolicy;
     @Transactional
     public void cancel(BookingRef bookingRef, BookSeatId bookSeatId, Canceller canceller) {

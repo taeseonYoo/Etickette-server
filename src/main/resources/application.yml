@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: ec2
+    active: local
   messages:
     basename: messages
 
