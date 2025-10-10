@@ -57,8 +57,10 @@ public enum ErrorCode {
 
     // 인증 & 인가
     NO_PERMISSION(403,"AUTH-001","권한이 부족한 경우"),
-    UNAUTHORIZED(401,"AUTH-002","인증되지 않은 경우");
+    UNAUTHORIZED(401,"AUTH-002","인증되지 않은 경우"),
 
+    //유효성 검사 실패
+    INVALID_INPUT_VALUE(400, "VALID-001", "잘못된 입력 값입니다.");
 
     private final int status;
     private final String code;
