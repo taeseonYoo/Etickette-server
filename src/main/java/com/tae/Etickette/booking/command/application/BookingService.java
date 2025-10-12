@@ -8,6 +8,7 @@ import com.tae.Etickette.booking.command.application.dto.BookingRequest;
 import com.tae.Etickette.bookseat.command.domain.BookSeat;
 import com.tae.Etickette.bookseat.command.domain.BookSeatId;
 import com.tae.Etickette.bookseat.infra.BookSeatRepository;
+import com.tae.Etickette.bookseat.infra.SeatReleaseJob;
 import com.tae.Etickette.global.exception.ErrorCode;
 import com.tae.Etickette.global.exception.ResourceNotFoundException;
 import com.tae.Etickette.member.domain.Member;
@@ -15,11 +16,16 @@ import com.tae.Etickette.member.infra.MemberRepository;
 import com.tae.Etickette.session.domain.Session;
 import com.tae.Etickette.session.infra.SessionRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.quartz.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 
@@ -51,10 +57,28 @@ public class BookingService {
             //좌석을 잠금 상태로 설정
             seat.lock();
             seatItems.add(new SeatItem(new BookSeatId(seatId, session.getId()), seat.getPrice()));
+            scheduling(seatId, session.getId());
         }
 
         Booking booking = Booking.create(member.getId(), requestDto.getSessionId(), seatItems);
 
         return bookingRepository.save(booking).getBookingRef();
+    }
+
+    private final Scheduler scheduler;
+    public void scheduling(Long seatId,Long sessionId){
+        JobDetail jobDetail = JobBuilder.newJob(SeatReleaseJob.class)
+                .withIdentity("seat-" + seatId + "-" + sessionId, "seat-release")
+                .usingJobData("seatId", seatId)
+                .usingJobData("sessionId", sessionId)
+                .build();
+        Trigger trigger = TriggerBuilder.newTrigger()
+                .startAt(Date.from(Instant.now().plus(30, ChronoUnit.MINUTES)))
+                .build();
+        try {
+            scheduler.scheduleJob(jobDetail, trigger);
+        } catch (Exception e) {
+            throw new RuntimeException("스케줄링 예외");
+        }
     }
 }
