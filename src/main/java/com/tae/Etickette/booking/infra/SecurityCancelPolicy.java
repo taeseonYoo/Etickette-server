@@ -1,4 +1,4 @@
-package com.tae.Etickette.booking.infra.domain;
+package com.tae.Etickette.booking.infra;
 
 import com.tae.Etickette.booking.command.domain.Booking;
 import com.tae.Etickette.booking.command.domain.CancelPolicy;
