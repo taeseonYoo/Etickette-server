@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.quartz.Scheduler;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,9 +32,10 @@ class BookingServiceTest {
     private final SessionRepository sessionRepository = mock(SessionRepository.class);
     private final BookSeatRepository bookSeatRepository = mock(BookSeatRepository.class);
     private final MemberRepository memberRepository = mock(MemberRepository.class);
+    private final Scheduler scheduler = mock(Scheduler.class);
     @BeforeEach
     void setUp() {
-        bookingService = new BookingService(sessionRepository, bookingRepository, bookSeatRepository,memberRepository);
+        bookingService = new BookingService(sessionRepository, bookingRepository, bookSeatRepository, memberRepository, scheduler);
     }
 
     @Test
