@@ -1,4 +1,4 @@
-package com.tae.Etickette.booking.infra;
+package com.tae.Etickette.booking.infra.schedule;
 
 import com.tae.Etickette.bookseat.command.domain.BookSeatId;
 import com.tae.Etickette.bookseat.command.domain.SeatStatus;
