@@ -2,6 +2,7 @@ package com.tae.Etickette.booking.application;
 
 import com.tae.Etickette.booking.command.application.BookingService;
 import com.tae.Etickette.booking.command.application.dto.BookingRequest;
+import com.tae.Etickette.booking.command.domain.SeatScheduler;
 import com.tae.Etickette.booking.infra.BookingRepository;
 import com.tae.Etickette.bookseat.infra.BookSeatRepository;
 import com.tae.Etickette.global.exception.ResourceNotFoundException;
@@ -32,10 +33,12 @@ class BookingServiceTest {
     private final SessionRepository sessionRepository = mock(SessionRepository.class);
     private final BookSeatRepository bookSeatRepository = mock(BookSeatRepository.class);
     private final MemberRepository memberRepository = mock(MemberRepository.class);
-    private final Scheduler scheduler = mock(Scheduler.class);
+
+    private final SeatScheduler seatScheduler = mock(SeatScheduler.class);
+
     @BeforeEach
     void setUp() {
-        bookingService = new BookingService(sessionRepository, bookingRepository, bookSeatRepository, memberRepository, scheduler);
+        bookingService = new BookingService(sessionRepository, bookingRepository, bookSeatRepository, memberRepository, seatScheduler);
     }
 
     @Test
