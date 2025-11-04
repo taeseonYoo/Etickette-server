@@ -16,9 +16,9 @@ public class RefreshTokenService {
     private final RefreshTokenRepository refreshTokenRepository;
 
     @Transactional
-    public void saveRefresh(String email, String refresh, Integer expiredMs) {
-        RefreshToken refreshToken = RefreshToken.create(email, refresh,
-                new Date(System.currentTimeMillis() + expiredMs * 1000L).toString());
+    public void saveRefresh(String email, String refresh, Long expiredMs) {
+        RefreshToken refreshToken = new RefreshToken(email, refresh,
+                expiredMs);
 
         refreshTokenRepository.save(refreshToken);
     }
@@ -30,7 +30,7 @@ public class RefreshTokenService {
 
     @Transactional
     public void deleteByMember(String memberEmail) {
-        refreshTokenRepository.deleteByEmail(memberEmail);
+        refreshTokenRepository.deleteById(memberEmail);
     }
 
     public Boolean existsByRefresh(String refresh){

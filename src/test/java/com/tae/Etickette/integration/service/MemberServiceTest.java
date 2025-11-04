@@ -130,7 +130,7 @@ public class MemberServiceTest {
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public void 회원삭제_성공_이벤트() {
         //given
-        refreshTokenRepository.save(new RefreshToken("event@spring", "refresh.token.event", "expiration"));
+        refreshTokenRepository.save(new RefreshToken("event@spring", "refresh.token.event", 1L));
 
         RegisterMemberRequest member = RegisterMemberRequest.builder()
                 .name("USER")
@@ -142,7 +142,6 @@ public class MemberServiceTest {
 
         //when
         memberService.deleteMember(request,"event@spring");
-        refreshTokenRepository.flush();
 
         //then
         Assertions.assertThat(refreshTokenRepository.existsByRefresh("refresh.token.event")).isFalse();
