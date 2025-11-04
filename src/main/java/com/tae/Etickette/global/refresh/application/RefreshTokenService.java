@@ -30,7 +30,7 @@ public class RefreshTokenService {
 
     @Transactional
     public void deleteByMember(String memberEmail) {
-        refreshTokenRepository.deleteByEmail(memberEmail);
+        refreshTokenRepository.deleteById(memberEmail);
     }
 
     public Boolean existsByRefresh(String refresh){
