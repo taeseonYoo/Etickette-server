@@ -44,7 +44,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String access = jwtUtil.createJwt("access", email, role, 1000L * 60 * 10);
         String refresh = jwtUtil.createJwt("refresh", email, role, 1000L * 60 * 60 * 24);
 
-        refreshTokenService.saveRefresh(email, refresh, 60 * 60 * 24);
+        refreshTokenService.saveRefresh(email, refresh, 1000L * 60 * 60 * 24);
 
         response.addCookie(CookieUtil.createCookie("Authorization", access, 60 * 10));
         response.addCookie(CookieUtil.createCookie("refresh", refresh, 60 * 60 * 24));

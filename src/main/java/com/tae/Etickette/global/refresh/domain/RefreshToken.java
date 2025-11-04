@@ -1,31 +1,29 @@
 package com.tae.Etickette.global.refresh.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import java.util.concurrent.TimeUnit;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.TimeToLive;
+import org.springframework.data.redis.core.index.Indexed;
 
-@Entity
+@RedisHash(value = "refreshToken")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RefreshToken {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
     private String email;
+    @Indexed
     private String refresh;
-    private String expiration;
+    @TimeToLive(unit = TimeUnit.MILLISECONDS)
+    private long expiration;
 
-    public RefreshToken(String email, String refresh, String expiration) {
+    public RefreshToken(String email, String refresh, long expiration) {
         this.email = email;
         this.refresh = refresh;
         this.expiration = expiration;
     }
 
-    public static RefreshToken create(String email, String refresh, String expiration) {
-        return new RefreshToken(email, refresh, expiration);
-    }
 }

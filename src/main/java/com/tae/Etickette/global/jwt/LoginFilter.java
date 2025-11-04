@@ -80,7 +80,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String access = jwtUtil.createJwt("access", email, role, 1000L * 60 * 10);
         String refresh = jwtUtil.createJwt("refresh", email, role, 1000L * 60 * 60 * 24);
 
-        refreshTokenService.saveRefresh(email, refresh, 60 * 60 * 24);
+        refreshTokenService.saveRefresh(email, refresh, 1000L * 60 * 60 * 24);
         //HTTP 인증 방식은 RFC 7235 정의에 따라 아래 인증 헤더 형태를 가져야 한다.
         response.addHeader("Authorization","Bearer " + access);
         response.addCookie(CookieUtil.createCookie("refresh",refresh,60 * 60 * 24));

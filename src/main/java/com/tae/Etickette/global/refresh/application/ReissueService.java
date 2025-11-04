@@ -67,7 +67,7 @@ public class ReissueService {
 
         //Refresh 토큰 저장 DB에 기존의 Refresh 토큰 삭제 후 새 Refresh 토큰 저장
         refreshTokenService.deleteByRefresh(refresh);
-        refreshTokenService.saveRefresh(email, newRefresh, 60 * 60 * 24);
+        refreshTokenService.saveRefresh(email, newRefresh, 1000L * 60 * 60 * 24);
 
         //response
         response.setHeader("Authorization", "Bearer " + newAccess);
