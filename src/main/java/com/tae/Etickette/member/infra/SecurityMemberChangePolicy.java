@@ -1,6 +1,8 @@
 package com.tae.Etickette.member.infra;
 
-import com.tae.Etickette.member.domain.ChangePolicy;
+import com.tae.Etickette.global.exception.ErrorCode;
+import com.tae.Etickette.global.exception.ForbiddenException;
+import com.tae.Etickette.member.domain.MemberChangePolicy;
 import com.tae.Etickette.member.domain.Member;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -11,7 +13,7 @@ import org.springframework.stereotype.Component;
 import java.util.Collection;
 
 @Component
-public class SecurityChangePolicy implements ChangePolicy {
+public class SecurityMemberChangePolicy implements MemberChangePolicy {
     @Override
     public boolean hasUpdatePermission(Member member, String requestEmail) {
         return isRequestMember(member, requestEmail) || isCurrentUserAdminRole();

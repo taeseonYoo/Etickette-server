@@ -6,6 +6,7 @@ import com.tae.Etickette.booking.command.domain.SeatScheduler;
 import com.tae.Etickette.booking.infra.BookingRepository;
 import com.tae.Etickette.bookseat.infra.BookSeatRepository;
 import com.tae.Etickette.global.exception.ResourceNotFoundException;
+import com.tae.Etickette.member.application.MemberVerifier;
 import com.tae.Etickette.member.infra.MemberRepository;
 import com.tae.Etickette.session.infra.SessionRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,13 +33,11 @@ class BookingServiceTest {
     private final BookingRepository bookingRepository = mock(BookingRepository.class);
     private final SessionRepository sessionRepository = mock(SessionRepository.class);
     private final BookSeatRepository bookSeatRepository = mock(BookSeatRepository.class);
-    private final MemberRepository memberRepository = mock(MemberRepository.class);
-
-    private final SeatScheduler seatScheduler = mock(SeatScheduler.class);
+    private final MemberVerifier memberVerifier = mock(MemberVerifier.class);
 
     @BeforeEach
     void setUp() {
-        bookingService = new BookingService(sessionRepository, bookingRepository, bookSeatRepository, memberRepository, seatScheduler);
+        bookingService = new BookingService(sessionRepository, bookingRepository, bookSeatRepository,memberVerifier);
     }
 
     @Test

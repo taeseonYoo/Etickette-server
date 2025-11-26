@@ -1,6 +1,6 @@
 package com.tae.Etickette.member.domain;
 
 
-public interface ChangePolicy {
+public interface MemberChangePolicy {
     boolean hasUpdatePermission(Member member, String requestEmail);
 }

@@ -1,6 +1,7 @@
 package com.tae.Etickette.member.application;
 
 import com.tae.Etickette.global.exception.BadRequestException;
+import com.tae.Etickette.global.exception.ErrorCode;
 import com.tae.Etickette.global.exception.ForbiddenException;
 import com.tae.Etickette.global.exception.ResourceNotFoundException;
 import com.tae.Etickette.member.application.dto.DeleteMemberRequest;
@@ -11,21 +12,20 @@ import com.tae.Etickette.member.application.dto.RegisterMemberResponse;
 import com.tae.Etickette.member.application.dto.ChangePasswordRequest;
 import com.tae.Etickette.member.infra.MemberRepository;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.willReturn;
 import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
@@ -36,7 +36,8 @@ public class MemberServiceTest {
     private MemberService memberService;
     private final MemberRepository memberRepository = mock(MemberRepository.class);
     private final EncryptionService encryptionService = mock(EncryptionServiceImpl.class);
-    private final ChangePolicy changePolicy = mock(ChangePolicy.class);
+    private final MemberChangePolicy changePolicy = mock(MemberChangePolicy.class);
+    private final MemberVerifier memberVerifier = mock(MemberVerifier.class);
 
 
     @Test
@@ -51,8 +52,7 @@ public class MemberServiceTest {
         Member member = Member.create(requestDto.getName(), requestDto.getEmail(), encryptionService.encode(requestDto.getPassword()), Role.USER);
         ReflectionTestUtils.setField(member, "id", 1L);
 
-        BDDMockito.given(memberRepository.findByEmail(any()))
-                .willReturn(Optional.empty());
+        BDDMockito.given(memberVerifier.findMemberByEmailOrThrow(any())).willReturn(member);
         BDDMockito.given(memberRepository.save(any()))
                 .willReturn(member);
 
@@ -72,8 +72,7 @@ public class MemberServiceTest {
                 .email("USER@spring")
                 .password("@Abc1234").build();
 
-        BDDMockito.given(memberRepository.findByEmail(any()))
-                .willReturn(Optional.of(mock(Member.class)));
+        BDDMockito.given(memberRepository.findByEmail(any())).willReturn(Optional.ofNullable(mock(Member.class)));
 
         //when & then
         assertThrows(BadRequestException.class,
@@ -121,7 +120,7 @@ public class MemberServiceTest {
                 .newPassword("@Change123")
                 .email("USER@spring").build();
 
-        BDDMockito.given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
+        BDDMockito.given(memberVerifier.findMemberByEmailOrThrow(any())).willReturn(member);
         BDDMockito.given(encryptionService.matches(any(), any())).willReturn(true);
         BDDMockito.given(changePolicy.hasUpdatePermission(any(), any())).willReturn(true);
 
@@ -129,8 +128,7 @@ public class MemberServiceTest {
         memberService.changePassword(requestDto,"USER@spring");
 
         //then
-        Member findMember = memberRepository.findByEmail("USER@spring").get();
-        Assertions.assertThat(encryptionService.matches("@Change123", findMember.getPassword())).isTrue();
+        Assertions.assertThat(encryptionService.matches("@Change123", member.getPassword())).isTrue();
     }
 
     @Test
@@ -140,7 +138,7 @@ public class MemberServiceTest {
         Member member = Member.create("USER", "USER@spring", "@Abc1234", Role.USER);
         ChangePasswordRequest requestDto = ChangePasswordRequest.builder().email("USER@spring").build();
 
-        BDDMockito.given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
+        BDDMockito.given(memberVerifier.findMemberByEmailOrThrow(any())).willReturn(member);
         BDDMockito.given(encryptionService.matches(any(), any())).willReturn(false);
         BDDMockito.given(changePolicy.hasUpdatePermission(any(), any())).willReturn(true);
 
@@ -156,7 +154,7 @@ public class MemberServiceTest {
         //given
         ChangePasswordRequest requestDto = ChangePasswordRequest.builder().email("USER@spring").build();
 
-        BDDMockito.given(memberRepository.findByEmail(any())).willReturn(Optional.empty());
+        BDDMockito.given(memberVerifier.findMemberByEmailOrThrow(any())).willThrow(ResourceNotFoundException.class);
 
         //when & then
         assertThrows(ResourceNotFoundException.class,
@@ -170,7 +168,7 @@ public class MemberServiceTest {
         Member member = Member.create("USER", "USER@spring", "@Abc1234", Role.USER);
         ChangePasswordRequest requestDto = ChangePasswordRequest.builder().email("USER@spring").build();
 
-        BDDMockito.given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
+        BDDMockito.given(memberVerifier.findMemberByEmailOrThrow(any())).willReturn(member);
         BDDMockito.given(changePolicy.hasUpdatePermission(any(), any())).willReturn(false);
 
         //when & then
@@ -185,7 +183,7 @@ public class MemberServiceTest {
         //given
         Member member = Member.create("USER", "USER@spring", "@Abc1234", Role.USER);
 
-        BDDMockito.given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
+        BDDMockito.given(memberVerifier.findMemberByEmailOrThrow(any())).willReturn(member);
         BDDMockito.given(changePolicy.hasUpdatePermission(any(), any())).willReturn(true);
 
         DeleteMemberRequest request = DeleteMemberRequest.builder().email("USER@spring").build();
@@ -204,7 +202,7 @@ public class MemberServiceTest {
         //given
         Member member = Member.create("USER", "USER@spring", "@Abc1234", Role.USER);
 
-        BDDMockito.given(memberRepository.findByEmail(any())).willReturn(Optional.empty());
+        BDDMockito.given(memberVerifier.findMemberByEmailOrThrow(any())).willThrow(ResourceNotFoundException.class);
         BDDMockito.given(changePolicy.hasUpdatePermission(any(), any())).willReturn(true);
 
         DeleteMemberRequest request = DeleteMemberRequest.builder().email("USER@spring").build();
@@ -220,7 +218,7 @@ public class MemberServiceTest {
         //given
         Member member = Member.create("USER", "USER@spring", "@Abc1234", Role.USER);
 
-        BDDMockito.given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
+        BDDMockito.given(memberVerifier.findMemberByEmailOrThrow(any())).willReturn(member);
         BDDMockito.given(changePolicy.hasUpdatePermission(any(), any())).willReturn(false);
 
         DeleteMemberRequest request = DeleteMemberRequest.builder().email("USER@spring").build();

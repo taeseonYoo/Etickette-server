@@ -8,6 +8,7 @@ import com.tae.Etickette.concert.command.domain.GradePrice;
 import com.tae.Etickette.concert.command.domain.Image;
 import com.tae.Etickette.concert.infra.ConcertRepository;
 import com.tae.Etickette.global.model.Money;
+import com.tae.Etickette.member.application.AdminService;
 import com.tae.Etickette.member.application.MemberService;
 import com.tae.Etickette.member.application.dto.RegisterMemberRequest;
 import com.tae.Etickette.member.application.dto.RegisterMemberResponse;
@@ -39,9 +40,9 @@ public class TestInitializer {
 
     private final VenueRepository venueRepository;
     private final ConcertRepository concertRepository;
-    private final MemberService memberService;
     private final SeatRepository seatRepository;
     private final RegisterSessionService sessionService;
+    private final MemberRepository memberRepository;
 
     List<String> title = new ArrayList<>();
     @PostConstruct
@@ -74,12 +75,8 @@ public class TestInitializer {
                 sessionService.register(sessionRequest);
             }
         }
-
-        RegisterMemberRequest admin = RegisterMemberRequest.builder().name("관리자").password("#ACb1234").email("admin@spring").build();
-        memberService.register(admin);
-        memberService.adminRegister("admin@spring");
-
-
+        Member admin = Member.create("관리자", "admin@spring", "#ACb1234", Role.ADMIN);
+        memberRepository.save(admin);
     }
 
     private List<Seat> initSeat(Long concertId) {
