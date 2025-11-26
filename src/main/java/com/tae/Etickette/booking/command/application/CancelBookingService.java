@@ -9,7 +9,7 @@ import com.tae.Etickette.global.exception.ForbiddenException;
 import com.tae.Etickette.global.exception.ResourceNotFoundException;
 import com.tae.Etickette.global.model.Canceller;
 import com.tae.Etickette.member.domain.Member;
-import com.tae.Etickette.member.infra.MemberRepository;
+import com.tae.Etickette.member.application.MemberVerifier;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CancelBookingService {
 
-    private final MemberRepository memberRepository;
+    private final MemberVerifier memberVerifier;
     private final BookingRepository bookingRepository;
     private final CancelPolicy cancelPolicy;
 
@@ -30,8 +30,7 @@ public class CancelBookingService {
         Booking booking = bookingRepository.findById(bookingRef)
                 .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.BOOKING_NOT_FOUND, "예약 내역을 찾을 수 없습니다. 예매 번호:" + bookingRef));
 
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND,"회원 정보를 찾을 수 없습니다."));
+        Member member = memberVerifier.findMemberByEmailOrThrow(email);
 
         if (!cancelPolicy.hasCancellationPermission(booking, new Canceller(member.getId()))) {
             throw new ForbiddenException(ErrorCode.NO_PERMISSION, "예매 취소 권한이 없습니다. 예매 번호:" + bookingRef);

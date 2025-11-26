@@ -3,7 +3,6 @@ package com.tae.Etickette.booking.command.application;
 import com.tae.Etickette.booking.command.domain.BookingRef;
 import com.tae.Etickette.booking.command.domain.SeatItem;
 import com.tae.Etickette.booking.command.domain.SeatLockedEvent;
-import com.tae.Etickette.booking.command.domain.SeatScheduler;
 import com.tae.Etickette.booking.infra.BookingRepository;
 import com.tae.Etickette.booking.command.domain.Booking;
 import com.tae.Etickette.booking.command.application.dto.BookingRequest;
@@ -14,7 +13,7 @@ import com.tae.Etickette.global.event.Events;
 import com.tae.Etickette.global.exception.ErrorCode;
 import com.tae.Etickette.global.exception.ResourceNotFoundException;
 import com.tae.Etickette.member.domain.Member;
-import com.tae.Etickette.member.infra.MemberRepository;
+import com.tae.Etickette.member.application.MemberVerifier;
 import com.tae.Etickette.session.domain.Session;
 import com.tae.Etickette.session.infra.SessionRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,16 +32,15 @@ public class BookingService {
     private final SessionRepository sessionRepository;
     private final BookingRepository bookingRepository;
     private final BookSeatRepository bookSeatRepository;
-    private final MemberRepository memberRepository;
-    private final SeatScheduler scheduler;
+    private final MemberVerifier memberVerifier;
+
     @Transactional
     public BookingRef booking(BookingRequest requestDto, String email) {
 
         Session session = sessionRepository.findById(requestDto.getSessionId()).orElseThrow(() ->
                 new ResourceNotFoundException(ErrorCode.SESSION_NOT_FOUND, "세션을 찾을 수 없습니다. 세션 번호:" + requestDto.getSessionId()));
 
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND,"회원 정보를 찾을 수 없습니다."));
+        Member member = memberVerifier.findMemberByEmailOrThrow(email);
 
         //데드락 방지를 위해 좌석의 ID를 오름차순 정렬한다.
         requestDto.getSeatIds().sort(Comparator.naturalOrder());

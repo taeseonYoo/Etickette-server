@@ -3,7 +3,6 @@ package com.tae.Etickette.member.application;
 import com.tae.Etickette.global.exception.BadRequestException;
 import com.tae.Etickette.global.exception.ErrorCode;
 import com.tae.Etickette.global.exception.ForbiddenException;
-import com.tae.Etickette.global.exception.ResourceNotFoundException;
 import com.tae.Etickette.member.domain.ChangePolicy;
 import com.tae.Etickette.member.domain.EncryptionService;
 import com.tae.Etickette.member.application.dto.*;
@@ -18,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class MemberService {
+    private final MemberVerifier memberVerifier;
     private final MemberRepository memberRepository;
     private final EncryptionService encryptionService;
     private final ChangePolicy changePolicy;
@@ -53,8 +53,7 @@ public class MemberService {
      */
     @Transactional
     public void changePassword(ChangePasswordRequest requestDto,String requestEmail) {
-        Member member = memberRepository.findByEmail(requestDto.getEmail())
-                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND, "회원 정보를 찾을 수 없습니다."));
+        Member member = memberVerifier.findMemberByEmailOrThrow(requestDto.getEmail());
 
         if (!changePolicy.hasUpdatePermission(member, requestEmail)) {
             throw new ForbiddenException(ErrorCode.NO_PERMISSION, "회원 정보 수정 권한이 없습니다.");
@@ -71,8 +70,7 @@ public class MemberService {
     @Transactional
     public void deleteMember(DeleteMemberRequest deleteMemberRequest, String requestEmail) {
 
-        Member member = memberRepository.findByEmail(deleteMemberRequest.getEmail())
-                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND,"회원 정보를 찾을 수 없습니다."));
+        Member member = memberVerifier.findMemberByEmailOrThrow(deleteMemberRequest.getEmail());
 
         if (!changePolicy.hasUpdatePermission(member, requestEmail)) {
             throw new ForbiddenException(ErrorCode.NO_PERMISSION, "회원 정보 삭제 권한이 없습니다.");
@@ -83,8 +81,7 @@ public class MemberService {
 
     @Transactional
     public void adminRegister(String email){
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND,"회원 정보를 찾을 수 없습니다."));
+        Member member = memberVerifier.findMemberByEmailOrThrow(email);
 
         member.grantAdminRole();
     }
