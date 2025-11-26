@@ -69,8 +69,22 @@ public class Member {
         this.memberStatus = MemberStatus.DELETE;
         Events.raise(new MemberDeletedEvent(this.getEmail()));
     }
-    //어드민 계정으로 변경
+
     public void grantAdminRole() {
+        if (isAdmin()) {
+            throw new BadRequestException(ErrorCode.USER_AUTH_INVALID, "이미 관리자 권한을 갖고 있습니다.");
+        }
         this.role = Role.ADMIN;
+    }
+
+    public void revokeAdminRole() {
+        if (!isAdmin()) {
+            throw new BadRequestException(ErrorCode.USER_AUTH_INVALID,"이미 회원 권한인 유저 입니다.");
+        }
+        this.role = Role.USER;
+    }
+
+    private boolean isAdmin() {
+        return this.role == Role.ADMIN;
     }
 }

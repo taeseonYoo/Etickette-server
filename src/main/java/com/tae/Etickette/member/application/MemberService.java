@@ -78,11 +78,4 @@ public class MemberService {
 
         member.deleteMember();
     }
-
-    @Transactional
-    public void adminRegister(String email){
-        Member member = memberVerifier.findMemberByEmailOrThrow(email);
-
-        member.grantAdminRole();
-    }
 }

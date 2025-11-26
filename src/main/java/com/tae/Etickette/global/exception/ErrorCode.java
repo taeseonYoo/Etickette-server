@@ -12,7 +12,7 @@ public enum ErrorCode {
     USER_NOT_FOUND(404,"USER-001","회원 정보를 찾을 수 없는 경우"),
     DUPLICATE_EMAIL(400,"USER-002","이메일이 중복된 경우"),
     PASSWORD_NOT_MATCH(400,"USER-003","비밀번호가 일치하지 않는 경우"),
-
+    USER_AUTH_INVALID(404,"USER-004","회원 권한을 변경할 수 없는 경우"),
     //공연장 오류
     VENUE_NOT_FOUND(404,"VENUE-001","공연장 정보를 찾을 수 없는 경우"),
     CAPACITY_CANNOT_BE_NEGATIVE(400,"VENUE-002","수용량이 0보다 작은 경우"),
