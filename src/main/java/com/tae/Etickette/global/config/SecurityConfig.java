@@ -19,6 +19,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -34,6 +35,7 @@ import java.util.Collections;
 
 /**
  * Security 인증 관련 설정을 담당한다.
+ *
  * @EnableWebSecurity : 이 클래스가 SpringSecurity에게 관리가 된다.
  */
 @Configuration
@@ -42,12 +44,11 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final JWTUtil jwtUtil;
     private final CustomSuccessHandler customSuccessHandler;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final AuthenticationConfiguration authenticationConfiguration;
-    private final JWTUtil jwtUtil;
     private final RefreshTokenService refreshTokenService;
-
     private final AccessDeniedHandler accessDeniedHandler;
     private final AuthenticationEntryPoint authenticationEntryPoint;
 
@@ -55,6 +56,7 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
+
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
@@ -66,57 +68,51 @@ public class SecurityConfig {
      * @throws Exception 예외 발생 시 처리
      */
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http)throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        //cors
+        // CORS 설정
         http
-                .cors((cors)->cors
-                        .configurationSource(new CorsConfigurationSource() {
-                            @Override
-                            public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
-                                CorsConfiguration configuration = new CorsConfiguration();
-
-                                configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
-                                configuration.setAllowedMethods(Collections.singletonList("*"));
-                                configuration.setAllowCredentials(true);
-                                configuration.setAllowedHeaders(Collections.singletonList("*"));
-                                configuration.setMaxAge(3600L);
-                                configuration.setExposedHeaders(Arrays.asList("Set-Cookie", "Authorization"));
-
-                                return configuration;
-                            }
+                .cors((cors) -> cors.configurationSource(
+                        request -> {
+                            CorsConfiguration config = new CorsConfiguration();
+                            config.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+                            config.setAllowedMethods(Collections.singletonList("*"));
+                            config.setAllowedHeaders(Collections.singletonList("*"));
+                            config.setExposedHeaders(Arrays.asList("Set-Cookie", "Authorization"));
+                            config.setAllowCredentials(true);
+                            config.setMaxAge(3600L);
+                            return config;
                         }));
-        // 로그아웃 요청 URL 설정
-        http
-                .logout((auth) -> auth.logoutSuccessUrl("/").logoutUrl("/api/members/logout").permitAll());
         //jwt를 통한 STATELESS 방식을 사용하므로, csrf 설정은 비활성화 한다.
-        http
-                .csrf((auth) -> auth.disable());
+        http.csrf(AbstractHttpConfigurer::disable);
 
-        //From 로그인 방식 disable
-        http
-                .formLogin((auth) -> auth.disable());
+        //세션 비활성화
+        http.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        //http basic 인증 방식 disable
-        http
-                .httpBasic((auth) -> auth.disable());
+        //from 로그인 방식 disable & http basic 인증 방식 disable
+        http.formLogin(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable);
 
         //oAuth2 설정
-        http
-                .oauth2Login((oauth2) -> oauth2
-                        .userInfoEndpoint((userInfoEndpointConfig -> userInfoEndpointConfig
-                                .userService(customOAuth2UserService)))
-                        .successHandler(customSuccessHandler));
+        http.oauth2Login((oauth2) -> oauth2
+                .userInfoEndpoint((user -> user.userService(customOAuth2UserService)))
+                .successHandler(customSuccessHandler));
+
+        // 로그아웃 요청 URL 설정
+        http.logout(logout -> logout
+                .logoutUrl("/api/members/logout")
+                .logoutSuccessUrl("/")
+                .permitAll()
+        );
 
         //경로별 인가 작업
-        http
-                .authorizeHttpRequests((auth) -> auth
+        http.authorizeHttpRequests((auth) -> auth
                         .anyRequest().permitAll()
 //                        .requestMatchers("/", "/api/members/login", "/api/members/logout", "/api/members/signup",
 //                                "/oauth2-jwt-header", "/reissue").permitAll()
 //                        .requestMatchers(HttpMethod.GET,"/api/concerts","/api/concerts/**").permitAll()
 //                        .anyRequest().authenticated()
-                );
+        );
 
         // - 인증되지 않은 사용자는 authenticationEntryPoint가 처리 (401 Unauthorized)
         // - 권한이 부족한 사용자는 accessDeniedHandler가 처리 (403 Forbidden)
@@ -126,22 +122,14 @@ public class SecurityConfig {
         });
 
         //custom logout filter 등록
-        http
-                .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshTokenService), LogoutFilter.class);
-
-        http
+        http.addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshTokenService), LogoutFilter.class)
                 .addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         //커스텀 로그인 필터 등록 - 로그인 url 은 "/api/members/login"
-        LoginFilter loginFilter = new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshTokenService);
+        LoginFilter loginFilter = new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil,
+                refreshTokenService);
         loginFilter.setFilterProcessesUrl("/api/members/login");
-        http
-                .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class);
-
-        //세션 설정
-        http
-                .sessionManagement((session) -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        http.addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
