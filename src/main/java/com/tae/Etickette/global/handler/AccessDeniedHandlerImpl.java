@@ -2,7 +2,7 @@ package com.tae.Etickette.global.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tae.Etickette.global.exception.ErrorCode;
-import com.tae.Etickette.global.exception.ErrorResponse;
+import com.tae.Etickette.global.api.ErrorResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,7 +26,7 @@ public class AccessDeniedHandlerImpl implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
         ErrorCode errorCode = ErrorCode.NO_PERMISSION;
-        ErrorResponse errorResponse = new ErrorResponse(errorCode.getCode(), "권한이 없습니다.");
+        ErrorResponse errorResponse = ErrorResponse.of(errorCode, "권한이 없습니다.");
         response.setStatus(errorCode.getStatus());
         response.setContentType(APPLICATION_JSON_VALUE);
         objectMapper.writeValue(response.getWriter(), errorResponse);

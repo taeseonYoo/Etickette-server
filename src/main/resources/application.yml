@@ -3,6 +3,12 @@ spring:
     active: local
   messages:
     basename: messages
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+  default-produces-media-type: application/json
 
 logging.level:
   org.hibernate.SQL: debug
