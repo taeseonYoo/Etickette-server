@@ -1,5 +1,6 @@
 package com.tae.Etickette.member.application.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -11,12 +12,15 @@ import lombok.Getter;
 public class RegisterMemberRequest {
     @Size(max = 20)
     @NotBlank
+    @Schema(description = "회원 이름",example = "tae")
     private final String name;
     @Email
     @NotBlank
+    @Schema(description = "회원 이메일",example = "tae@ticket.com")
     private final String email;
     @Size(min = 8, max = 20)
     @NotBlank
+    @Schema(description = "비밀번호",example = "@ABcd1234")
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
             message = "비밀번호는 최소 8자 이상이어야 하며, 대소문자, 숫자, 특수문자를 포함해야 합니다")
     private final String password;
