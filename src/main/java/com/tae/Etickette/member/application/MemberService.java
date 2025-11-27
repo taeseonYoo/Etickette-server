@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class MemberService {
-    private final MemberVerifier memberVerifier;
+    private final MemberFinder memberFinder;
     private final MemberRepository memberRepository;
     private final EncryptionService encryptionService;
     private final MemberChangePolicy memberChangePolicy;
@@ -43,7 +43,7 @@ public class MemberService {
 
     @Transactional
     public void changePassword(ChangePasswordRequest requestDto, String requestEmail) {
-        Member member = memberVerifier.findMemberByEmailOrThrow(requestDto.getEmail());
+        Member member = memberFinder.findMemberByEmailOrThrow(requestDto.getEmail());
 
         if (!memberChangePolicy.hasUpdatePermission(member, requestEmail)) {
             throw new ForbiddenException(ErrorCode.NO_PERMISSION, "회원 정보 수정 권한이 없습니다.");
@@ -55,7 +55,7 @@ public class MemberService {
     @Transactional
     public void deleteMember(DeleteMemberRequest deleteMemberRequest, String requestEmail) {
 
-        Member member = memberVerifier.findMemberByEmailOrThrow(deleteMemberRequest.getEmail());
+        Member member = memberFinder.findMemberByEmailOrThrow(deleteMemberRequest.getEmail());
 
         if (!memberChangePolicy.hasUpdatePermission(member, requestEmail)) {
             throw new ForbiddenException(ErrorCode.NO_PERMISSION, "회원 정보 삭제 권한이 없습니다.");

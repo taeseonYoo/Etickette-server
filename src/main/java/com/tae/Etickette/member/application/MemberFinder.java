@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class MemberVerifier {
+public class MemberFinder {
     private final MemberRepository memberRepository;
 
     public Member findMemberByIdOrThrow(Long memberId) {

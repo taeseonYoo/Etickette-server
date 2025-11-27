@@ -2,12 +2,10 @@ package com.tae.Etickette.booking.application;
 
 import com.tae.Etickette.booking.command.application.BookingService;
 import com.tae.Etickette.booking.command.application.dto.BookingRequest;
-import com.tae.Etickette.booking.command.domain.SeatScheduler;
 import com.tae.Etickette.booking.infra.BookingRepository;
 import com.tae.Etickette.bookseat.infra.BookSeatRepository;
 import com.tae.Etickette.global.exception.ResourceNotFoundException;
-import com.tae.Etickette.member.application.MemberVerifier;
-import com.tae.Etickette.member.infra.MemberRepository;
+import com.tae.Etickette.member.application.MemberFinder;
 import com.tae.Etickette.session.infra.SessionRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,7 +14,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.quartz.Scheduler;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,11 +30,11 @@ class BookingServiceTest {
     private final BookingRepository bookingRepository = mock(BookingRepository.class);
     private final SessionRepository sessionRepository = mock(SessionRepository.class);
     private final BookSeatRepository bookSeatRepository = mock(BookSeatRepository.class);
-    private final MemberVerifier memberVerifier = mock(MemberVerifier.class);
+    private final MemberFinder memberFinder = mock(MemberFinder.class);
 
     @BeforeEach
     void setUp() {
-        bookingService = new BookingService(sessionRepository, bookingRepository, bookSeatRepository,memberVerifier);
+        bookingService = new BookingService(sessionRepository, bookingRepository, bookSeatRepository, memberFinder);
     }
 
     @Test

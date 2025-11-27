@@ -13,7 +13,7 @@ import com.tae.Etickette.global.event.Events;
 import com.tae.Etickette.global.exception.ErrorCode;
 import com.tae.Etickette.global.exception.ResourceNotFoundException;
 import com.tae.Etickette.member.domain.Member;
-import com.tae.Etickette.member.application.MemberVerifier;
+import com.tae.Etickette.member.application.MemberFinder;
 import com.tae.Etickette.session.domain.Session;
 import com.tae.Etickette.session.infra.SessionRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ public class BookingService {
     private final SessionRepository sessionRepository;
     private final BookingRepository bookingRepository;
     private final BookSeatRepository bookSeatRepository;
-    private final MemberVerifier memberVerifier;
+    private final MemberFinder memberFinder;
 
     @Transactional
     public BookingRef booking(BookingRequest requestDto, String email) {
@@ -40,7 +40,7 @@ public class BookingService {
         Session session = sessionRepository.findById(requestDto.getSessionId()).orElseThrow(() ->
                 new ResourceNotFoundException(ErrorCode.SESSION_NOT_FOUND, "세션을 찾을 수 없습니다. 세션 번호:" + requestDto.getSessionId()));
 
-        Member member = memberVerifier.findMemberByEmailOrThrow(email);
+        Member member = memberFinder.findMemberByEmailOrThrow(email);
 
         //데드락 방지를 위해 좌석의 ID를 오름차순 정렬한다.
         requestDto.getSeatIds().sort(Comparator.naturalOrder());
