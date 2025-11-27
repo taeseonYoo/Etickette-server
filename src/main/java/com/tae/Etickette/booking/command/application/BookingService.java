@@ -14,8 +14,8 @@ import com.tae.Etickette.global.exception.ErrorCode;
 import com.tae.Etickette.global.exception.ResourceNotFoundException;
 import com.tae.Etickette.member.domain.Member;
 import com.tae.Etickette.member.application.MemberFinder;
+import com.tae.Etickette.session.application.SessionFinder;
 import com.tae.Etickette.session.domain.Session;
-import com.tae.Etickette.session.infra.SessionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +29,7 @@ import java.util.List;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class BookingService {
-    private final SessionRepository sessionRepository;
+    private final SessionFinder sessionFinder;
     private final BookingRepository bookingRepository;
     private final BookSeatRepository bookSeatRepository;
     private final MemberFinder memberFinder;
@@ -37,8 +37,7 @@ public class BookingService {
     @Transactional
     public BookingRef booking(BookingRequest requestDto, String email) {
 
-        Session session = sessionRepository.findById(requestDto.getSessionId()).orElseThrow(() ->
-                new ResourceNotFoundException(ErrorCode.SESSION_NOT_FOUND, "세션을 찾을 수 없습니다. 세션 번호:" + requestDto.getSessionId()));
+        Session session = sessionFinder.findSessionByIdOrThrow(requestDto.getSessionId());
 
         Member member = memberFinder.findMemberByEmailOrThrow(email);
 
