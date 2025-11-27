@@ -10,19 +10,19 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class AdminService {
     private final AdminPolicy adminPolicy;
-    private final MemberVerifier memberVerifier;
+    private final MemberFinder memberFinder;
 
     @Transactional
     public void grantAdminRole(String email) {
         adminPolicy.checkIsAdmin();
-        Member member = memberVerifier.findMemberByEmailOrThrow(email);
+        Member member = memberFinder.findMemberByEmailOrThrow(email);
         member.grantAdminRole();
     }
 
     @Transactional
     public void revokeAdminRole(String email) {
         adminPolicy.checkIsAdmin();
-        Member member = memberVerifier.findMemberByEmailOrThrow(email);
+        Member member = memberFinder.findMemberByEmailOrThrow(email);
         member.revokeAdminRole();
     }
 }

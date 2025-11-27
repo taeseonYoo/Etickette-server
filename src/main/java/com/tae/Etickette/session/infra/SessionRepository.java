@@ -8,13 +8,13 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface SessionRepository extends JpaRepository<Session,Long> {
+public interface SessionRepository extends JpaRepository<Session, Long> {
     List<Session> findAllByConcertId(Long concertId);
 
     @Query("""
-SELECT s FROM Session s 
-JOIN Concert c ON s.concertId=c.id
-WHERE c.venueId = :venueId
-""")
+            SELECT s FROM Session s 
+            JOIN Concert c ON s.concertId=c.id
+            WHERE c.venueId = :venueId
+            """)
     List<Session> findAllByVenueId(Long venueId);
 }
