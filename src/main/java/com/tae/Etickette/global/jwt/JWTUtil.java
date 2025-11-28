@@ -12,6 +12,12 @@ import java.util.Date;
 
 @Component
 public class JWTUtil {
+    private static final Long REFRESH_TOKEN_EXPIRED_MS = 1000L * 60 * 60 * 24;
+    private static final Long ACCESS_TOKEN_EXPIRED_MS = 1000L * 60 * 10;
+    public static final String ACCESS = "access";
+    public static final String REFRESH = "refresh";
+    public static final String BEARER_PREFIX = "Bearer ";
+    public static final String AUTH_HEADER = "Authorization";
     private final SecretKey secretKey;
 
     public JWTUtil(@Value("${spring.jwt.secret}") String secret) {
@@ -47,5 +53,21 @@ public class JWTUtil {
                 .expiration(new Date(System.currentTimeMillis() + expiredMs))
                 .signWith(secretKey)
                 .compact();
+    }
+
+    public String createAccessToken(String email, String role) {
+        return createJwt("access", email, role, ACCESS_TOKEN_EXPIRED_MS);
+    }
+
+    public String createRefreshToken(String email, String role) {
+        return createJwt("refresh", email, role, REFRESH_TOKEN_EXPIRED_MS);
+    }
+
+    public Long getRefreshTokenExpiredMs() {
+        return REFRESH_TOKEN_EXPIRED_MS;
+    }
+
+    public int getRefreshTokenExpireSeconds() {
+        return (int) (REFRESH_TOKEN_EXPIRED_MS / 1000);
     }
 }

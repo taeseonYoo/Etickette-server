@@ -3,6 +3,7 @@ package com.tae.Etickette.global.util;
 import jakarta.servlet.http.Cookie;
 
 public class CookieUtil {
+    public static final String REFRESH_COOKIE_NAME = "refresh";
     public static Cookie createCookie(String key, String value, Integer expired) {
         Cookie cookie = new Cookie(key, value);
         cookie.setHttpOnly(true);
