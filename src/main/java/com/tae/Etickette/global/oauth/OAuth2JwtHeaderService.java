@@ -1,5 +1,6 @@
 package com.tae.Etickette.global.oauth;
 
+import com.tae.Etickette.global.jwt.JWTUtil;
 import com.tae.Etickette.global.util.CookieUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,7 +14,7 @@ public class OAuth2JwtHeaderService {
         String access = null;
 
         if(cookies != null){
-            access = CookieUtil.getCookieValue(cookies, "Authorization");
+            access = CookieUtil.getCookieValue(cookies, JWTUtil.AUTH_HEADER);
         }
 
         if(access == null){
@@ -22,8 +23,8 @@ public class OAuth2JwtHeaderService {
         }
 
         // 클라이언트의 access 토큰 쿠키를 만료한다.
-        response.addCookie(CookieUtil.createCookie("Authorization", null, 0));
-        response.addHeader("Authorization", "Bearer " + access);
+        response.addCookie(CookieUtil.createCookie(JWTUtil.AUTH_HEADER, null, 0));
+        response.addHeader(JWTUtil.AUTH_HEADER, JWTUtil.BEARER_PREFIX + access);
         response.setStatus(HttpServletResponse.SC_OK);
     }
 }

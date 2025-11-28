@@ -23,7 +23,7 @@ public class ReissueService {
     public void reissue(HttpServletRequest request, HttpServletResponse response) {
         //get refresh token
         String refresh = null;
-        refresh = CookieUtil.getCookieValue(request.getCookies(), CookieUtil.REFRESH_COOKIE_NAME);
+        refresh = CookieUtil.getCookieValue(request.getCookies(), JWTUtil.REFRESH);
 
         // 쿠키에 refresh 토큰이 없다면, 401 오류
         if (refresh == null) {
@@ -65,7 +65,7 @@ public class ReissueService {
 
         //response
         response.setHeader(JWTUtil.AUTH_HEADER, JWTUtil.BEARER_PREFIX + newAccess);
-        response.addCookie(CookieUtil.createCookie(CookieUtil.REFRESH_COOKIE_NAME, newRefresh,
+        response.addCookie(CookieUtil.createCookie(JWTUtil.REFRESH, newRefresh,
                 jwtUtil.getRefreshTokenExpireSeconds()));
     }
 }

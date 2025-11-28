@@ -25,11 +25,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Iterator;
 
-/**
- * 일반 로그인
- * access : 10분
- * refresh : 24시간
- */
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
@@ -77,13 +72,13 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         String role = auth.getAuthority();
 
-        String access = jwtUtil.createJwt("access", email, role, 1000L * 60 * 10);
-        String refresh = jwtUtil.createJwt("refresh", email, role, 1000L * 60 * 60 * 24);
+        String access = jwtUtil.createAccessToken(email, role);
+        String refresh = jwtUtil.createRefreshToken(email, role);
 
-        refreshTokenService.saveRefresh(email, refresh, 1000L * 60 * 60 * 24);
+        refreshTokenService.saveRefresh(email, refresh, jwtUtil.getRefreshTokenExpiredMs());
         //HTTP 인증 방식은 RFC 7235 정의에 따라 아래 인증 헤더 형태를 가져야 한다.
-        response.addHeader("Authorization","Bearer " + access);
-        response.addCookie(CookieUtil.createCookie("refresh",refresh,60 * 60 * 24));
+        response.addHeader(JWTUtil.AUTH_HEADER,JWTUtil.BEARER_PREFIX + access);
+        response.addCookie(CookieUtil.createCookie(JWTUtil.REFRESH,refresh,jwtUtil.getRefreshTokenExpireSeconds()));
         response.setStatus(HttpStatus.OK.value());
     }
 

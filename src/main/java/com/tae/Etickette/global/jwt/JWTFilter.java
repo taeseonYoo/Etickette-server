@@ -30,7 +30,7 @@ public class JWTFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         //액세스 코인인 Authrorization에 담긴 토큰을 꺼냄
-        String access = request.getHeader("Authorization");
+        String access = request.getHeader(JWTUtil.AUTH_HEADER);
         if (access == null) {
             filterChain.doFilter(request, response);
             return;
@@ -53,7 +53,7 @@ public class JWTFilter extends OncePerRequestFilter {
 
         String category = jwtUtil.getCategory(access);
 
-        if (!category.equals("access")) {
+        if (!category.equals(JWTUtil.ACCESS)) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }

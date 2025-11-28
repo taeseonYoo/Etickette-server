@@ -56,11 +56,11 @@ public class JWTUtil {
     }
 
     public String createAccessToken(String email, String role) {
-        return createJwt("access", email, role, ACCESS_TOKEN_EXPIRED_MS);
+        return createJwt(ACCESS, email, role, ACCESS_TOKEN_EXPIRED_MS);
     }
 
     public String createRefreshToken(String email, String role) {
-        return createJwt("refresh", email, role, REFRESH_TOKEN_EXPIRED_MS);
+        return createJwt(REFRESH, email, role, REFRESH_TOKEN_EXPIRED_MS);
     }
 
     public Long getRefreshTokenExpiredMs() {
@@ -69,5 +69,9 @@ public class JWTUtil {
 
     public int getRefreshTokenExpireSeconds() {
         return (int) (REFRESH_TOKEN_EXPIRED_MS / 1000);
+    }
+
+    public int getAccessTokenExpireSeconds() {
+        return (int) (ACCESS_TOKEN_EXPIRED_MS / 1000);
     }
 }
