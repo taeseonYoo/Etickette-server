@@ -11,19 +11,19 @@ import java.util.List;
 
 @Getter
 public class ConcertDetail {
-    private Long concertId;
-    private String title;
-    private String overview;
-    private Integer runningTime;
-    private String imgURL;
-    private List<GradePrice> gradePrices;
-    private ConcertStatus status;
+    private final Long concertId;
+    private final String title;
+    private final String overview;
+    private final Integer runningTime;
+    private final String imgURL;
+    private final List<GradePrice> gradePrices;
+    private final ConcertStatus status;
 
-    private String place;
-    private Integer capacity;
-    private Address address;
+    private final String place;
+    private final Integer capacity;
+    private final Address address;
 
-    private List<SessionDetail> sessionDetails;
+    private final List<SessionDetail> sessionDetails;
 
     public ConcertDetail(Concert concert, VenueData venue, List<SessionDetail> sessionDetails) {
         this.sessionDetails = sessionDetails;
