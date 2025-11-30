@@ -1,6 +1,7 @@
 package com.tae.Etickette.session.application.Dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,8 +30,10 @@ public class RegisterSessionRequest {
 
     @Getter
     public static class SessionInfo {
-        private LocalDate concertDate;
-        private LocalTime startTime;
+        @Schema(example = "2025-11-30")
+        private final LocalDate concertDate;
+        @Schema(type = "string",example = "10:00")
+        private final LocalTime startTime;
 
         @Builder
         public SessionInfo(LocalDate concertDate, LocalTime startTime) {

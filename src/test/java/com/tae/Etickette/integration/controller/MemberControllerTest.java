@@ -39,7 +39,7 @@ public class MemberControllerTest {
                 .build();
 
         //when & then
-        mockMvc.perform(post("/api/members/signup")
+        mockMvc.perform(post("/api/v1/members/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(request)))
                 .andExpect(status().isCreated());
@@ -64,7 +64,7 @@ public class MemberControllerTest {
                 .build();
 
         //when & then
-        mockMvc.perform(put("/api/members/profile")
+        mockMvc.perform(put("/api/v1/members/profile")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(passwordRequest)))
                 .andExpect(status().isNoContent());
@@ -89,7 +89,7 @@ public class MemberControllerTest {
                 .build();
 
         //when & then
-        mockMvc.perform(put("/api/members/profile")
+        mockMvc.perform(put("/api/v1/members/profile")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(passwordRequest)))
                 .andExpect(status().isNoContent());
@@ -114,7 +114,7 @@ public class MemberControllerTest {
                 .build();
 
         //when & then
-        mockMvc.perform(put("/api/members/profile")
+        mockMvc.perform(put("/api/v1/members/profile")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(passwordRequest)))
                 .andExpect(status().isForbidden());
@@ -135,7 +135,7 @@ public class MemberControllerTest {
         DeleteMemberRequest deleteRequest = DeleteMemberRequest.builder().email("test@spring").build();
 
         //when & then
-        mockMvc.perform(delete("/api/members")
+        mockMvc.perform(delete("/api/v1/members")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(deleteRequest)))
                 .andExpect(status().isNoContent());
@@ -156,7 +156,7 @@ public class MemberControllerTest {
         DeleteMemberRequest deleteRequest = DeleteMemberRequest.builder().email("test@spring").build();
 
         //when & then
-        mockMvc.perform(delete("/api/members")
+        mockMvc.perform(delete("/api/v1/members")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(deleteRequest)))
                 .andExpect(status().isNoContent());
@@ -177,7 +177,7 @@ public class MemberControllerTest {
         DeleteMemberRequest deleteRequest = DeleteMemberRequest.builder().email("test@spring").build();
 
         //when & then
-        mockMvc.perform(delete("/api/members")
+        mockMvc.perform(delete("/api/v1/members")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(deleteRequest)))
                 .andExpect(status().isForbidden());

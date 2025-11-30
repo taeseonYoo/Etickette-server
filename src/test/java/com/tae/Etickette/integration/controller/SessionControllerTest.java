@@ -83,7 +83,7 @@ public class SessionControllerTest {
                 .build();
 
         //when
-        mockMvc.perform(post("/api/sessions")
+        mockMvc.perform(post("/api/v1/sessions")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json.write(sessionRequest).getJson())
         ).andExpect(status().isCreated());
@@ -111,7 +111,7 @@ public class SessionControllerTest {
         List<Long> sessionIds = registerSessionService.register(sessionRequest);
 
         //when
-        mockMvc.perform(post("/api/sessions/" + sessionIds.get(0) + "/cancel")
+        mockMvc.perform(post("/api/v1/sessions/" + sessionIds.get(0) + "/cancel")
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk());
     }

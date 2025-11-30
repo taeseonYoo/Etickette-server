@@ -29,10 +29,10 @@ import java.util.List;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class BookingService {
+    private final MemberFinder memberFinder;
     private final SessionFinder sessionFinder;
     private final BookingRepository bookingRepository;
     private final BookSeatRepository bookSeatRepository;
-    private final MemberFinder memberFinder;
 
     @Transactional
     public BookingRef booking(BookingRequest requestDto, String email) {
