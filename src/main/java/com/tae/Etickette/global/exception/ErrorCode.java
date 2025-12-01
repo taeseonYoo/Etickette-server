@@ -48,6 +48,7 @@ public enum ErrorCode {
 
     //결제 오류
     PAYMETHOD_NOT_SUPPOERTED(400,"PAYMENT-001","결제 방법을 지원하지 않는 경우"),
+    PAYMENT_CONFIRM_FAIL(500,"PAYMENT-002","결제 승인이 실패한 경우"),
 
     //이미지 업로드
     S3_UPLOAD_ERROR(500,"IMAGE-001","이미지 업로드 중 오류가 발생한 경우"),
