@@ -48,6 +48,7 @@ public enum ErrorCode {
 
     //결제 오류
     PAYMETHOD_NOT_SUPPOERTED(400,"PAYMENT-001","결제 방법을 지원하지 않는 경우"),
+    PAYMENT_CONFIRM_FAIL(500,"PAYMENT-002","결제 승인이 실패한 경우"),
 
     //이미지 업로드
     S3_UPLOAD_ERROR(500,"IMAGE-001","이미지 업로드 중 오류가 발생한 경우"),
@@ -60,7 +61,13 @@ public enum ErrorCode {
     UNAUTHORIZED(401,"AUTH-002","인증되지 않은 경우"),
 
     //유효성 검사 실패
-    INVALID_INPUT_VALUE(400, "VALID-001", "잘못된 입력 값입니다.");
+    INVALID_INPUT_VALUE(400, "VALID-001", "잘못된 입력 값입니다."),
+
+    //토큰
+    REFRESH_TOKEN_IS_NULL(401,"TOKEN-001","리프레시 토큰이 없음"),
+    REFRESH_TOKEN_IS_EXPIRED(401,"TOKEN-002","리프레시 토큰이 만료됨"),
+    REFRESH_TOKEN_IS_INVALID(400,"TOKEN-003","리프레시 토큰이 유효하지 않음"),
+    REFRESH_TOKEN_IS_NOT_FOUND(401,"TOKEN-004","리프레시 토큰을 찾을 수 없음");
 
     private final int status;
     private final String code;

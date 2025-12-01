@@ -29,13 +29,13 @@ class CancelSessionServiceTest {
 
     @InjectMocks
     CancelSessionService cancelSessionService;
-    private final SessionRepository sessionRepository = mock(SessionRepository.class);
+    private final SessionFinder sessionFinder = mock(SessionFinder.class);
 
     @Test
     @DisplayName("cancel - 세션 정보가 없으면, 세션 취소에 실패한다.")
     void cancel_실패_세션이없음() {
         //given
-        BDDMockito.given(sessionRepository.findById(any())).willReturn(Optional.empty());
+        BDDMockito.given(sessionFinder.findSessionByIdOrThrow(any())).willThrow(ResourceNotFoundException.class);
 
         //when & then
         assertThrows(ResourceNotFoundException.class, () ->
@@ -47,7 +47,7 @@ class CancelSessionServiceTest {
     void cancel_성공() {
         //given
         Session session = mock(Session.class);
-        BDDMockito.given(sessionRepository.findById(any())).willReturn(Optional.of(session));
+        BDDMockito.given(sessionFinder.findSessionByIdOrThrow(any())).willReturn(session);
 
         //when
         cancelSessionService.cancel(session.getId());
@@ -64,7 +64,7 @@ class CancelSessionServiceTest {
         Session session1 = mock(Session.class);
         Session session2 = mock(Session.class);
         List<Session> sessions = List.of(session1, session2);
-        BDDMockito.given(sessionRepository.findAllByConcertId(any())).willReturn(sessions);
+        BDDMockito.given(sessionFinder.findAllByConcertId(any())).willReturn(sessions);
 
         //when
         cancelSessionService.cancelByConcertId(concertId);

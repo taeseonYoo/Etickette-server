@@ -1,8 +1,11 @@
 package com.tae.Etickette.concert.query.application;
 
+import com.tae.Etickette.concert.command.application.ConcertFinder;
 import com.tae.Etickette.concert.command.domain.Concert;
 import com.tae.Etickette.concert.command.domain.Image;
 import com.tae.Etickette.concert.infra.ConcertRepository;
+import com.tae.Etickette.global.exception.ResourceNotFoundException;
+import com.tae.Etickette.session.application.SessionFinder;
 import com.tae.Etickette.session.domain.Session;
 import com.tae.Etickette.session.infra.SessionRepository;
 import com.tae.Etickette.venue.query.VenueData;
@@ -19,6 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 
@@ -27,53 +31,44 @@ import static org.mockito.Mockito.mock;
 class ConcertDetailServiceTest {
     @InjectMocks
     private ConcertDetailService concertDetailService;
-    private final ConcertRepository concertRepository = mock(ConcertRepository.class);
-    private final SessionRepository sessionRepository = mock(SessionRepository.class);
+    private final ConcertFinder concertFinder = mock(ConcertFinder.class);
+    private final SessionFinder sessionFinder = mock(SessionFinder.class);
     private final VenueQueryService venueQueryService = mock(VenueQueryService.class);
 
-    @BeforeEach
-    void setUp() {
-        concertDetailService = new ConcertDetailService(concertRepository, sessionRepository, venueQueryService);
-    }
 
     @Test
     @DisplayName("상세정보 - 공연 정보를 찾을 수 없다면, 빈 값을 반환한다.")
     void 상세정보_공연정보가없음() {
         //given
-        BDDMockito.given(concertRepository.findById(any())).willReturn(Optional.empty());
+        BDDMockito.given(concertFinder.findByIdOrThrow(any())).willThrow(ResourceNotFoundException.class);
 
         //when
-        Optional<ConcertDetail> concertDetail = concertDetailService.getConcertDetail(1L);
-
-        //then
-        Assertions.assertThat(concertDetail.isEmpty()).isTrue();
+        Assertions.assertThatThrownBy(() -> concertDetailService.getConcertDetail(1L))
+                .isInstanceOf(ResourceNotFoundException.class);
     }
 
     @Test
     @DisplayName("상세정보 - 세션 정보를 찾을 수 없다면, 빈 값을 반환한다.")
     void 상세정보_세션정보가없음() {
         //given
-        BDDMockito.given(concertRepository.findById(any())).willReturn(Optional.of(mock(Concert.class)));
-        BDDMockito.given(sessionRepository.findAllByConcertId(any())).willReturn(List.of());
+        BDDMockito.given(concertFinder.findByIdOrThrow(any())).willReturn(mock(Concert.class));
+        BDDMockito.given(sessionFinder.findAllByConcertId(any())).willThrow(ResourceNotFoundException.class);
         //when
-        Optional<ConcertDetail> concertDetail = concertDetailService.getConcertDetail(1L);
-
-        //then
-        Assertions.assertThat(concertDetail.isEmpty()).isTrue();
+        Assertions.assertThatThrownBy(() -> concertDetailService.getConcertDetail(1L))
+                .isInstanceOf(ResourceNotFoundException.class);
     }
 
     @Test
     @DisplayName("상세정보 - 공연장 정보를 찾을 수 없다면, 빈 값을 반환한다.")
     void 상세정보_공연장정보가없음() {
         //given
-        BDDMockito.given(concertRepository.findById(any())).willReturn(Optional.of(mock(Concert.class)));
-        BDDMockito.given(sessionRepository.findAllByConcertId(any())).willReturn(List.of(mock(Session.class)));
-        BDDMockito.given(venueQueryService.getVenue(any())).willReturn(Optional.empty());
+        BDDMockito.given(concertFinder.findByIdOrThrow(any())).willReturn(mock(Concert.class));
+        BDDMockito.given(sessionFinder.findAllByConcertId(any())).willReturn(List.of(mock(Session.class)));
+        BDDMockito.given(venueQueryService.findVenueByIdOrThrow(any())).willThrow(ResourceNotFoundException.class);
         //when
-        Optional<ConcertDetail> concertDetail = concertDetailService.getConcertDetail(1L);
-
         //then
-        Assertions.assertThat(concertDetail.isEmpty()).isTrue();
+        Assertions.assertThatThrownBy(() -> concertDetailService.getConcertDetail(1L))
+                .isInstanceOf(ResourceNotFoundException.class);
     }
 
     @Test
@@ -81,14 +76,14 @@ class ConcertDetailServiceTest {
     void 상세정보_반환성공() {
         //given
         Concert concert = Concert.create("title", "overview", 120, new Image("/imagePath"), List.of(), 1L);
-        BDDMockito.given(concertRepository.findById(any())).willReturn(Optional.of(concert));
-        BDDMockito.given(sessionRepository.findAllByConcertId(any())).willReturn(List.of(mock(Session.class)));
-        BDDMockito.given(venueQueryService.getVenue(any())).willReturn(Optional.of(mock(VenueData.class)));
+        BDDMockito.given(concertFinder.findByIdOrThrow(any())).willReturn(concert);
+        BDDMockito.given(sessionFinder.findAllByConcertId(any())).willReturn(List.of(mock(Session.class)));
+        BDDMockito.given(venueQueryService.findVenueByIdOrThrow(any())).willReturn(mock(VenueData.class));
         //when
-        Optional<ConcertDetail> concertDetail = concertDetailService.getConcertDetail(1L);
+        ConcertDetail concertDetail = concertDetailService.getConcertDetail(1L);
 
         //then
-        Assertions.assertThat(concertDetail.isEmpty()).isFalse();
+        assertNotNull(concertDetail);
     }
 
 }

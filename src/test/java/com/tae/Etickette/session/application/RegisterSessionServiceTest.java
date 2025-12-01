@@ -1,6 +1,8 @@
 package com.tae.Etickette.session.application;
 
+import com.tae.Etickette.concert.command.application.ConcertFinder;
 import com.tae.Etickette.global.exception.ResourceNotFoundException;
+import com.tae.Etickette.seat.application.SeatFinder;
 import com.tae.Etickette.seat.infra.SeatRepository;
 import com.tae.Etickette.bookseat.infra.BookSeatRepository;
 import com.tae.Etickette.concert.command.domain.Concert;
@@ -9,6 +11,7 @@ import com.tae.Etickette.session.application.Dto.RegisterSessionRequest;
 import com.tae.Etickette.session.domain.Session;
 import com.tae.Etickette.session.domain.SettingSeatService;
 import com.tae.Etickette.session.infra.SessionRepository;
+import com.tae.Etickette.venue.command.application.VenueFinder;
 import com.tae.Etickette.venue.command.domain.Venue;
 import com.tae.Etickette.venue.infra.VenueRepository;
 import org.junit.jupiter.api.Assertions;
@@ -34,17 +37,17 @@ import static org.mockito.Mockito.*;
 class RegisterSessionServiceTest {
     @InjectMocks
     private RegisterSessionService registerSessionService;
+    private final SeatFinder seatFinder = mock(SeatFinder.class);
+    private final VenueFinder venueFinder = mock(VenueFinder.class);
+    private final ConcertFinder concertFinder = mock(ConcertFinder.class);
     private final SessionRepository sessionRepository = mock(SessionRepository.class);
-    private final VenueRepository venueRepository = mock(VenueRepository.class);
-    private final ConcertRepository concertRepository = mock(ConcertRepository.class);
-    private final SeatRepository seatRepository = mock(SeatRepository.class);
     private final SettingSeatService settingSeatService = mock(SettingSeatService.class);
     private final BookSeatRepository bookSeatRepository = mock(BookSeatRepository.class);
 
     RegisterSessionRequest requestDto;
     @BeforeEach
     void setUp() {
-        registerSessionService = new RegisterSessionService(sessionRepository,concertRepository,venueRepository,seatRepository, bookSeatRepository,settingSeatService);
+        registerSessionService = new RegisterSessionService(seatFinder,venueFinder,concertFinder,sessionRepository,bookSeatRepository,settingSeatService);
 
         List<SessionInfo> sessionInfos = List.of(SessionInfo.builder().concertDate(LocalDate.of(2025, 6, 1))
                         .startTime(LocalTime.of(15, 0)).build(),
@@ -60,9 +63,9 @@ class RegisterSessionServiceTest {
     @DisplayName("register - 세션 등록에 성공한다.")
     void 세션등록_성공() {
         //given
-        BDDMockito.given(concertRepository.findById(any())).willReturn(Optional.of(mock(Concert.class)));
-        BDDMockito.given(seatRepository.findIdByConcertId(any())).willReturn(mock(List.class));
-        BDDMockito.given(venueRepository.findById(any())).willReturn(Optional.of(mock(Venue.class)));
+        BDDMockito.given(concertFinder.findByIdOrThrow(any())).willReturn(mock(Concert.class));
+        BDDMockito.given(seatFinder.findIdsByConcertId(any())).willReturn(mock(List.class));
+        BDDMockito.given(venueFinder.findVenueByIdOrThrow(any())).willReturn(mock(Venue.class));
 
         BDDMockito.given(sessionRepository.save(any())).willReturn(mock(Session.class));
         //when
@@ -76,8 +79,8 @@ class RegisterSessionServiceTest {
     @DisplayName("register - 공연장이 없다면, 세션 등록에 실패한다.")
     void 세션등록_실패_공연장이없음() {
         //given
-        BDDMockito.given(concertRepository.findById(any())).willReturn(Optional.of(mock(Concert.class)));
-        BDDMockito.given(venueRepository.findById(any())).willReturn(Optional.empty());
+        BDDMockito.given(concertFinder.findByIdOrThrow(any())).willReturn(mock(Concert.class));
+        BDDMockito.given(venueFinder.findVenueByIdOrThrow(any())).willThrow(ResourceNotFoundException.class);
 
         //when & then
         Assertions.assertThrows(ResourceNotFoundException.class, () ->
@@ -88,7 +91,7 @@ class RegisterSessionServiceTest {
     @DisplayName("register - 공연이 없다면, 세션 등록에 실패한다.")
     void 세션등록_실패_공연이없음() {
         //given
-        BDDMockito.given(concertRepository.findById(any())).willReturn(Optional.empty());
+        BDDMockito.given(concertFinder.findByIdOrThrow(any())).willThrow(ResourceNotFoundException.class);
 
         //when & then
         Assertions.assertThrows(ResourceNotFoundException.class, () ->

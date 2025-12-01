@@ -9,6 +9,7 @@ import com.tae.Etickette.global.exception.ForbiddenException;
 import com.tae.Etickette.global.exception.ResourceNotFoundException;
 import com.tae.Etickette.global.model.Money;
 import com.tae.Etickette.bookseat.command.domain.BookSeatId;
+import com.tae.Etickette.member.application.MemberFinder;
 import com.tae.Etickette.member.domain.Member;
 import com.tae.Etickette.member.infra.MemberRepository;
 import org.assertj.core.api.Assertions;
@@ -36,7 +37,7 @@ class CancelBookingServiceTest {
     private CancelBookingService cancelBookingService;
     private final BookingRepository bookingRepository = mock(BookingRepository.class);
     private final CancelPolicy cancelPolicy = mock(CancelPolicy.class);
-    private final MemberRepository memberRepository = mock(MemberRepository.class);
+    private final MemberFinder memberFinder = mock(MemberFinder.class);
     ApplicationEventPublisher eventPublisher = mock(ApplicationEventPublisher.class);
 
     @Test
@@ -84,7 +85,7 @@ class CancelBookingServiceTest {
                 .willReturn(Optional.of(mockBooking));
         BDDMockito.given(cancelPolicy.hasCancellationPermission(any(), any()))
                 .willReturn(true);
-        BDDMockito.given(memberRepository.findByEmail(any())).willReturn(Optional.of(mock(Member.class)));
+        BDDMockito.given(memberFinder.findMemberByEmailOrThrow(any())).willReturn(mock(Member.class));
 
         //when
         cancelBookingService.cancel(any(),"test@test");
@@ -112,7 +113,7 @@ class CancelBookingServiceTest {
                 .willReturn(Optional.of(mock(Booking.class)));
         BDDMockito.given(cancelPolicy.hasCancellationPermission(any(), any()))
                 .willReturn(false);
-        BDDMockito.given(memberRepository.findByEmail(any())).willReturn(Optional.of(mock(Member.class)));
+        BDDMockito.given(memberFinder.findMemberByEmailOrThrow(any())).willReturn(mock(Member.class));
 
         //when & then
         assertThrows(ForbiddenException.class, () ->

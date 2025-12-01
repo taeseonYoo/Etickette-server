@@ -42,7 +42,7 @@ public class VenueControllerTest {
         Venue save = venueRepository.save(venue);
 
         //when & then
-        mockMvc.perform(delete("/api/venues/" + save.getId())
+        mockMvc.perform(delete("/api/v1/venues/" + save.getId())
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isNoContent());
 
@@ -59,7 +59,7 @@ public class VenueControllerTest {
         Venue save = venueRepository.save(venue);
 
         //when & then
-        mockMvc.perform(delete("/api/venues/" + save.getId())
+        mockMvc.perform(delete("/api/v1/venues/" + save.getId())
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isForbidden());
     }
@@ -74,7 +74,7 @@ public class VenueControllerTest {
         ChangeAddressRequest request = ChangeAddressRequest.builder().address(new Address("강원도", "강릉", "22222")).build();
 
         //when & then
-        mockMvc.perform(put("/api/venues/" + save.getId())
+        mockMvc.perform(put("/api/v1/venues/" + save.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(request))
         ).andExpect(status().isNoContent());
@@ -93,7 +93,7 @@ public class VenueControllerTest {
         ChangeAddressRequest request = ChangeAddressRequest.builder().address(new Address("강원도", "강릉", "22222")).build();
 
         //when & then
-        mockMvc.perform(put("/api/venues/" + save.getId())
+        mockMvc.perform(put("/api/v1/venues/" + save.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(request))
         ).andExpect(status().isForbidden());
@@ -109,7 +109,7 @@ public class VenueControllerTest {
                 .address(new Address("서울", "잠실", "11111"))
                 .build();
         //when
-        mockMvc.perform(post("/api/venues")
+        mockMvc.perform(post("/api/v1/venues")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(request))
         ).andExpect(status().isCreated());
@@ -125,7 +125,7 @@ public class VenueControllerTest {
                 .address(new Address("서울", "잠실", "11111"))
                 .build();
         //when
-        mockMvc.perform(post("/api/venues")
+        mockMvc.perform(post("/api/v1/venues")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(request))
         ).andExpect(status().isForbidden());
@@ -141,10 +141,10 @@ public class VenueControllerTest {
         venueRepository.saveAll(List.of(venue1, venue2));
 
         //when & then
-        mockMvc.perform(get("/api/venues")
+        mockMvc.perform(get("/api/v1/venues")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2));
+                .andExpect(jsonPath("$.data.length()").value(2));
     }
 
     @Test
@@ -158,10 +158,10 @@ public class VenueControllerTest {
         venue2.deleteVenue();
 
         //when & then
-        mockMvc.perform(get("/api/venues")
+        mockMvc.perform(get("/api/v1/venues")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(1));
+                .andExpect(jsonPath("$.data.length()").value(1));
     }
 
     @Test
@@ -175,14 +175,14 @@ public class VenueControllerTest {
         venue2.deleteVenue();
 
         //when & then
-        mockMvc.perform(get("/api/venues")
+        mockMvc.perform(get("/api/v1/venues")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(venue1.getId()))
-                .andExpect(jsonPath("$[0].place").value("KSPO DOME"))
-                .andExpect(jsonPath("$[0].capacity").value(10000))
-                .andExpect(jsonPath("$[0].address.city").value("서울"))
-                .andExpect(jsonPath("$[0].address.street").value("올림픽로"))
-                .andExpect(jsonPath("$[0].address.zipcode").value("12345"));
+                .andExpect(jsonPath("$.data[0].id").value(venue1.getId()))
+                .andExpect(jsonPath("$.data[0].place").value("KSPO DOME"))
+                .andExpect(jsonPath("$.data[0].capacity").value(10000))
+                .andExpect(jsonPath("$.data[0].address.city").value("서울"))
+                .andExpect(jsonPath("$.data[0].address.street").value("올림픽로"))
+                .andExpect(jsonPath("$.data[0].address.zipcode").value("12345"));
     }
 }

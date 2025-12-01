@@ -100,7 +100,7 @@ public class SecurityConfig {
 
         // 로그아웃 요청 URL 설정
         http.logout(logout -> logout
-                .logoutUrl("/api/members/logout")
+                .logoutUrl("/api/v1/members/logout")
                 .logoutSuccessUrl("/")
                 .permitAll()
         );
@@ -125,10 +125,10 @@ public class SecurityConfig {
         http.addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshTokenService), LogoutFilter.class)
                 .addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
-        //커스텀 로그인 필터 등록 - 로그인 url 은 "/api/members/login"
+        //커스텀 로그인 필터 등록 - 로그인 url 은 "/api/v1/members/login"
         LoginFilter loginFilter = new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil,
                 refreshTokenService);
-        loginFilter.setFilterProcessesUrl("/api/members/login");
+        loginFilter.setFilterProcessesUrl("/api/v1/members/login");
         http.addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
